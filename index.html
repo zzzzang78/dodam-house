@@ -2775,17 +2775,18 @@ const LS={get(k){try{return localStorage.getItem(k);}catch(e){return null;}},set
 const SSS={get(k){try{return sessionStorage.getItem(k);}catch(e){return null;}},set(k,v){try{sessionStorage.setItem(k,v);}catch(e){}},del(k){try{sessionStorage.removeItem(k);}catch(e){}}};
 let SESSION=null;           // 게스트: {mode:'guest',gid}  ·  등록: {mode:'online',room,roomName,classes,cls,sid,pin}
 const isOnline=()=>!!(SESSION&&SESSION.mode==='online');
+const isDemo=()=>!!(SESSION&&SESSION.mode==='demo');
 const isGuest=()=>!!(SESSION&&SESSION.mode==='guest');
 function blankState(){return{v:2,nick:'',stars:{},badges:[],coins:0,avatar:{roof:'#ffa88a',body:'#fff0c4',acc:''},owned:[],explore:{},bonusClaimed:0,s6:null,s0:null,rev:0,ts:0,teacher:false};}
 let S=blankState();
 const profKey=()=>!SESSION?'dodam-v2-x':SESSION.mode==='online'?'dodam-v2-p:'+SESSION.room+':'+SESSION.sid:'dodam-v2-g:'+SESSION.gid;
 function pack(){const o={...S};delete o.teacher;return o;}
-function saveLocal(){if(SESSION)LS.set(profKey(),JSON.stringify(pack()));}
+function saveLocal(){if(SESSION&&!isDemo())LS.set(profKey(),JSON.stringify(pack()));}
 let syncT=null,syncing=false,dirty=false,syncState='';
 function save(){S.rev=(S.rev||0)+1;S.ts=Date.now();saveLocal();renderHeader();if(isOnline()){dirty=true;clearTimeout(syncT);syncT=setTimeout(syncNow,3000);}}
-function api(body){return dodamApi(body);}
+function api(body){return isDemo()?demoApi(body):dodamApi(body);}
 function setSync(st,msg){syncState=st;const el=$('#sync');if(!el)return;el.className='sync '+st;el.title=msg||'';
-  el.textContent=st==='ok'?'☁️ 저장됨':st==='saving'?'⏳ 저장 중':st==='err'?'⚠️ 저장 실패(다시 시도 중)':st==='local'?'💾 이 노트북에만 저장 중':'';}
+  el.textContent=st==='ok'?'☁️ 저장됨':st==='saving'?'⏳ 저장 중':st==='err'?'⚠️ 저장 실패(다시 시도 중)':st==='local'?'💾 이 노트북에만 저장 중':st==='demo'?'👀 체험 중 · 저장 안 돼요':'';}
 async function syncNow(){
   if(!isOnline()||syncing||!dirty)return;syncing=true;setSync('saving');
   try{const r=await api({action:'save',code:SESSION.room,sid:SESSION.sid,pin:SESSION.pin,state:pack()});if(!r.ok)throw new Error(r.err||'저장 실패');dirty=false;setSync('ok');applyBonus(r.bonus);}
@@ -2821,12 +2822,12 @@ function mergeStates(server,guest){
 /* ---------- 헤더 ---------- */
 function renderHeader(){
   const h=$('#hdr-player');if(!h)return;
-  h.innerHTML=SESSION?`${dodamSVG(34,S.avatar)}<div class="pl-name"><b>${esc(isOnline()?S.nick:'손님')}</b><small>${isOnline()?`${esc(SESSION.cls)}반 ${esc(SESSION.sid)}`:'등록 전'}</small></div>
+  h.innerHTML=SESSION?`${dodamSVG(34,S.avatar)}<div class="pl-name"><b>${esc(isOnline()||isDemo()?S.nick:'손님')}</b><small>${isDemo()?'체험 중':isOnline()?`${esc(SESSION.cls)}반 ${esc(SESSION.sid)}`:'등록 전'}</small></div>
     <span class="chip xp" title="경험치: 별 1개 100, 배지 1개 50">⭐ ${xpOf(S)} XP</span><span class="chip coin" id="coin-chip" title="코인: 상점에서 사용">💰 ${S.coins||0}</span>`:'';
   const _xp=xpOf(S);if($('#hud-lv')){$('#hud-lv').textContent='Lv.'+(1+Math.floor(_xp/300));$('#hud-nick').textContent=isOnline()?S.nick:'손님';$('#hud-xpbar').style.width=(_xp%300)/3+'%';$('#hud-xp').textContent='EXP '+(_xp%300)+' / 300 · 💰 '+(S.coins||0);}
   const bt=$('#btn-teacher');bt.classList.toggle('teacher-on',!!S.teacher);bt.innerHTML=S.teacher?'👩‍🏫<small>ON</small>':'👩‍🏫<small>교사</small>';
   document.body.classList.toggle('teacher',!!S.teacher);
-  $('#btn-board').style.display=isOnline()?'':'none';$('#btn-peers').style.display=isOnline()?'':'none';
+  $('#btn-board').style.display=(isOnline()||isDemo())?'':'none';$('#btn-peers').style.display=(isOnline()||isDemo())?'':'none';
   $('#btn-register').style.display=isGuest()&&serverURL()?'':'none';
   $('#btn-reset').style.display=isGuest()?'':'none';
   if(isGuest())setSync('local');
@@ -2840,6 +2841,7 @@ function renderLogin(msg){
     ${known.length?`<div class="sec-title">📌 이 노트북에서 했던 친구 — 내 이름을 누르고 비밀번호를 넣어요</div><div class="known">${known.map((k,i)=>`<button class="kn" data-k="${i}">${dodamSVG(40,k.avatar)}<b>${esc(k.nick)}</b><small>${esc(k.cls)}반 ${esc(k.sid)}</small></button>`).join('')}</div>`:''}
     <div class="start-opts">
       ${url?'':`<button class="opt main" id="lg-quick"><span>▶</span><b>바로 시작하기</b><small>이 노트북에만 저장돼요.</small></button>`}
+      <button class="opt" id="lg-demo"><span>👀</span><b>체험하기</b><small>저장 없이 둘러봐요. 별과 코인이 넉넉해요.</small></button>
       ${url?`<button class="opt main" id="lg-resume"><span>🔑</span><b>학번으로 시작하기</b><small>방 코드와 학번, 비밀번호 4자리를 넣고 들어가요. 처음이면 새로 만들어져요.</small></button>`:''}
     </div>
     ${guests.length&&!url?`<div class="hint" style="margin-top:8px">💾 이 노트북에 <b>등록하지 않은 기록</b>이 있어요: ${guests.map(g=>`<button class="linkbtn" data-g="${g.gid}">⭐${g.stars} 💰${g.coins} (${new Date(g.ts).toLocaleString().slice(0,-3)}) 이어서 하기</button>`).join(' ')}</div>`:''}
@@ -2847,6 +2849,7 @@ function renderLogin(msg){
     <div class="lg-msg" id="lg-msg">${msg||''}</div>
     <div class="lg-foot"><span class="hint">${url?'☁️ 선생님 기록 저장소와 연결됨':''}</span><span><a class="linkbtn" href="teacher.html" style="text-decoration:none;opacity:.7">👩‍🏫 교사</a>${url?'':'<button class="linkbtn" id="lg-url">⚙ 연결 설정</button>'}</span></div></div></div>`;
   if($('#lg-quick'))$('#lg-quick').onclick=()=>startGuest(null);
+  $('#lg-demo').onclick=startDemo;
   $$('[data-g]').forEach(b=>b.onclick=()=>startGuest(b.dataset.g));
   if($('#lg-resume'))$('#lg-resume').onclick=()=>accountModal('resume');
   $$('[data-k]').forEach(b=>b.onclick=()=>pinModal(known[+b.dataset.k]));
@@ -3033,7 +3036,7 @@ function houseSVG(floors,me){
   return s+`<polygon points="5,31 35,6 65,31" fill="${me?'#ff8a65':'#e0a080'}" stroke="#c96a4a" stroke-width="2"/></svg>`;
 }
 function renderBoard(){
-  if(!isOnline()){$('#screen').innerHTML=`<div class="map"><div class="nb">연습 모드에서는 반 대항전에 참여할 수 없어요.</div></div>`;return;}
+  if(!isOnline()&&!isDemo()){$('#screen').innerHTML=`<div class="map"><div class="nb">연습 모드에서는 반 대항전에 참여할 수 없어요.</div></div>`;return;}
   $('#screen').innerHTML=`<div class="board"><div class="board-head"><h2>🏆 반 대항전 — ${esc(SESSION.roomName)}</h2><span id="bd-info" class="hint"></span><button class="btn ghost small" id="bd-ref">↻ 새로고침</button></div><div id="bd-body"><p class="hint">⏳ 불러오는 중…</p></div></div>`;
   const load=async()=>{
     if(!$('#bd-body')){clearInterval(boardTimer);return;}
@@ -3053,7 +3056,7 @@ function renderBoard(){
 function peerThumb(w,cw,ch){const cv=document.createElement('canvas');cv.width=cw;cv.height=ch;const c=cv.getContext('2d');c.fillStyle='#fdf8f1';c.fillRect(0,0,cw,ch);try{drawPlanCanvas(c,w.room,(w.items||[]).filter(i=>FURN[i.type]),0,0,cw,ch);}catch(e){}cv.style.cssText='width:100%;border:1px solid #e3dff0;border-radius:10px';return cv;}
 let PEER_PRESET=null;
 function renderPeers(){
-  if(!isOnline()){$('#screen').innerHTML=`<div class="map"><div class="nb">연습 모드에서는 볼 수 없어요.</div></div>`;return;}
+  if(!isOnline()&&!isDemo()){$('#screen').innerHTML=`<div class="map"><div class="nb">연습 모드에서는 볼 수 없어요.</div></div>`;return;}
   let tab='status',cls=String(SESSION.cls),data=null,withWorks=false;if(PEER_PRESET){tab=PEER_PRESET.tab||tab;cls=String(PEER_PRESET.cls);PEER_PRESET=null;}
   $('#screen').innerHTML=`<div class="board"><div class="board-head"><h2>👀 친구들 — ${esc(SESSION.roomName)}</h2><span id="pe-info" class="hint"></span><button class="btn ghost small" id="pe-ref">↻ 새로고침</button></div><div class="row" id="pe-tabs" style="display:flex;gap:6px;margin:8px 0"><button class="btn small" data-t="status">📊 진행 현황</button><button class="btn ghost small" data-t="dodam">🐣 도담이</button><button class="btn ghost small" data-t="works">🏠 친구들 방</button></div><div id="pe-cls" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px"></div><div id="pe-body"><p class="hint">⏳ 불러오는 중…</p></div></div>`;
   const draw=()=>{if(!$('#pe-body'))return;
@@ -3112,6 +3115,34 @@ function init(){
   renderLogin();
 }
 init();
+
+/* ===== 체험하기(데모) 모드: 저장 없이 둘러보기 ===== */
+function startDemo(){
+  SESSION={mode:'demo',room:'DEMO',roomName:'체험 교실',classes:['1','2','3'],cls:'1',sid:'0000'};
+  S={...blankState(),nick:'체험이',coins:3000,badges:Object.keys(BADGES).slice(0,4),stars:{},s0:null,s6:null};
+  ['s0','s1','s2','s3','s4','s5','s6','bonus'].forEach((k,i)=>{S.stars[k]=i<5?3:2;});
+  S.teacher=false;document.body.classList.remove('login-mode');renderHeader();go('map');setSync('demo');
+  setTimeout(()=>toast('👀 <b>체험 중</b>이에요. 기록은 저장되지 않고, 나가면 사라져요.','good'),400);
+}
+const DEMO_NAMES=['별빛','구름','하늘','달님','햇살','보리','콩이','몽실','토리','모모','두부','단비','나무','솜이','하루','소라'];
+function demoPeers(){
+  const pick=(o,i)=>{const k=Object.keys(o);return k[i%k.length];};
+  const it=(type,x,y,rot=0)=>({id:'d'+type+x+y,type,x,y,rot});
+  const rooms=[
+    {roomName:'꿈의 서재',roomMeaning:'조용히 쉬는 곳',items:[it('bed',10,10),it('desk',150,10),it('rug',100,170)]},
+    {roomName:'햇살 놀이터',roomMeaning:'친구와 노는 곳',items:[it('bed',210,10),it('sofa',10,10),it('beanbag',150,200)]},
+    {roomName:'나의 작은 우주',roomMeaning:'혼자 집중하는 곳',items:[it('bed',10,150),it('wdesk',150,10),it('armchair',230,200)]}
+  ].map(r=>({...r,room:Object.assign(makeRoom(330,360,'bottom','top'),{wall:'#e3eef8',floor:'lwood'}),mood:'calm'}));
+  const students=DEMO_NAMES.map((n,i)=>({cls:String(1+i%3),nick:n,stars:STAGES.map((s,j)=>Math.max(0,Math.min(3,3-Math.floor((j+i*2)/3)+(i%2)))),avatar:{roof:pick(ROOFS,i),body:pick(BODIES,i+2),face:pick(FACES,i),shape:pick(SHAPES,i),chim:pick(CHIMS,i),pet:pick(PETS,i),fx:pick(FXS,i),bg:pick(BGS,i),deco:pick(DECOS,i),acc:'' },last:Date.now(),s6:i%4===0?rooms[(i/4|0)%3]:null}));
+  return students;
+}
+async function demoApi(b){
+  const st=demoPeers();
+  if(b.action==='peers')return{ok:true,classes:['1','2','3'],students:b.works?st:st.map(s=>({...s,s6:null})),me:{}};
+  if(b.action==='board'){const xp=s=>s.stars.reduce((a,c)=>a+c,0)*100;const cl=['1','2','3'].map(c=>{const l=st.filter(s=>s.cls===c);return{cls:c,count:l.length,avgXp:Math.round(l.reduce((a,s)=>a+xp(s),0)/l.length)+(c==='1'?200:0)};});
+    return{ok:true,classes:cl,total:st.length,online:4,top:st.map(s=>({nick:s.nick,cls:s.cls,xp:xp(s),avatar:s.avatar})).sort((a,c)=>c.xp-a.xp).slice(0,10)};}
+  return{ok:false,err:'체험 모드에서는 쓸 수 없어요.'};
+}
 
 </script>
 </body>
