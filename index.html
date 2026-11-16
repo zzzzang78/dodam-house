@@ -436,6 +436,7 @@ kbd{background:#f3ece4;border:1px solid #d9cbbb;border-bottom-width:3px;border-r
   <button class="btn ghost small" id="btn-shop">🛒 상점</button>
   <button class="btn small" id="btn-register" style="display:none">🏆 랭킹 등록</button>
   <button class="btn ghost small" id="btn-board">🏆 반 대항전</button>
+  <button class="btn ghost small" id="btn-peers">👀 친구들</button>
   <button class="btn ghost small" id="btn-keys" title="단축키">⌨</button>
   <button class="btn ghost small" id="btn-teacher" title="선생님 모드">👩‍🏫</button>
   <button class="btn ghost small" id="btn-reset" title="연습 기록 지우기">↺</button>
@@ -1059,6 +1060,15 @@ const FB_API={
     const now=Date.now();
     return{ok:true,room:{code:r.code,name:r.name},classes,top,online:list.filter(s=>now-s.last<5*60*1000).length,total:list.length};
   },
+  peers:async(b,a)=>{ // 학생끼리 보기: 학번·비밀번호 없이 별명/별/방 이름만
+    const r=await fbRoom(a,b.code);if(!r)throw new Error('방 코드를 찾을 수 없어요.');
+    const m=await fbBoardMap(a,r.code);const out=Object.keys(m).map(k=>{const p=fbPub(k,m[k]);return{k:p.sid,cls:p.cls,nick:p.nick,stars:p.stars,avatar:p.avatar,last:p.last};});
+    if(b.works){const jobs=out.filter(s=>s.stars[6]>0||true);
+      for(let i=0;i<jobs.length;i+=10)await Promise.all(jobs.slice(i,i+10).map(async s=>{const d=await a.get('rooms/'+r.code+'/students/'+s.k);const st=d&&fbParse(d.state)||{};const w=st.s6;
+        if(w&&(w.items||[]).length)s.s6={room:w.room,items:w.items,roomName:String(w.roomName||'').slice(0,30),roomMeaning:String(w.roomMeaning||'').slice(0,60),space:String(w.space||'').slice(0,30)};}));}
+    out.forEach(s=>delete s.k);out.sort((x,y)=>x.cls.localeCompare(y.cls,undefined,{numeric:true})||x.nick.localeCompare(y.nick));
+    return{ok:true,classes:r.classes,students:out,me:b.cls};
+  },
   teacher:async(b,a)=>{
     await fbEnsureTeacher(a,b.pw);
     const r=await fbRoom(a,b.code);if(!r)throw new Error('방이 없어요.');
@@ -1233,6 +1243,7 @@ function go(id){
   if(id==='map'){renderMap();return;}
   if(id==='shop'){renderShop();return;}
   if(id==='board'){renderBoard();return;}
+  if(id==='peers'){renderPeers();return;}
   const st=STAGES.find(s=>s.id===id);
   scr.innerHTML=`<div class="stage"><div class="stage-head">
     <button class="btn ghost small" id="btn-back">← 지도</button>
@@ -2387,7 +2398,7 @@ function renderHeader(){
     <span class="chip xp" title="경험치: 별 1개 100, 배지 1개 50">⭐ ${xpOf(S)} XP</span><span class="chip coin" id="coin-chip" title="코인: 상점에서 사용">🪙 ${S.coins||0}</span>`:'';
   const bt=$('#btn-teacher');bt.classList.toggle('teacher-on',!!S.teacher);bt.textContent=S.teacher?'👩‍🏫 ON':'👩‍🏫';
   document.body.classList.toggle('teacher',!!S.teacher);
-  $('#btn-board').style.display=isOnline()?'':'none';
+  $('#btn-board').style.display=isOnline()?'':'none';$('#btn-peers').style.display=isOnline()?'':'none';
   $('#btn-register').style.display=isGuest()&&serverURL()?'':'none';
   $('#btn-reset').style.display=isGuest()?'':'none';
   if(isGuest())setSync('local');
@@ -2569,6 +2580,31 @@ function renderBoard(){
   $('#bd-ref').onclick=load;load();clearInterval(boardTimer);boardTimer=setInterval(load,20000);
   cleanup=()=>clearInterval(boardTimer);
 }
+/* ---------- 친구들 (진행 현황 · 친구들 방) ---------- */
+function peerThumb(w,cw,ch){const cv=document.createElement('canvas');cv.width=cw;cv.height=ch;const c=cv.getContext('2d');c.fillStyle='#fdf8f1';c.fillRect(0,0,cw,ch);try{drawPlanCanvas(c,w.room,(w.items||[]).filter(i=>FURN[i.type]),0,0,cw,ch);}catch(e){}cv.style.cssText='width:100%;border:1px solid #e3dff0;border-radius:10px';return cv;}
+function renderPeers(){
+  if(!isOnline()){$('#screen').innerHTML=`<div class="map"><div class="nb">연습 모드에서는 볼 수 없어요.</div></div>`;return;}
+  let tab='status',cls=String(SESSION.cls),data=null,withWorks=false;
+  $('#screen').innerHTML=`<div class="board"><div class="board-head"><h2>👀 친구들 — ${esc(SESSION.roomName)}</h2><span id="pe-info" class="hint"></span><button class="btn ghost small" id="pe-ref">↻ 새로고침</button></div><div class="row" id="pe-tabs" style="display:flex;gap:6px;margin:8px 0"><button class="btn small" data-t="status">📊 진행 현황</button><button class="btn ghost small" data-t="works">🏠 친구들 방</button></div><div id="pe-cls" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px"></div><div id="pe-body"><p class="hint">⏳ 불러오는 중…</p></div></div>`;
+  const draw=()=>{if(!$('#pe-body'))return;
+    $$('#pe-tabs button').forEach(b=>b.className='btn small'+(b.dataset.t===tab?'':' ghost'));
+    $('#pe-cls').innerHTML=`<button class="btn small ${cls==='all'?'':'ghost'}" data-c="all">전체</button>`+data.classes.map(c=>`<button class="btn small ${cls===String(c)?'':'ghost'}" data-c="${esc(c)}">${esc(c)}반</button>`).join('');
+    $$('#pe-cls button').forEach(b=>b.onclick=()=>{cls=b.dataset.c;draw();});
+    const list=data.students.filter(s=>cls==='all'||s.cls===cls);
+    $('#pe-info').textContent=`${list.length}명`;
+    if(tab==='status'){
+      $('#pe-body').innerHTML=list.length?`<div class="panel"><table style="width:100%;border-collapse:collapse;font-size:14px"><tr style="text-align:left"><th>친구</th><th>반</th>${STAGES.map(s=>`<th title="${esc(s.title)}">${s.id==='bonus'?'B':s.id==='s0'?'열기':'S'+s.no}</th>`).join('')}</tr>${list.map(s=>`<tr style="border-top:1px solid #eee;${s.cls===String(SESSION.cls)&&s.nick===S.nick?'background:#fff6d6':''}"><td style="display:flex;align-items:center;gap:6px">${dodamSVG(28,s.avatar)}<b>${esc(s.nick)}</b></td><td>${esc(s.cls)}</td>${STAGES.map((st,i)=>`<td>${s.stars[i]?'★'.repeat(s.stars[i]):'<span style="color:#ccc">·</span>'}</td>`).join('')}</tr>`).join('')}</table></div>`:'<div class="nb">아직 친구가 없어요.</div>';
+    }else{
+      const ws=list.filter(s=>s.s6);
+      $('#pe-body').innerHTML=ws.length?`<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px">${ws.map((s,i)=>`<div class="panel" style="padding:10px"><div class="pe-c"></div><b>「${esc(s.s6.roomName||'이름 없는 방')}」</b><div class="hint">${esc(s.cls)}반 ${esc(s.nick)}${s.s6.roomMeaning?' · '+esc(s.s6.roomMeaning):''}</div></div>`).join('')}</div>`:'<div class="nb">아직 「내 방에게 묻다」를 마친 친구가 없어요.</div>';
+      $$('#pe-body .pe-c').forEach((el,i)=>el.appendChild(peerThumb(ws[i].s6,420,300)));
+    }};
+  const load=async()=>{try{if(tab==='works')withWorks=true;
+      const r=await api({action:'peers',code:SESSION.room,cls:SESSION.cls,works:withWorks});if(!r.ok)throw new Error(r.err);data=r;draw();}
+    catch(e){if($('#pe-body'))$('#pe-body').innerHTML=`<div class="nb">❌ ${esc(e.message)}</div>`;}};
+  $$('#pe-tabs button').forEach(b=>b.onclick=()=>{tab=b.dataset.t;if(tab==='works'&&!withWorks){load();}else if(data)draw();});
+  $('#pe-ref').onclick=load;load();
+}
 /* ---------- 선생님 모드 ---------- */
 function toggleTeacher(){
   if(S.teacher){S.teacher=false;renderHeader();toast('선생님 모드를 껐어요.');if(current!=='map')go(current);return;}
@@ -2581,7 +2617,7 @@ function toggleTeacher(){
 /* ---------- 시작 ---------- */
 function init(){
   $('#logo').onclick=()=>SESSION&&go('map');$('#btn-map').onclick=()=>SESSION&&go('map');
-  $('#btn-shop').onclick=()=>SESSION&&go('shop');$('#btn-board').onclick=()=>SESSION&&go('board');
+  $('#btn-shop').onclick=()=>SESSION&&go('shop');$('#btn-board').onclick=()=>SESSION&&go('board');$('#btn-peers').onclick=()=>SESSION&&go('peers');
   $('#btn-register').onclick=()=>accountModal('register');
   $('#btn-logout').onclick=logout;$('#btn-teacher').onclick=toggleTeacher;
   $('#btn-keys').onclick=()=>modal(`<h2 style="margin-top:0">⌨ 단축키 안내</h2><div class="kbd">
