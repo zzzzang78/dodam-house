@@ -1,0 +1,978 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>도담이네 집 짓기 · 교사용</title>
+<style>
+:root{--bg:#f6f4fb;--ink:#2f2b3a;--sub:#6f6a7d;--line:#e3dff0;--accent:#7e57c2;--accent2:#ff8a65;--ok:#3fae7a;--warn:#e8554e;--gold:#f5b82e}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;font-family:"Pretendard","Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;background:var(--bg);color:var(--ink);font-size:15px}
+button,input,select,textarea{font-family:inherit;font-size:inherit}button{cursor:pointer}
+header{display:flex;align-items:center;gap:12px;padding:10px 18px;background:#fff;border-bottom:2px solid var(--line);position:sticky;top:0;z-index:5}
+.logo{font-weight:900;font-size:18px;display:flex;align-items:center;gap:8px}.logo small{font-weight:700;color:#fff;background:var(--accent);border-radius:8px;padding:2px 8px;font-size:12px}
+nav{display:flex;gap:4px;margin-left:16px;flex-wrap:wrap}
+nav button{border:none;background:none;padding:8px 12px;border-radius:10px;font-weight:800;color:var(--sub)}
+nav button.on{background:var(--accent);color:#fff}
+#conn{margin-left:auto;font-size:13px;font-weight:700}
+main{padding:16px 20px 40px;max-width:1400px;margin:0 auto}
+.card{background:#fff;border:2px solid var(--line);border-radius:16px;padding:16px 18px;margin-bottom:14px}
+h2{margin:0 0 10px;font-size:20px}h3{margin:0 0 8px;font-size:16px}
+.btn{border:none;border-radius:10px;padding:8px 14px;font-weight:800;background:var(--accent);color:#fff;display:inline-flex;align-items:center;gap:5px;white-space:nowrap}
+.btn:hover{filter:brightness(1.07)}.btn:disabled{opacity:.4;cursor:not-allowed}
+.btn.ghost{background:#fff;color:var(--ink);border:2px solid var(--line)}.btn.orange{background:var(--accent2)}.btn.green{background:var(--ok)}.btn.red{background:var(--warn)}.btn.small{padding:5px 10px;font-size:13px}.btn.big{padding:12px 22px;font-size:16px}
+input[type=text],input[type=password],input[type=number],select{border:2px solid var(--line);border-radius:10px;padding:8px 10px;background:#fff}
+input:focus,select:focus{outline:none;border-color:var(--accent)}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.hint{color:var(--sub);font-size:13px;line-height:1.55}
+.steps{counter-reset:s;list-style:none;padding:0;margin:0}
+.steps li{counter-increment:s;position:relative;padding:10px 12px 10px 48px;border-bottom:1px dashed var(--line);line-height:1.6}
+.steps li::before{content:counter(s);position:absolute;left:8px;top:9px;width:28px;height:28px;border-radius:50%;background:var(--accent);color:#fff;font-weight:900;display:flex;align-items:center;justify-content:center}
+.code{background:#2f2b3a;color:#f8f8f2;border-radius:12px;padding:12px;font-family:Consolas,monospace;font-size:12px;max-height:180px;overflow:auto;white-space:pre}
+kbd{background:#f1eef8;border:1px solid #d9d2ea;border-bottom-width:3px;border-radius:6px;padding:1px 6px;font-family:inherit;font-weight:800;font-size:12.5px}
+.ok{color:var(--ok);font-weight:800}.bad{color:var(--warn);font-weight:800}
+.rooms{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px}
+.room{border:2px solid var(--line);border-radius:14px;padding:12px 14px;background:#fff}
+.room .code-big{font-size:30px;font-weight:900;letter-spacing:5px;color:var(--accent)}
+.room.closed{opacity:.6}
+.cls-pick{display:flex;flex-wrap:wrap;gap:6px}
+.cls-pick label{border:2px solid var(--line);border-radius:10px;padding:5px 10px;font-weight:800;cursor:pointer}
+.cls-pick input{display:none}.cls-pick label.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:12px}
+.stat{background:#fff;border:2px solid var(--line);border-radius:14px;padding:12px;text-align:center}.stat b{display:block;font-size:26px}.stat span{color:var(--sub);font-size:13px}
+table.tb{width:100%;border-collapse:collapse;background:#fff;font-size:13.5px}
+.tb th{background:#f1eef8;position:sticky;top:0;z-index:1;padding:7px 6px;font-size:12.5px}
+.tb td{border-top:1px solid var(--line);padding:6px;text-align:center}
+.tb td.l{text-align:left}.tb tr:hover td{background:#faf8ff}
+.st0{color:#cfc8e0}.st1{color:#e0a020}.st2{color:#e08a00}.st3{color:#d84315;font-weight:900}
+.dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:4px;background:#ccc}.dot.on{background:#3fae7a;box-shadow:0 0 0 3px #3fae7a33}
+.filters{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}
+.filters button{border:2px solid var(--line);background:#fff;border-radius:20px;padding:4px 12px;font-weight:800;font-size:13px}.filters button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.iconbtn{border:none;background:none;font-size:15px;padding:2px 4px}
+/* board */
+.bd{background:linear-gradient(#e8f3ff,#fff 68%,#c8e6c9 68%);border:2px solid var(--line);border-radius:18px;padding:18px;display:flex;gap:16px;align-items:flex-end;min-height:420px;overflow-x:auto}
+.hcol{flex:1;min-width:110px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:3px;font-size:15px}
+.hcol .medal{font-size:30px;font-weight:900}.hcol b{font-size:20px}.hcol small{color:var(--sub)}
+.hbar2{width:100%;height:10px;background:#eee;border-radius:6px;overflow:hidden}.hbar2 i{display:block;height:100%;background:linear-gradient(90deg,#ffcf6b,#ff8a65)}
+.board-grid{display:grid;grid-template-columns:1fr 360px;gap:14px}
+.trow{display:flex;align-items:center;gap:10px;padding:6px 8px;border-radius:10px;font-size:16px}.trow:nth-child(odd){background:#faf8ff}
+.trow .rk{width:28px;font-weight:900;color:var(--accent2);font-size:18px}.trow small{color:var(--sub)}.trow .x{margin-left:auto;font-weight:900}
+#board-wrap:fullscreen{background:#fff;padding:24px;overflow:auto}
+/* works */
+.works{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:12px}
+.work{background:#fff;border:2px solid var(--line);border-radius:14px;padding:12px;font-size:13px;line-height:1.5}
+.work canvas{width:100%;border-radius:10px;border:1px solid var(--line);background:#fdf8f1}
+.work h4{margin:6px 0 4px;font-size:16px}.work .q{color:#8a5a00;font-weight:800;font-size:12px;margin-top:4px}
+.empty{color:var(--sub);padding:20px;text-align:center}
+/* modal & toast */
+.modal-bg{position:fixed;inset:0;background:#2f2b3a77;z-index:900;display:flex;align-items:center;justify-content:center;padding:16px}
+.modal{background:#fff;border-radius:18px;padding:20px 22px;max-width:620px;width:100%;max-height:92vh;overflow:auto;position:relative}
+.modal.wide{max-width:1100px}.mclose{position:absolute;right:12px;top:10px;border:none;background:none;font-size:20px;color:var(--sub)}
+.m-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:14px}
+#toasts{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);z-index:2000;display:flex;flex-direction:column;gap:6px;align-items:center;pointer-events:none}
+.toast{background:var(--ink);color:#fff;padding:9px 16px;border-radius:12px;font-size:14px;font-weight:700;transition:.4s}.toast.good{background:var(--ok)}.toast.bad{background:var(--warn)}.toast.out{opacity:0}
+</style>
+</head>
+<body>
+<header><div class="logo"><span id="logo-svg"></span>도담이네 집 짓기 <small>교사용</small></div>
+<nav id="nav"><button data-tab="setup">① 연결 설정</button><button data-tab="rooms">② 방 관리</button><button data-tab="status">③ 진행 현황</button><button data-tab="board">④ 반 대항전</button><button data-tab="works">⑤ 결과물</button><button data-tab="coins">⑥ 칭찬 코인</button></nav>
+<span id="conn"></span></header>
+<main id="main"></main>
+<div id="toasts"></div>
+<script src="firebase-config.js"></script>
+<script>
+'use strict';
+/* ===================== 공통 유틸 ===================== */
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
+function josa(w,pair){
+  const base=String(w).replace(/\(.*?\)/g,'').trim();
+  const c=base.charCodeAt(base.length-1);
+  const has=(c>=0xAC00&&c<=0xD7A3)?((c-0xAC00)%28!==0):false;
+  const [a,b]=pair.split('/');
+  return base+(has?a:b);
+}
+
+/* ===================== STAGE 1·2 : 구역화 / 동선 ===================== */
+const ZONES={
+  personal:{name:'개인 생활 공간',color:'#9b8cf2',icon:'🛏️',desc:'학습·취침·휴식 등 개인의 독립된 활동을 하는 공간이에요.'},
+  common:{name:'공동생활 공간',color:'#ffb74d',icon:'🛋️',desc:'가족 구성원이 함께 생활하는 공간이에요.'},
+  hygiene:{name:'생리위생 공간',color:'#4fc3f7',icon:'🛁',desc:'목욕·배변 등 청결과 배설을 위한 공간이에요.'},
+  house:{name:'가사 작업 공간',color:'#81c784',icon:'🍳',desc:'조리·세탁 등 가사 활동이 이루어지는 공간이에요.'},
+  etc:{name:'기타 공간',color:'#bcaaa4',icon:'🚪',desc:'이동을 위한 연결 공간이나 수납 공간이에요.'}
+};
+const ROOMCARDS=[
+  {id:'living',name:'거실',zone:'common',size:'L'},
+  {id:'dining',name:'식사실',zone:'common',size:'M'},
+  {id:'kitchen',name:'부엌',zone:'house',size:'M'},
+  {id:'utility',name:'다용도실',zone:'house',size:'S'},
+  {id:'bed1',name:'침실1(안방)',zone:'personal',size:'M'},
+  {id:'bed2',name:'침실2(내 방)',zone:'personal',size:'M'},
+  {id:'bed3',name:'침실3(동생 방)',zone:'personal',size:'M'},
+  {id:'bath1',name:'욕실1',zone:'hygiene',size:'S'},
+  {id:'bath2',name:'욕실2',zone:'hygiene',size:'S'},
+  {id:'entry',name:'현관',zone:'etc',size:'S'}
+];
+const CARD=Object.fromEntries(ROOMCARDS.map(c=>[c.id,c]));
+CARD.hall={id:'hall',name:'복도',zone:'etc',size:'S',fixed:true};
+const SIZE_LABEL={S:'작은 공간',M:'보통 공간',L:'넓은 공간'};
+// 16 x 10 칸 평면 (1칸 = 1m), 위쪽 = 북, 아래쪽 = 남
+const SLOTS=[
+  {id:'A',x:0,y:0,w:2,h:4,size:'S'},
+  {id:'B',x:2,y:0,w:4,h:4,size:'M'},
+  {id:'C',x:6,y:0,w:4,h:4,size:'M'},
+  {id:'E',x:10,y:0,w:3,h:3,size:'S',door:true},
+  {id:'F',x:13,y:0,w:3,h:3,size:'S'},
+  {id:'K',x:10,y:3,w:6,h:1,size:'S',fixed:'hall'},
+  {id:'D',x:0,y:4,w:4,h:2,size:'S'},
+  {id:'G',x:0,y:6,w:4,h:4,size:'M'},
+  {id:'H',x:4,y:4,w:6,h:6,size:'L'},
+  {id:'I',x:10,y:4,w:3,h:6,size:'M'},
+  {id:'J',x:13,y:4,w:3,h:6,size:'M'}
+];
+const SLOT=Object.fromEntries(SLOTS.map(s=>[s.id,s]));
+const SOLUTION={A:'utility',B:'kitchen',C:'dining',D:'bath1',E:'entry',F:'bath2',G:'bed1',H:'living',I:'bed2',J:'bed3',K:'hall'};
+const BAD_LAYOUT={A:'bath1',B:'bed2',C:'bed1',D:'utility',E:'entry',F:'bath2',G:'kitchen',H:'living',I:'dining',J:'bed3',K:'hall'};
+
+function adjacent(a,b){
+  if(a.x+a.w===b.x||b.x+b.w===a.x){const ov=Math.min(a.y+a.h,b.y+b.h)-Math.max(a.y,b.y);if(ov>0)return true;}
+  if(a.y+a.h===b.y||b.y+b.h===a.y){const ov=Math.min(a.x+a.w,b.x+b.w)-Math.max(a.x,b.x);if(ov>0)return true;}
+  return false;
+}
+const ADJ={};SLOTS.forEach(a=>ADJ[a.id]=SLOTS.filter(b=>b!==a&&adjacent(a,b)).map(b=>b.id));
+const slotCenter=s=>[s.x+s.w/2,s.y+s.h/2];
+const isPrivate=c=>!!c&&CARD[c]&&(CARD[c].zone==='personal'||CARD[c].zone==='hygiene');
+
+function zoningRules(pl){
+  const where={};for(const s in pl)where[pl[s]]=SLOT[s];
+  const adj=(a,b)=>!!(where[a]&&where[b]&&adjacent(where[a],where[b]));
+  const beds=['bed1','bed2','bed3'],baths=['bath1','bath2'];
+  const sizeOk=ROOMCARDS.every(c=>{const s=where[c.id];if(!s)return false;if(c.size==='L')return s.size==='L';if(c.size==='M')return s.size!=='S';return true;});
+  return [
+    {ok:!!(where.entry&&where.entry.door),t:'현관은 현관문(🚪)이 있는 자리에',why:'현관은 집 안팎을 잇는 연결 공간이에요. 현관문이 있는 자리에 두어야 해요.',cards:['entry']},
+    {ok:!!(where.living&&where.living.id==='H'),t:'거실은 집의 중심, 남쪽에',why:'거실은 가족 모두가 쓰는 공간이에요. 다른 공간과 연결되기 쉬운 가운데, 밝고 따뜻한 남쪽(아래쪽)이 알맞아요.',cards:['living']},
+    {ok:adj('kitchen','dining'),t:'부엌과 식사실은 가깝게',why:'부엌과 식사실이 멀면 음식을 나르는 동선이 길어져요!',cards:['kitchen','dining']},
+    {ok:adj('kitchen','utility'),t:'부엌과 다용도실은 가깝게',why:'요리·세탁 같은 가사 작업이 이어지도록 다용도실을 부엌 옆에 두면 동선이 줄어요.',cards:['kitchen','utility']},
+    {ok:adj('dining','living'),t:'식사실은 거실과 이어지게',why:'식사실과 거실은 둘 다 공동생활 공간이라 가까이 두면 가족이 함께하기 좋아요.',cards:['dining','living']},
+    {ok:beds.every(b=>where[b]&&!adj(b,'entry')),t:'침실은 조용하고 독립된 곳에 (현관 옆 피하기)',why:'침실은 개인의 독립된 생활이 보장되어야 해요. 사람이 드나드는 현관 바로 옆은 시끄러워요.',cards:beds},
+    {ok:baths.some(b=>beds.some(bd=>adj(b,bd))),t:'욕실은 침실 가까이',why:'자주 쓰는 욕실을 침실 가까이 두면 동선이 짧아져요.',cards:baths},
+    {ok:sizeOk,t:'넓은 공간이 필요한 곳은 넓은 자리에',why:'거실은 가장 넓은 자리, 침실·부엌·식사실은 보통 이상의 자리가 필요해요.',cards:[]}
+  ];
+}
+
+const PEN=8;
+function dijkstra(lay,src,dst){
+  if(src===dst)return{nodes:[src],dist:0,cross:0,cost:0};
+  const dist={},prev={},done={};SLOTS.forEach(s=>dist[s.id]=Infinity);dist[src]=0;
+  for(;;){
+    let u=null;for(const k in dist)if(!done[k]&&dist[k]<Infinity&&(u===null||dist[k]<dist[u]))u=k;
+    if(u===null||u===dst)break;done[u]=1;
+    for(const v of ADJ[u]){
+      const [x1,y1]=slotCenter(SLOT[u]),[x2,y2]=slotCenter(SLOT[v]);
+      let c=Math.hypot(x2-x1,y2-y1);if(v!==dst&&isPrivate(lay[v]))c+=PEN;
+      if(dist[u]+c<dist[v]){dist[v]=dist[u]+c;prev[v]=u;}
+    }
+  }
+  const nodes=[dst];while(nodes[0]!==src)nodes.unshift(prev[nodes[0]]);
+  let d=0,cr=0;
+  for(let i=1;i<nodes.length;i++){const [x1,y1]=slotCenter(SLOT[nodes[i-1]]),[x2,y2]=slotCenter(SLOT[nodes[i]]);d+=Math.hypot(x2-x1,y2-y1);if(i<nodes.length-1&&isPrivate(lay[nodes[i]]))cr++;}
+  return{nodes,dist:d,cross:cr,cost:dist[dst]};
+}
+const ROUTINES=[
+  {who:'엄마',emoji:'👩',color:'#e5737a',name:'아침 준비',seq:['bed1','BATH','kitchen','dining'],desc:'안방 → 욕실 → 부엌 → 식사실'},
+  {who:'나',emoji:'🧒',color:'#5c9ded',name:'등교 준비',seq:['bed2','BATH','dining','entry'],desc:'내 방 → 욕실 → 식사실 → 현관'},
+  {who:'아빠',emoji:'👨',color:'#3fae7a',name:'장 보고 저녁 준비',seq:['entry','kitchen','utility','kitchen','dining'],desc:'현관 → 부엌 → 다용도실 → 부엌 → 식사실'},
+  {who:'동생',emoji:'👧',color:'#ab7be0',name:'씻고 숙제하기',seq:['bed3','BATH','bed3'],desc:'동생 방 → 욕실 → 동생 방'}
+];
+function computeRoutes(lay){
+  const where={};for(const k in lay)where[lay[k]]=k;
+  const routes=[];let total=0,cross=0;
+  for(const r of ROUTINES){
+    let cur=where[r.seq[0]];const path=[cur];let dist=0,cr=0;
+    for(let i=1;i<r.seq.length;i++){
+      let p;
+      if(r.seq[i]==='BATH'){const p1=dijkstra(lay,cur,where.bath1),p2=dijkstra(lay,cur,where.bath2);p=p1.cost<=p2.cost?p1:p2;}
+      else p=dijkstra(lay,cur,where[r.seq[i]]);
+      path.push(...p.nodes.slice(1));dist+=p.dist;cr+=p.cross;cur=p.nodes[p.nodes.length-1];
+    }
+    routes.push({r,path,dist,cross:cr});total+=dist;cross+=cr;
+  }
+  return{routes,total,cross,score:total+6*cross};
+}
+function permutations(a){if(a.length<=1)return[a.slice()];const out=[];a.forEach((x,i)=>{permutations(a.slice(0,i).concat(a.slice(i+1))).forEach(p=>out.push([x].concat(p)));});return out;}
+function bestLayout(){
+  const sm=['A','D','F'],md=['B','C','G','I','J'];
+  const smC=['utility','bath1','bath2'],mdC=['kitchen','dining','bed1','bed2','bed3'];
+  let best=null;
+  for(const ps of permutations(smC))for(const pm of permutations(mdC)){
+    const lay={E:'entry',H:'living',K:'hall'};sm.forEach((s,i)=>lay[s]=ps[i]);md.forEach((s,i)=>lay[s]=pm[i]);
+    const m=computeRoutes(lay);if(!best||m.score<best.score)best={lay,score:m.score,m};
+  }
+  return best;
+}
+function flowChecks(lay,opt){
+  const where={};for(const k in lay)where[lay[k]]=k;
+  const adj=(a,b)=>adjacent(SLOT[where[a]],SLOT[where[b]]);
+  const m=computeRoutes(lay);
+  const bathDist=['bed1','bed2','bed3'].map(b=>Math.min(dijkstra(lay,where[b],where.bath1).dist,dijkstra(lay,where[b],where.bath2).dist));
+  const shop=m.routes[2].dist,optShop=opt.m.routes[2].dist;
+  return[
+    {ok:adj('kitchen','dining')&&adj('kitchen','utility'),t:'관련 있는 공간은 가까이',why:'부엌–식사실, 부엌–다용도실을 붙여 보세요.'},
+    {ok:bathDist.every(d=>d<=7),t:'자주 쓰는 공간은 가까이',why:'침실에서 욕실까지 가는 길이 너무 멀어요.'},
+    {ok:m.cross===0,t:'동선이 겹치지 않게 (남의 방·욕실 지나가지 않기)',why:'다른 사람의 방이나 욕실을 지나가야 하는 동선이 있어요.'},
+    {ok:shop<=optShop*1.15+0.01,t:'작업 순서에 맞게 (현관→부엌→다용도실)',why:'장 본 물건을 부엌·다용도실로 옮기는 길이 길어요.'}
+  ];
+}
+
+/* ===================== 가구 데이터 ===================== */
+const CHECKLIST=[
+  {k:'fn',i:'🎯',t:'사용 목적에 맞는 기능',d:'내가 쓰려는 목적에 필요한 기능을 갖추었나?'},
+  {k:'safe',i:'🛡️',t:'견고하고 안전한가',d:'튼튼하고, 모서리·재질 등이 안전한가?'},
+  {k:'easy',i:'🙌',t:'사용하기 편리한가',d:'내 몸 크기와 공간에 맞고 쓰기 편한가?'},
+  {k:'pretty',i:'🎨',t:'아름다운가',d:'디자인과 색이 내 공간과 어울리나?'},
+  {k:'care',i:'🧽',t:'유지와 관리가 쉬운가',d:'청소·관리가 쉽고 오래 쓸 수 있나?'},
+  {k:'price',i:'💰',t:'가격이 적절한가',d:'예산 안에서 품질에 맞는 가격인가?'}
+];
+/* 가구 제품: g=종류, d=특징, p=가격(만 원), shape=3D 모양 */
+const FURN={
+  /* ---- 휴식용 ---- */
+  bed:{name:'침대(싱글)',g:'침대',cat:'rest',w:100,h:200,z:45,icon:'🛏️',color:'#8fb3e8',big:true,clr:{sides:50},shape:'bed',p:25,d:'기본 1인용 침대'},
+  sbed:{name:'침대(슈퍼싱글)',g:'침대',cat:'rest',w:110,h:200,z:45,icon:'🛏️',color:'#a3a9ec',big:true,clr:{sides:50},shape:'bed',p:32,d:'싱글보다 조금 넓은 1인용'},
+  qbed:{name:'침대(퀸)',g:'침대',cat:'rest',w:150,h:200,z:45,icon:'🛏️',color:'#b39ddb',big:true,clr:{sides:50},shape:'bed',p:55,d:'2인용 넓은 침대, 좁은 방엔 부담'},
+  stbed:{name:'수납형 침대(서랍)',g:'침대',cat:'rest',w:100,h:200,z:48,icon:'🛏️',color:'#90caf9',big:true,clr:{sides:50},shape:'bed',p:35,d:'침대 밑 서랍으로 입체적 수납'},
+  lowbed:{name:'저상형 침대',g:'침대',cat:'rest',w:110,h:200,z:28,icon:'🛏️',color:'#c5cae9',big:true,clr:{sides:50},shape:'bed',p:22,d:'낮아서 방이 넓어 보여요'},
+  bunk:{name:'벙커침대(간이 2층)',g:'침대',cat:'rest',w:100,h:200,z:170,icon:'🪜',color:'#c9b2e8',big:true,tall:true,clr:{front:60},shape:'bunk',p:48,d:'아래는 책상·수납, 위는 잠자는 곳'},
+  sofabed:{name:'소파베드',g:'침대',cat:'rest',w:180,h:90,z:80,icon:'🛋️',color:'#a5d6a7',big:true,clr:{front:60},shape:'sofa',p:38,d:'낮엔 소파, 밤엔 침대 (다기능)'},
+  fmat:{name:'접이식 매트리스',g:'침대',cat:'rest',w:90,h:190,z:15,icon:'🛌',color:'#cfd8dc',clr:{sides:40},shape:'box',p:12,d:'접어서 보관 (접이식)'},
+  sofa:{name:'소파(2인)',g:'소파·의자',cat:'rest',w:160,h:80,z:80,icon:'🛋️',color:'#9ccc9c',big:true,clr:{front:50},shape:'sofa',p:40,d:'친구와 함께 앉는 소파'},
+  armchair:{name:'안락의자',g:'소파·의자',cat:'rest',w:80,h:80,z:85,icon:'💺',color:'#b6d7a8',shape:'arm',p:20,d:'혼자 푹 쉬는 1인 의자'},
+  recliner:{name:'리클라이너',g:'소파·의자',cat:'rest',w:90,h:100,z:100,icon:'💺',color:'#8d9db6',clr:{front:50},shape:'arm',p:45,d:'등받이가 뒤로 젖혀져요'},
+  floorchair:{name:'좌식 의자',g:'소파·의자',cat:'rest',w:50,h:55,z:45,icon:'🪑',color:'#ffcc80',shape:'chair',p:5,d:'바닥에 앉는 등받이 의자'},
+  beanbag:{name:'빈백',g:'소파·의자',cat:'rest',w:80,h:80,z:60,icon:'🫘',color:'#ffcc80',shape:'box',p:9,d:'가볍고 옮기기 쉬운 쿠션 의자'},
+  tent:{name:'홈캠핑 텐트',g:'아늑한 공간',cat:'rest',w:150,h:150,z:130,icon:'⛺',color:'#f6d6a8',clr:{front:50},shape:'tent',p:15,d:'방 안의 작은 캠핑장'},
+  /* ---- 작업용 ---- */
+  desk:{name:'책상(기본)',g:'책상·테이블',cat:'work',w:120,h:60,z:75,icon:'🖥️',color:'#f2c48d',clr:{front:60,allowChair:true},shape:'desk',p:15,d:'가장 기본적인 학생 책상'},
+  wdesk:{name:'넓은 책상',g:'책상·테이블',cat:'work',w:160,h:70,z:75,icon:'🖥️',color:'#e6b47c',clr:{front:60,allowChair:true},shape:'desk',p:25,d:'모니터·책을 함께 펼치기 좋아요'},
+  hdesk:{name:'높이 조절 책상',g:'책상·테이블',cat:'work',w:120,h:70,z:75,icon:'↕️',color:'#ffe0b2',clr:{front:60,allowChair:true},shape:'desk',p:30,d:'키가 자라도 높이를 맞춰요'},
+  gdesk:{name:'게이밍 책상',g:'책상·테이블',cat:'work',w:140,h:70,z:75,icon:'🎮',color:'#90a4ae',clr:{front:60,allowChair:true},shape:'desk',p:28,d:'넓고 튼튼한 게임용 책상'},
+  lowdesk:{name:'좌식 책상',g:'책상·테이블',cat:'work',w:90,h:50,z:35,icon:'📖',color:'#d7b98e',clr:{front:50,allowChair:true},shape:'desk',p:6,d:'바닥에 앉아 쓰는 낮은 책상'},
+  ftable:{name:'접이식 테이블',g:'책상·테이블',cat:'work',w:80,h:60,z:72,icon:'📐',color:'#e8d39a',clr:{front:50,allowChair:true},shape:'desk',p:7,d:'안 쓸 땐 접어서 보관'},
+  wfdesk:{name:'벽걸이 접이식 책상',g:'책상·테이블',cat:'work',w:80,h:40,z:75,icon:'📐',color:'#f5deb3',clr:{front:60,allowChair:true},shape:'desk',p:9,d:'벽에 붙여 접었다 폈다 (붙박이식·접이식)'},
+  vanity:{name:'화장대',g:'책상·테이블',cat:'work',w:80,h:40,z:140,icon:'💄',color:'#f8bbd0',clr:{front:50,allowChair:true},shape:'desk',p:18,d:'거울이 달린 단장용 테이블'},
+  chair:{name:'의자(기본)',g:'의자',cat:'work',w:50,h:50,z:85,icon:'🪑',color:'#f29d7e',shape:'chair',p:4,d:'기본 학생 의자'},
+  hchair:{name:'높이 조절 의자',g:'의자',cat:'work',w:55,h:55,z:95,icon:'🪑',color:'#ef9a9a',shape:'chair',p:12,d:'바른 자세를 돕는 학생용 의자'},
+  gchair:{name:'게이밍 의자',g:'의자',cat:'work',w:65,h:65,z:125,icon:'🪑',color:'#e57373',shape:'chair',p:20,d:'등받이가 높고 푹신해요'},
+  stoolc:{name:'스툴 의자',g:'의자',cat:'work',w:35,h:35,z:45,icon:'🪑',color:'#bcaaa4',shape:'box',p:2,d:'등받이 없는 작은 의자'},
+  /* ---- 수납용 ---- */
+  wardrobe:{name:'옷장(2문)',g:'옷장·행거',cat:'store',w:90,h:60,z:200,icon:'👕',color:'#d9b48f',big:true,tall:true,clr:{front:60},shape:'box',p:25,d:'기본 문 2개 옷장'},
+  wardrobe3:{name:'옷장(3문)',g:'옷장·행거',cat:'store',w:120,h:60,z:200,icon:'👕',color:'#c8a27c',big:true,tall:true,clr:{front:60},shape:'box',p:35,d:'옷이 많을 때 넉넉한 옷장'},
+  builtin:{name:'붙박이장',g:'옷장·행거',cat:'store',w:180,h:60,z:230,icon:'🧱',color:'#e0d3c0',big:true,tall:true,clr:{front:60},shape:'box',p:90,d:'벽에 고정된 큰 수납장 (붙박이식)'},
+  hanger:{name:'행거',g:'옷장·행거',cat:'store',w:100,h:45,z:170,icon:'🧥',color:'#b0bec5',big:true,tall:true,clr:{front:50},shape:'hanger',p:5,d:'저렴하지만 옷이 그대로 보여요'},
+  bookshelf:{name:'책장(5단)',g:'책장·선반',cat:'store',w:80,h:30,z:180,icon:'📚',color:'#c99b6d',big:true,tall:true,clr:{front:50},shape:'box',p:10,d:'책을 많이 꽂는 높은 책장'},
+  shelf3:{name:'책장(3단)',g:'책장·선반',cat:'store',w:80,h:30,z:110,icon:'📚',color:'#d4a373',big:true,clr:{front:50},shape:'box',p:7,d:'낮아서 창 아래에도 OK'},
+  slideshelf:{name:'슬라이딩 책장',g:'책장·선반',cat:'store',w:120,h:45,z:200,icon:'📚',color:'#b08968',big:true,tall:true,clr:{front:50},shape:'box',p:40,d:'앞 책장이 옆으로 움직이는 2중 책장'},
+  figure:{name:'피규어 장식장',g:'책장·선반',cat:'store',w:80,h:35,z:180,icon:'🧸',color:'#f0a8c0',big:true,tall:true,clr:{front:50},shape:'box',p:20,d:'좋아하는 것을 보이게 수납'},
+  wshelf:{name:'벽 선반',g:'책장·선반',cat:'store',w:80,h:20,z:150,zb:130,icon:'🪵',color:'#a1887f',float:true,shape:'box',p:3,d:'벽에 달아 바닥을 차지하지 않아요'},
+  drawer:{name:'서랍장',g:'서랍·수납장',cat:'store',w:80,h:45,z:90,icon:'🗄️',color:'#e0c3a0',big:true,clr:{front:50},shape:'box',p:15,d:'옷·소품을 나눠 넣는 서랍'},
+  ldrawer:{name:'낮은 서랍장',g:'서랍·수납장',cat:'store',w:100,h:45,z:65,icon:'🗄️',color:'#d7ccc8',big:true,clr:{front:50},shape:'box',p:13,d:'위에 소품을 올리기 좋아요'},
+  cabinet:{name:'수납장',g:'서랍·수납장',cat:'store',w:80,h:40,z:80,icon:'📦',color:'#d6c7b0',clr:{front:50},shape:'box',p:9,d:'문 달린 다용도 수납장'},
+  side:{name:'협탁',g:'서랍·수납장',cat:'store',w:45,h:40,z:50,icon:'🕯️',color:'#e6cfa8',shape:'box',p:5,d:'침대 옆 작은 탁자'},
+  cart:{name:'이동식 수납 카트',g:'서랍·수납장',cat:'store',w:40,h:30,z:80,icon:'🛒',color:'#9fd8cf',shape:'box',p:3,d:'바퀴가 달려 옮기기 쉬워요 (이동식)'},
+  stool:{name:'수납 스툴',g:'서랍·수납장',cat:'store',w:40,h:40,z:42,icon:'🧺',color:'#b5a08a',shape:'box',p:4,d:'의자 + 수납함 (다기능)'},
+  cornerS:{name:'코너 수납장',g:'서랍·수납장',cat:'store',w:40,h:40,z:120,icon:'📐',color:'#bcaaa4',shape:'box',p:6,d:'모서리 공간 활용'},
+  /* ---- 취미·운동 ---- */
+  bike:{name:'실내 자전거',g:'운동',cat:'hobby',w:60,h:120,z:110,icon:'🚲',color:'#90a4ae',shape:'bike',p:20,d:'방 안에서 하는 유산소 운동'},
+  yoga:{name:'요가 매트',g:'운동',cat:'hobby',w:60,h:180,z:1,icon:'🧘',color:'#b2dfdb',rug:true,shape:'rug',p:2,d:'스트레칭·홈트용 매트'},
+  bench:{name:'운동 벤치',g:'운동',cat:'hobby',w:50,h:120,z:45,icon:'🏋️',color:'#78909c',shape:'box',p:12,d:'근력 운동용 벤치'},
+  piano:{name:'전자 피아노',g:'음악·미술',cat:'hobby',w:140,h:40,z:80,icon:'🎹',color:'#5d4037',big:true,clr:{front:60},shape:'box',p:50,d:'건반 악기 연습'},
+  easel:{name:'이젤',g:'음악·미술',cat:'hobby',w:60,h:60,z:160,icon:'🎨',color:'#d7b98e',clr:{front:50},shape:'lamp',p:4,d:'그림 그리기'},
+  tv:{name:'TV·모니터 거치대',g:'영상·게임',cat:'hobby',w:120,h:40,z:60,icon:'📺',color:'#90a4ae',clr:{front:80},shape:'tv',p:20,d:'영화·게임용 화면'},
+  cattower:{name:'캣타워',g:'반려동물',cat:'hobby',w:50,h:50,z:150,icon:'🐱',color:'#d7ccc8',tall:true,shape:'box',p:8,d:'고양이 놀이·휴식 공간'},
+  pethouse:{name:'반려동물 집',g:'반려동물',cat:'hobby',w:60,h:50,z:50,icon:'🐾',color:'#d7ccc8',shape:'box',p:6,d:'반려동물의 쉼터'},
+  /* ---- 소품 ---- */
+  rug:{name:'러그(직사각)',g:'러그',cat:'deco',w:140,h:200,z:1,icon:'',color:'#f3d9e6',rug:true,shape:'rug',p:6,d:'공간을 구분하고 아늑하게'},
+  rrug:{name:'원형 러그',g:'러그',cat:'deco',w:120,h:120,z:1,icon:'',color:'#e1f5fe',rug:true,round:true,shape:'rug',p:5,d:'포인트가 되는 둥근 러그'},
+  plant:{name:'화분(소)',g:'식물',cat:'deco',w:40,h:40,z:90,icon:'🪴',color:'#8bc34a',shape:'plant',p:2,d:'작은 초록 식물'},
+  bplant:{name:'큰 화분',g:'식물',cat:'deco',w:55,h:55,z:150,icon:'🌳',color:'#66bb6a',shape:'plant',p:6,d:'공간을 싱그럽게'},
+  lamp:{name:'무드등·스탠드',g:'조명',cat:'deco',w:30,h:30,z:145,icon:'💡',color:'#fff176',shape:'lamp',p:3,d:'따뜻한 분위기 조명'},
+  flamp:{name:'플로어 장스탠드',g:'조명',cat:'deco',w:40,h:40,z:170,icon:'💡',color:'#ffe082',shape:'lamp',p:6,d:'키 큰 바닥 조명'},
+  mirror:{name:'전신 거울',g:'기타',cat:'deco',w:50,h:25,z:160,icon:'🪞',color:'#cfe8f5',shape:'box',p:4,d:'전신을 비추는 거울'},
+  purifier:{name:'공기청정기',g:'기타',cat:'deco',w:35,h:35,z:70,icon:'🌬️',color:'#eceff1',shape:'box',p:15,d:'깨끗한 공기'},
+  /* ---- ✨ 특별 가구 (상점에서 코인으로 구입) ---- */
+  canopy:{name:'캐노피 침대',g:'✨ 특별 가구',cat:'rest',w:110,h:210,z:45,icon:'👸',color:'#f8bbd0',big:true,clr:{sides:50},shape:'canopy',p:60,prem:150,d:'커튼이 드리운 공주님 침대'},
+  hammock:{name:'해먹 의자',g:'✨ 특별 가구',cat:'rest',w:80,h:80,z:150,icon:'🪢',color:'#ffe082',shape:'lamp',p:15,prem:90,d:'흔들흔들 매달린 의자'},
+  aquarium:{name:'수족관',g:'✨ 특별 가구',cat:'hobby',w:90,h:40,z:130,icon:'🐠',color:'#81d4fa',clr:{front:50},shape:'box',p:40,prem:120,d:'물고기가 헤엄치는 큰 어항'},
+  arcade:{name:'오락기',g:'✨ 특별 가구',cat:'hobby',w:70,h:70,z:170,icon:'🕹️',color:'#7e57c2',tall:true,clr:{front:60},shape:'box',p:80,prem:140,d:'추억의 오락실 게임기'},
+  fridge:{name:'미니 냉장고',g:'✨ 특별 가구',cat:'hobby',w:50,h:50,z:85,icon:'🧃',color:'#eceff1',clr:{front:50},shape:'box',p:20,prem:70,d:'시원한 음료를 내 방에'},
+  starlamp:{name:'별빛 무드등',g:'✨ 특별 가구',cat:'deco',w:30,h:30,z:40,icon:'✨',color:'#b39ddb',shape:'lamp',p:4,prem:40,d:'천장에 별이 반짝반짝'},
+  neon:{name:'네온사인',g:'✨ 특별 가구',cat:'deco',w:80,h:10,z:170,zb:140,icon:'💜',color:'#ea80fc',float:true,shape:'box',p:6,prem:50,d:'벽에 거는 반짝이는 글씨'},
+  ballpit:{name:'볼풀',g:'✨ 특별 가구',cat:'rest',w:120,h:120,z:40,icon:'🔴',color:'#ff8a80',shape:'box',p:15,prem:100,d:'알록달록 공이 가득'},
+  curtain:{name:'공간 분리 커튼',g:'기타',cat:'deco',w:150,h:10,z:220,icon:'🎐',color:'#f8bbd0',float:true,shape:'box',p:4,d:'공간을 구분해요 (지나갈 수 있어요)'}
+};
+const FCAT={store:{name:'수납용',icon:'📦'},work:{name:'작업용',icon:'✏️'},rest:{name:'휴식용',icon:'😴'},hobby:{name:'취미',icon:'🎮'},deco:{name:'소품',icon:'🌿'}};
+const shortName=t=>FURN[t].name.replace(/\(.*?\)/g,'').trim();
+
+/* ===================== 방 편집기 기하 ===================== */
+const FRONT=[[0,1],[-1,0],[0,-1],[1,0]];
+function effDims(it){const f=FURN[it.type];return it.rot%2?[f.h,f.w]:[f.w,f.h];}
+function rectOf(it){const[w,h]=effDims(it);return{x:it.x,y:it.y,w,h};}
+function inter(a,b){return a.x<b.x+b.w-0.5&&b.x<a.x+a.w-0.5&&a.y<b.y+b.h-0.5&&b.y<a.y+a.h-0.5;}
+function inside(a,room){return a.x>=-0.5&&a.y>=-0.5&&a.x+a.w<=room.W+0.5&&a.y+a.h<=room.H+0.5;}
+function wallLen(room,wall){return(wall==='top'||wall==='bottom')?room.W:room.H;}
+function wallStrip(room,wall,pos,len,depth){
+  switch(wall){
+    case'top':return{x:pos,y:0,w:len,h:depth};
+    case'bottom':return{x:pos,y:room.H-depth,w:len,h:depth};
+    case'left':return{x:0,y:pos,w:depth,h:len};
+    default:return{x:room.W-depth,y:pos,w:depth,h:len};
+  }
+}
+function wallInfo(room,wall){
+  switch(wall){
+    case'top':return{p:[0,0],u:[1,0],n:[0,1]};
+    case'bottom':return{p:[0,room.H],u:[1,0],n:[0,-1]};
+    case'left':return{p:[0,0],u:[0,1],n:[1,0]};
+    default:return{p:[room.W,0],u:[0,1],n:[-1,0]};
+  }
+}
+function sideZone(r,dir,d){
+  if(dir[0]===1)return{x:r.x+r.w,y:r.y,w:d,h:r.h};
+  if(dir[0]===-1)return{x:r.x-d,y:r.y,w:d,h:r.h};
+  if(dir[1]===1)return{x:r.x,y:r.y+r.h,w:r.w,h:d};
+  return{x:r.x,y:r.y-d,w:r.w,h:d};
+}
+function useZones(it,r){
+  const c=FURN[it.type].clr;if(!c)return null;const f=FRONT[it.rot];
+  if(c.front)return{zones:[sideZone(r,f,c.front)],depth:c.front,allowChair:!!c.allowChair};
+  return{zones:[sideZone(r,[-f[1],f[0]],c.sides),sideZone(r,[f[1],-f[0]],c.sides)],depth:c.sides,any:true};
+}
+const RULE_KINDS={
+  overlap:{t:'가구끼리 겹치지 않게',icon:'🧱'},
+  door:{t:'문을 여닫을 때 방해되지 않게',icon:'🚪'},
+  window:{t:'창의 채광·통풍을 막지 않게',icon:'🪟'},
+  outlet:{t:'스위치·콘센트를 가리지 않게',icon:'🔌'},
+  wall:{t:'큰 가구는 벽면에 붙여서',icon:'📐'},
+  space:{t:'가구 사용 공간을 충분히',icon:'↔️'},
+  path:{t:'동선을 고려해서 (길이 막히지 않게)',icon:'👣'}
+};
+function analyze(room,items){
+  const W=[];const solid=items.filter(i=>!FURN[i.type].rug&&!FURN[i.type].float);
+  const R=new Map(items.map(i=>[i.id,rectOf(i)]));
+  const nm=i=>shortName(i.type);
+  for(let a=0;a<solid.length;a++)for(let b=a+1;b<solid.length;b++){
+    if(inter(R.get(solid[a].id),R.get(solid[b].id)))W.push({k:'overlap',ids:[solid[a].id,solid[b].id],msg:`${josa(nm(solid[a]),'과/와')} ${josa(nm(solid[b]),'이/가')} 겹쳐 있어요.`});
+  }
+  const dz=wallStrip(room,room.door.wall,room.door.pos,room.door.width,room.door.width);
+  solid.forEach(i=>{if(inter(R.get(i.id),dz))W.push({k:'door',ids:[i.id],msg:`${josa(nm(i),'이/가')} 문이 열리는 자리를 막고 있어요.`,zone:dz});});
+  room.windows.forEach(w=>{const z=wallStrip(room,w.wall,w.pos,w.width,25);solid.forEach(i=>{if(FURN[i.type].tall&&inter(R.get(i.id),z))W.push({k:'window',ids:[i.id],msg:`키 큰 ${josa(nm(i),'이/가')} 창을 가려 햇빛과 바람을 막아요.`,zone:z});});});
+  [...room.outlets.map(o=>({...o,label:'콘센트'})),...room.switches.map(o=>({...o,label:'스위치'}))].forEach(o=>{
+    const z=wallStrip(room,o.wall,o.pos-8,16,20);
+    solid.forEach(i=>{if(FURN[i.type].tall&&inter(R.get(i.id),z))W.push({k:'outlet',ids:[i.id],msg:`${josa(nm(i),'이/가')} ${josa(o.label,'을/를')} 가리고 있어요.`,zone:z});});
+  });
+  solid.forEach(i=>{if(!FURN[i.type].big)return;const r=R.get(i.id);const t=r.x<=1||r.y<=1||r.x+r.w>=room.W-1||r.y+r.h>=room.H-1;if(!t)W.push({k:'wall',ids:[i.id],msg:`큰 가구인 ${josa(nm(i),'은/는')} 벽면에 붙여야 공간이 넓어져요.`});});
+  const blocked=(zone,self,allowChair)=>!inside(zone,room)||solid.some(o=>o.id!==self.id&&!(allowChair&&o.type==='chair')&&inter(R.get(o.id),zone));
+  const targets=[];
+  solid.forEach(i=>{const u=useZones(i,R.get(i.id));if(!u)return;const ok=u.zones.filter(z=>!blocked(z,i,u.allowChair));
+    if(!ok.length)W.push({k:'space',ids:[i.id],msg:`${nm(i)} ${u.any?'옆':'앞'}에 사용 공간(${u.depth}cm)이 부족해요.`,zone:u.zones[0]});
+    else targets.push({it:i,zones:ok});});
+  const rc=reach(room,solid,R,targets);
+  if(rc.startBlocked)W.push({k:'path',ids:[],msg:'문 앞이 막혀서 방에 들어올 수 없어요!'});
+  else rc.unreached.forEach(t=>W.push({k:'path',ids:[t.it.id],msg:`문에서 ${nm(t.it)}까지 가는 길이 막혔어요.`}));
+  return{warnings:W,paths:rc.paths};
+}
+function reach(room,solid,R,targets){
+  const G=10,nx=Math.ceil(room.W/G),ny=Math.ceil(room.H/G),M=20;
+  const obs=solid.filter(i=>i.type!=='chair').map(i=>R.get(i.id));
+  const bl=new Uint8Array(nx*ny);
+  for(let j=0;j<ny;j++)for(let i=0;i<nx;i++){
+    const cx=i*G+G/2,cy=j*G+G/2;let b=cx<15||cy<15||cx>room.W-15||cy>room.H-15;
+    if(!b)for(const r of obs){if(cx>r.x-M&&cx<r.x+r.w+M&&cy>r.y-M&&cy<r.y+r.h+M){b=true;break;}}
+    bl[j*nx+i]=b?1:0;
+  }
+  const d=room.door,wi=wallInfo(room,d.wall);
+  const mid=d.pos+d.width/2;
+  const sx=wi.p[0]+wi.u[0]*mid+wi.n[0]*35,sy=wi.p[1]+wi.u[1]*mid+wi.n[1]*35;
+  let start=-1,bestD=1e9;
+  for(let j=0;j<ny;j++)for(let i=0;i<nx;i++){if(bl[j*nx+i])continue;const dd=Math.hypot(i*G+5-sx,j*G+5-sy);if(dd<=32&&dd<bestD){bestD=dd;start=j*nx+i;}}
+  if(start<0)return{startBlocked:true,unreached:targets,paths:[]};
+  const prev=new Int32Array(nx*ny).fill(-2);prev[start]=-1;const q=[start];
+  while(q.length){const c=q.shift();const ci=c%nx,cj=(c-ci)/nx;
+    for(const[dx,dy]of[[1,0],[-1,0],[0,1],[0,-1]]){const a=ci+dx,b=cj+dy;if(a<0||b<0||a>=nx||b>=ny)continue;const n=b*nx+a;if(bl[n]||prev[n]!==-2)continue;prev[n]=c;q.push(n);}}
+  const unreached=[],paths=[];
+  for(const t of targets){
+    let hit=-1,hitLen=1e9;
+    for(const z of t.zones)for(let j=Math.floor(z.y/G);j<Math.ceil((z.y+z.h)/G);j++)for(let i=Math.floor(z.x/G);i<Math.ceil((z.x+z.w)/G);i++){
+      if(i<0||j<0||i>=nx||j>=ny)continue;const n=j*nx+i;const cx=i*G+5,cy=j*G+5;
+      if(cx<z.x||cx>z.x+z.w||cy<z.y||cy>z.y+z.h)continue;
+      if(prev[n]!==-2){let len=0,k=n;while(k!==start&&len<5000){k=prev[k];len++;}if(len<hitLen){hitLen=len;hit=n;}}
+    }
+    if(hit<0){unreached.push(t);continue;}
+    const pts=[];let k=hit;while(k!==-1){const i=k%nx,j=(k-i)/nx;pts.unshift([i*G+5,j*G+5]);k=prev[k];}
+    paths.push({id:t.it.id,pts:simplify(pts)});
+  }
+  return{startBlocked:false,unreached,paths};
+}
+function simplify(p){if(p.length<3)return p;const o=[p[0]];for(let i=1;i<p.length-1;i++){const a=o[o.length-1],b=p[i],c=p[i+1];if((b[0]-a[0])*(c[1]-b[1])!==(b[1]-a[1])*(c[0]-b[0]))o.push(b);}o.push(p[p.length-1]);return o;}
+
+function makeRoom(W,H,doorWall,winWall){
+  const room={W,H,door:{wall:doorWall,pos:30,width:90},windows:[],outlets:[],switches:[],floor:'wood',wall:'#f6efe6',light:'warm'};
+  const wl=wallLen(room,winWall);
+  room.windows.push({wall:winWall,pos:winWall===doorWall?Math.max(140,wl-160):Math.round((wl-120)/2/10)*10,width:120});
+  const others=['left','right','top','bottom'].filter(w=>w!==doorWall&&w!==winWall);
+  const ow=others[0]||'left';room.outlets.push({wall:ow,pos:Math.round(wallLen(room,ow)*0.6/10)*10});
+  room.switches.push({wall:doorWall,pos:135});
+  return room;
+}
+
+/* ===================== 4단계 미션 방 ===================== */
+function mission4Room(){const r=makeRoom(300,330,'bottom','top');r.windows=[{wall:'top',pos:100,width:120}];r.outlets=[{wall:'left',pos:250}];r.switches=[{wall:'bottom',pos:135}];return r;}
+const MISSION4_START=[
+  {id:'m1',type:'wardrobe',x:110,y:0,rot:0},
+  {id:'m2',type:'bed',x:100,y:90,rot:0},
+  {id:'m3',type:'bookshelf',x:0,y:210,rot:3},
+  {id:'m4',type:'drawer',x:220,y:250,rot:0},
+  {id:'m5',type:'desk',x:200,y:120,rot:1},
+  {id:'m6',type:'chair',x:150,y:150,rot:0}
+];
+const MISSION4_SOLUTION=[
+  {id:'m1',type:'wardrobe',x:0,y:60,rot:3},
+  {id:'m2',type:'bed',x:200,y:130,rot:0},
+  {id:'m3',type:'bookshelf',x:0,y:150,rot:3},
+  {id:'m4',type:'drawer',x:220,y:0,rot:0},
+  {id:'m5',type:'desk',x:90,y:0,rot:0},
+  {id:'m6',type:'chair',x:125,y:60,rot:0}
+];
+
+/* ===================== 낱말 찾기 ===================== */
+const WORDS=[
+  {w:'가사작업공간',c:'공간'},{w:'생리위생공간',c:'공간'},{w:'공동생활공간',c:'공간'},{w:'개인생활공간',c:'공간'},
+  {w:'서랍장',c:'가구'},{w:'옷장',c:'가구'},{w:'책장',c:'가구'},{w:'협탁',c:'가구'},{w:'책상',c:'가구'},{w:'의자',c:'가구'},{w:'침대',c:'가구'}
+];
+function makeWordGrid(N=10){
+  const fill='가공간생활개인작업위리동사부엌욕실거현관방창문수납구역동선효율정';
+  for(let attempt=0;attempt<300;attempt++){
+    const g=Array.from({length:N},()=>Array(N).fill(''));const pos={};let ok=true;
+    for(const {w} of WORDS.slice().sort((a,b)=>b.w.length-a.w.length)){
+      let placed=false;
+      for(let t=0;t<300&&!placed;t++){
+        const dir=Math.random()<0.5?[1,0]:[0,1];const L=w.length;
+        const x=Math.floor(Math.random()*(N-(dir[0]?L-1:0))),y=Math.floor(Math.random()*(N-(dir[1]?L-1:0)));
+        let fit=true;for(let k=0;k<L;k++){const c=g[y+dir[1]*k][x+dir[0]*k];if(c&&c!==w[k]){fit=false;break;}}
+        if(!fit)continue;
+        for(let k=0;k<L;k++)g[y+dir[1]*k][x+dir[0]*k]=w[k];
+        pos[w]={x,y,dir};placed=true;
+      }
+      if(!placed){ok=false;break;}
+    }
+    if(!ok)continue;
+    for(let y=0;y<N;y++)for(let x=0;x<N;x++)if(!g[y][x])g[y][x]=fill[Math.floor(Math.random()*fill.length)];
+    return{g,pos,N};
+  }
+  return null;
+}
+
+if(typeof module!=='undefined'&&module.exports)module.exports={xpOf,FURN,zoningRules,SOLUTION,BAD_LAYOUT,computeRoutes,bestLayout,flowChecks,analyze,mission4Room,MISSION4_START,MISSION4_SOLUTION,makeWordGrid,makeRoom,josa,ADJ};
+
+/* ===================== 코인 상점 ===================== */
+const ACCS={crown:{e:'👑',n:'왕관',p:120,pos:'top'},tophat:{e:'🎩',n:'신사 모자',p:60,pos:'top'},cap:{e:'🧢',n:'캡 모자',p:40,pos:'top'},ribbon:{e:'🎀',n:'리본',p:40,pos:'top'},flower:{e:'🌸',n:'꽃핀',p:30,pos:'top'},star:{e:'⭐',n:'반짝 별',p:80,pos:'top'},glasses:{e:'🕶️',n:'선글라스',p:50,pos:'face'},grad:{e:'🎓',n:'학사모',p:100,pos:'top'}};
+const ROOFS={'#ff8a65':['기본 주황',0],'#5c9ded':['파랑',30],'#66bb6a':['초록',30],'#9b8cf2':['보라',30],'#f48fb1':['분홍',30],'#26a69a':['청록',30],'#f5b82e':['황금',80]};
+const BODIES={'#ffd27a':['기본 노랑',0],'#b2dfdb':['민트',30],'#bbdefb':['하늘',30],'#e1bee7':['라벤더',30],'#ffccbc':['복숭아',30],'#fafafa':['하양',30]};
+const PREM_WALLS=[['#2c3566','밤하늘',80],['#ffcfe3','솜사탕',50],['#c5f2d9','민트 크림',50]];
+const PREM_FLOORS=['marble','check'];
+function xpOf(st){let s=0;['s0','s1','s2','s3','s4','s5','s6','bonus'].forEach(id=>s+=Math.max(0,Math.min(3,(st.stars||{})[id]||0)));return s*100+Math.min(8,(st.badges||[]).length)*50;}
+
+</script>
+<script>
+/* ===================== 공용 그리기 도구 (학생·교사 공용) ===================== */
+function shade(hex,amt){let c=hex.replace('#','');if(c.length===3)c=c.split('').map(x=>x+x).join('');let r=parseInt(c.slice(0,2),16),g=parseInt(c.slice(2,4),16),b=parseInt(c.slice(4,6),16);
+  const f=v=>clamp(Math.round(amt<0?v*(1+amt):v+(255-v)*amt),0,255);return`rgb(${f(r)},${f(g)},${f(b)})`;}
+const FLOORS={wood:{name:'원목',c:'#dcb68a',l:'#c99f72',pat:'wood'},lwood:{name:'밝은 원목',c:'#eedcc2',l:'#dcc4a3',pat:'wood'},tile:{name:'타일',c:'#eef0f2',l:'#cfd5db',pat:'tile'},carpet:{name:'카펫',c:'#d9cbe3',l:'#cdbcd9',pat:'dot'},marble:{name:'대리석',c:'#f4f3ef',l:'#d8d4cc',pat:'tile',prem:70},check:{name:'체크',c:'#fde6c4',l:'#e3ae7c',pat:'tile',prem:60}};
+const WALLS=[['#f6efe6','아이보리'],['#e3eef8','하늘'],['#e8f3e1','연두'],['#fbe5ea','분홍'],['#ece5f7','라벤더'],['#ececec','그레이'],['#fff3c9','레몬'],['#d9e7e0','민트']];
+function openingRects(room){
+  // 벽 띠 위의 사각형 (2D)
+  const band=(wall,pos,len)=>wall==='top'?{x:pos,y:-14,w:len,h:14}:wall==='bottom'?{x:pos,y:room.H,w:len,h:14}:wall==='left'?{x:-14,y:pos,w:14,h:len}:{x:room.W,y:pos,w:14,h:len};
+  return{band};
+}
+function doorGeom(room){
+  const d=room.door,wi=wallInfo(room,d.wall);
+  const P=[wi.p[0]+wi.u[0]*d.pos,wi.p[1]+wi.u[1]*d.pos];
+  const pts=[];for(let k=0;k<=12;k++){const t=k/12*Math.PI/2;pts.push([P[0]+d.width*(Math.cos(t)*wi.u[0]+Math.sin(t)*wi.n[0]),P[1]+d.width*(Math.cos(t)*wi.u[1]+Math.sin(t)*wi.n[1])]);}
+  return{P,open:[P[0]+wi.n[0]*d.width,P[1]+wi.n[1]*d.width],arc:pts};
+}
+function pointOnWall(room,wall,pos,inset=0){const wi=wallInfo(room,wall);return[wi.p[0]+wi.u[0]*pos+wi.n[0]*inset,wi.p[1]+wi.u[1]*pos+wi.n[1]*inset];}
+function hexRgb(hex){let c=hex.replace('#','');if(c.length===3)c=c.split('').map(x=>x+x).join('');return[parseInt(c.slice(0,2),16),parseInt(c.slice(2,4),16),parseInt(c.slice(4,6),16)];}
+function rgbStr(rgb,f){return`rgb(${rgb.map(v=>clamp(Math.round(f>=0?v+(255-v)*f:v*(1+f)),0,255)).join(',')})`;}
+function drawPlanCanvas(ctx,room,items,x,y,w,h){
+  const{W,H}=room;const sc=Math.min(w/(W+60),h/(H+60));const ox=x+(w-W*sc)/2,oy=y+(h-H*sc)/2;
+  ctx.save();ctx.translate(ox,oy);ctx.scale(sc,sc);
+  ctx.fillStyle=shade(room.wall,-0.32);ctx.fillRect(-14,-14,W+28,H+28);
+  const fl=FLOORS[room.floor]||FLOORS.wood;ctx.fillStyle=fl.c;ctx.fillRect(0,0,W,H);
+  ctx.strokeStyle='rgba(0,0,0,0.07)';ctx.lineWidth=1;for(let gx=50;gx<W;gx+=50){ctx.beginPath();ctx.moveTo(gx,0);ctx.lineTo(gx,H);ctx.stroke();}for(let gy=50;gy<H;gy+=50){ctx.beginPath();ctx.moveTo(0,gy);ctx.lineTo(W,gy);ctx.stroke();}
+  const ob=openingRects(room);
+  room.windows.forEach(o=>{const r=ob.band(o.wall,o.pos,o.width);ctx.fillStyle='#cdeeff';ctx.fillRect(r.x,r.y,r.w,r.h);ctx.strokeStyle='#4a9fd8';ctx.lineWidth=2;ctx.strokeRect(r.x,r.y,r.w,r.h);});
+  const d=room.door,dr=ob.band(d.wall,d.pos,d.width),dg=doorGeom(room);ctx.fillStyle=fl.c;ctx.fillRect(dr.x,dr.y,dr.w,dr.h);
+  ctx.setLineDash([4,3]);ctx.strokeStyle='#8d6e63';ctx.lineWidth=1.2;ctx.beginPath();dg.arc.forEach((p,i)=>i?ctx.lineTo(p[0],p[1]):ctx.moveTo(p[0],p[1]));ctx.stroke();ctx.setLineDash([]);
+  ctx.strokeStyle='#6d4c41';ctx.lineWidth=4;ctx.beginPath();ctx.moveTo(dg.P[0],dg.P[1]);ctx.lineTo(dg.open[0],dg.open[1]);ctx.stroke();
+  const ord=items.filter(i=>FURN[i.type].rug).concat(items.filter(i=>!FURN[i.type].rug));
+  ord.forEach(it=>{const f=FURN[it.type],r=rectOf(it);ctx.fillStyle=f.color;ctx.globalAlpha=f.rug?0.85:1;ctx.beginPath();if(ctx.roundRect)ctx.roundRect(r.x,r.y,r.w,r.h,f.rug?10:4);else ctx.rect(r.x,r.y,r.w,r.h);ctx.fill();ctx.globalAlpha=1;ctx.strokeStyle=shade(f.color,-0.35);ctx.lineWidth=1.5;ctx.stroke();
+    if(f.icon){const fs=Math.min(30,Math.min(r.w,r.h)*0.5);ctx.font=`${fs}px "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(f.icon,r.x+r.w/2,r.y+r.h/2-(r.h>=40?5:0));}
+    if(r.w>=60&&r.h>=40||f.rug){ctx.fillStyle='#3b3433';ctx.font='bold 10px sans-serif';ctx.textAlign='center';ctx.fillText(shortName(it.type),r.x+r.w/2,r.y+r.h/2+(f.icon?16:0));}});
+  ctx.restore();
+}
+
+/* ---------- 배치 점검 패널 ---------- */
+
+function dodamSVG(size=52,av){av=av||{};const roof=av.roof||'#ff8a65',body=av.body||'#ffd27a',acc=ACCS[av.acc];
+return `<svg class="dodam" width="${size}" height="${size}" viewBox="0 -6 64 70" aria-hidden="true" style="flex:0 0 auto">
+<rect x="44" y="9" width="7" height="14" rx="1.5" fill="${roof}" stroke="${shade(roof,-0.18)}" stroke-width="2"/>
+<path d="M12 28 L52 28 L52 56 Q52 60 48 60 L16 60 Q12 60 12 56 Z" fill="${body}" stroke="${shade(body,-0.25)}" stroke-width="2.5" stroke-linejoin="round"/>
+<path d="M32 5 L59 29 L5 29 Z" fill="${roof}" stroke="${shade(roof,-0.18)}" stroke-width="2.5" stroke-linejoin="round"/>
+<circle cx="24" cy="41" r="3.4" fill="#3b3433"/><circle cx="40" cy="41" r="3.4" fill="#3b3433"/>
+<circle cx="25" cy="40" r="1.1" fill="#fff"/><circle cx="41" cy="40" r="1.1" fill="#fff"/>
+<ellipse cx="18.5" cy="48" rx="3.5" ry="2.2" fill="#ff9e9e" opacity=".75"/><ellipse cx="45.5" cy="48" rx="3.5" ry="2.2" fill="#ff9e9e" opacity=".75"/>
+<path d="M27 49 Q32 54 37 49" fill="none" stroke="#3b3433" stroke-width="2.4" stroke-linecap="round"/>
+${acc?(acc.pos==='face'?`<text x="32" y="45" font-size="22" text-anchor="middle">${acc.e}</text>`:`<text x="32" y="9" font-size="19" text-anchor="middle">${acc.e}</text>`):''}</svg>`;}
+
+/* ===================== Firebase(Firestore) 저장소 + API (학생·교사 공용) =====================
+   데이터 구조
+   rooms/{방코드}                    {name, classes[], open, created}
+   rooms/{방코드}/board/main         {m:{ 학번: {cls,nick,xp,coins,stars[8],badges,last,bonus,avatar,hasPin} }}  ← 순위표용(가벼움)
+   rooms/{방코드}/students/{학번}    {cls,nick,ph,bonus,created,last,state(JSON문자열)}                        ← 개인 기록 전체
+*/
+const FB_VER='10.14.1';
+const FB_STAGES=['s0','s1','s2','s3','s4','s5','s6','bonus'];
+function fbCfg(){
+  let c=null;try{c=window.DODAM_FB&&window.DODAM_FB.apiKey?window.DODAM_FB:null;}catch(e){}
+  if(!c){try{const o=JSON.parse(localStorage.getItem('dodam-fb-cfg')||'null');if(o&&o.apiKey)c=o;}catch(e){}}
+  return c&&c.apiKey&&c.projectId?c:null;
+}
+/* 설정이 있으면 문자열(주소 대신 쓰는 표시)을 돌려줘요 — 기존 코드의 serverURL() 자리를 그대로 대신해요 */
+function serverURL(){const c=fbCfg();return c?c.projectId:'';}
+
+/* ---- 진짜 Firebase 연결 (테스트에서는 window.__DODAM_ADAPTER__ 로 바꿔 끼워요) ---- */
+async function makeFirebaseAdapter(cfg){
+  const base='https://www.gstatic.com/firebasejs/'+FB_VER+'/';
+  let A,Au,F;
+  try{[A,Au,F]=await Promise.all([import(base+'firebase-app.js'),import(base+'firebase-auth.js'),import(base+'firebase-firestore.js')]);}
+  catch(e){throw new Error('Firebase를 불러오지 못했어요. 인터넷을 확인해 주세요.');}
+  const fbc={apiKey:cfg.apiKey,authDomain:cfg.authDomain,projectId:cfg.projectId,storageBucket:cfg.storageBucket,messagingSenderId:cfg.messagingSenderId,appId:cfg.appId};
+  const app=A.initializeApp(fbc);const auth=Au.getAuth(app);const db=F.getFirestore(app);
+  const D=p=>F.doc(db,...p.split('/'));
+  return{
+    async anon(){if(auth.currentUser)return;await Au.signInAnonymously(auth);},
+    isTeacher(){return !!(auth.currentUser&&auth.currentUser.email);},
+    async teacherLogin(pw){if(!cfg.teacherEmail)throw new Error('firebase-config.js에 teacherEmail이 없어요.');await Au.signInWithEmailAndPassword(auth,cfg.teacherEmail,pw);},
+    async teacherCheck(pw){ // 학생 화면에서는 본인 로그인 상태를 바꾸지 않고 비밀번호만 확인해요
+      if(!cfg.teacherEmail)throw new Error('firebase-config.js에 teacherEmail이 없어요.');
+      const a2=A.initializeApp(fbc,'chk'+Date.now());try{const au2=Au.getAuth(a2);await Au.signInWithEmailAndPassword(au2,cfg.teacherEmail,pw);await Au.signOut(au2);}finally{try{await A.deleteApp(a2);}catch(e){}}
+    },
+    async get(p){const s=await F.getDoc(D(p));return s.exists()?s.data():null;},
+    async set(p,d,merge){await F.setDoc(D(p),d,merge?{merge:true}:undefined);},
+    async update(p,d){await F.updateDoc(D(p),d);},
+    async del(p){await F.deleteDoc(D(p));},
+    async delField(p,f){await F.updateDoc(D(p),{[f]:F.deleteField()});},
+    async list(col){const s=await F.getDocs(F.collection(db,...col.split('/')));return s.docs.map(x=>({id:x.id,...x.data()}));}
+  };
+}
+
+let FBA=null,FBP=null,FB_ROLE='student';
+function fbSetRole(r){FB_ROLE=r;}
+async function fbReady(){
+  if(FBA)return FBA;
+  if(!FBP){FBP=(async()=>{
+    if(window.__DODAM_ADAPTER__)return window.__DODAM_ADAPTER__;
+    const cfg=fbCfg();if(!cfg)throw new Error('Firebase 설정이 없어요. firebase-config.js를 확인해 주세요.');
+    return makeFirebaseAdapter(cfg);})();
+    FBP.catch(()=>{FBP=null;});}
+  const a=await FBP;await a.anon();FBA=a;return a;
+}
+function withTimeout(p,ms,msg){let t;return Promise.race([p,new Promise((_,rej)=>{t=setTimeout(()=>rej(new Error(msg||'서버 응답이 너무 늦어요.')),ms);})]).finally(()=>clearTimeout(t));}
+function fbErr(e){
+  const c=e&&e.code||'';const m=String(e&&e.message||e);
+  if(c==='permission-denied'||/permission|insufficient/i.test(m))return new Error('권한이 없어요. Firestore 규칙을 확인해 주세요. (선생님께 알려 주세요)');
+  if(c==='unavailable'||/offline|network/i.test(m))return new Error('서버에 연결할 수 없어요. 인터넷을 확인해 주세요.');
+  if(c==='auth/operation-not-allowed'||c==='auth/admin-restricted-operation')return new Error('Firebase 로그인 방식이 꺼져 있어요. (익명 로그인을 켜 주세요)');
+  if(c==='auth/invalid-credential'||c==='auth/wrong-password'||c==='auth/invalid-login-credentials'||c==='auth/user-not-found')return new Error('교사 비밀번호가 틀렸어요.');
+  if(c==='auth/too-many-requests')return new Error('시도가 너무 많아요. 잠시 뒤에 다시 해 주세요.');
+  return e instanceof Error?e:new Error(m);
+}
+
+async function fbHash(s){
+  try{const b=new TextEncoder().encode(String(s));const h=await crypto.subtle.digest('SHA-256',b);return btoa(String.fromCharCode(...new Uint8Array(h)));}
+  catch(e){let h=2166136261;const t=String(s);for(let i=0;i<t.length;i++){h^=t.charCodeAt(i);h=Math.imul(h,16777619);}return 'f'+(h>>>0).toString(36);}
+}
+const fbParse=s=>{try{return s?JSON.parse(s):null;}catch(e){return null;}};
+function fbXp(state){
+  if(!state)return 0;let stars=0;
+  FB_STAGES.forEach(id=>{stars+=Math.max(0,Math.min(3,Number((state.stars||{})[id])||0));});
+  return stars*100+Math.min(FB_STAGES.length,(state.badges||[]).length)*50;
+}
+function fbCode(){const A='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';let s='';for(let i=0;i<6;i++)s+=A.charAt(Math.floor(Math.random()*A.length));return s;}
+const fbSort=(a,b)=>String(a.cls).localeCompare(String(b.cls),undefined,{numeric:true})||String(a.sid).localeCompare(String(b.sid),undefined,{numeric:true});
+
+async function fbEnsureTeacher(a,pw){
+  if(FB_ROLE==='teacher'){if(!a.isTeacher()){if(!pw)throw new Error('교사 비밀번호를 먼저 넣어 주세요.');await a.teacherLogin(pw);}return;}
+  throw new Error('이 화면에서는 할 수 없어요. 교사용 화면을 이용해 주세요.');
+}
+async function fbRoom(a,code){
+  code=String(code||'').toUpperCase().trim();if(!/^[A-Z0-9]{6}$/.test(code))return null;
+  const r=await a.get('rooms/'+code);return r?{code,name:r.name,classes:r.classes||[],open:r.open!==false}:null;
+}
+const fbPub=(sid,x)=>({sid:String(sid),cls:String(x.cls||''),nick:String(x.nick||''),xp:Number(x.xp)||0,coins:Number(x.coins)||0,stars:(x.stars||[]).concat([0,0,0,0,0,0,0,0]).slice(0,8),badges:Number(x.badges)||0,last:Number(x.last)||0,bonus:Number(x.bonus)||0,avatar:x.avatar||null,hasPin:!!x.hasPin});
+async function fbBoardMap(a,code){const b=await a.get('rooms/'+code+'/board/main');return(b&&b.m)||{};}
+
+const FB_API={
+  ping:async()=>({ok:true,v:2}),
+  adminCheck:async(b,a)=>{
+    if(FB_ROLE==='teacher'){await fbEnsureTeacher(a,b.pw);return{ok:true};}
+    if(!b.pw)throw new Error('교사 비밀번호를 넣어 주세요.');await a.teacherCheck(b.pw);return{ok:true};
+  },
+  createRoom:async(b,a)=>{
+    await fbEnsureTeacher(a,b.pw);
+    const classes=(b.classes||[]).map(String).filter(String);if(!classes.length)throw new Error('반을 하나 이상 골라 주세요.');
+    let code,n=0;do{code=fbCode();n++;}while((await a.get('rooms/'+code))&&n<20);
+    await a.set('rooms/'+code,{name:String(b.name||'우리 학년').slice(0,30),classes,open:true,created:Date.now()});
+    await a.set('rooms/'+code+'/board/main',{m:{}});
+    return{ok:true,code};
+  },
+  listRooms:async(b,a)=>{
+    await fbEnsureTeacher(a,b.pw);
+    const rs=await a.list('rooms');
+    const rooms=await Promise.all(rs.map(async r=>({code:r.id,name:r.name,classes:r.classes||[],open:r.open!==false,created:r.created||0,count:Object.keys(await fbBoardMap(a,r.id)).length})));
+    rooms.sort((x,y)=>y.created-x.created);
+    return{ok:true,rooms};
+  },
+  setOpen:async(b,a)=>{await fbEnsureTeacher(a,b.pw);if(!(await fbRoom(a,b.code)))throw new Error('방이 없어요.');await a.update('rooms/'+String(b.code).toUpperCase(),{open:!!b.open});return{ok:true};},
+  join:async(b,a)=>{
+    const r=await fbRoom(a,b.code);
+    if(!r)return{ok:false,err:'방 코드를 찾을 수 없어요. 선생님께 다시 확인해 주세요.'};
+    if(!r.open)return{ok:false,err:'이 방은 지금 닫혀 있어요.'};
+    return{ok:true,room:{code:r.code,name:r.name,classes:r.classes}};
+  },
+  login:async(b,a)=>{
+    const r=await fbRoom(a,b.code);if(!r)throw new Error('방 코드를 찾을 수 없어요.');if(!r.open)throw new Error('이 방은 지금 닫혀 있어요.');
+    const sid=String(b.sid||'').trim(),cls=String(b.cls||'').trim(),pin=String(b.pin||'');
+    if(!/^\d{3,6}$/.test(sid))throw new Error('학번은 숫자 3~6자리로 써 주세요.');
+    if(!/^\d{4}$/.test(pin))throw new Error('비밀번호는 숫자 4자리예요.');
+    if(r.classes.indexOf(cls)<0)throw new Error('반을 다시 골라 주세요.');
+    const ph=await fbHash(r.code+':'+sid+':'+pin),path='rooms/'+r.code+'/students/'+sid,now=Date.now();
+    const ex=await a.get(path);
+    if(ex){
+      if(String(ex.cls)!==cls)throw new Error('이 학번은 '+ex.cls+'반으로 등록되어 있어요.');
+      if(ex.ph&&ex.ph!==ph)throw new Error('비밀번호가 틀렸어요. 잊어버렸다면 선생님께 초기화를 부탁하세요.');
+      const up={last:now};if(!ex.ph)up.ph=ph;await a.update(path,up);
+      await a.set('rooms/'+r.code+'/board/main',{m:{[sid]:{last:now,hasPin:true}}},true);
+      return{ok:true,student:{nick:String(ex.nick||''),cls,bonus:Number(ex.bonus)||0,state:fbParse(ex.state)},room:{code:r.code,name:r.name,classes:r.classes}};
+    }
+    const nick=String(b.nick||'').trim();if(!nick)return{ok:false,need:'nick'};if(nick.length>10)throw new Error('닉네임은 10글자 이하로 써 주세요.');
+    await a.set(path,{cls,nick,ph,bonus:0,created:now,last:now,state:''});
+    await a.set('rooms/'+r.code+'/board/main',{m:{[sid]:{cls,nick,xp:0,coins:0,stars:[0,0,0,0,0,0,0,0],badges:0,last:now,bonus:0,avatar:null,hasPin:true}}},true);
+    return{ok:true,isNew:true,student:{nick,cls,bonus:0,state:null},room:{code:r.code,name:r.name,classes:r.classes}};
+  },
+  save:async(b,a)=>{
+    const r=await fbRoom(a,b.code);if(!r)throw new Error('방 코드를 찾을 수 없어요.');
+    const sid=String(b.sid||'').trim(),path='rooms/'+r.code+'/students/'+sid;
+    const ex=await a.get(path);if(!ex)throw new Error('학번을 찾을 수 없어요. 다시 로그인해 주세요.');
+    if(ex.ph!==await fbHash(r.code+':'+sid+':'+b.pin))throw new Error('비밀번호가 맞지 않아요. 다시 로그인해 주세요.');
+    const st=b.state||{},json=JSON.stringify(st);
+    if(json.length>45000)throw new Error('저장할 내용이 너무 커요. 가구 수를 줄여 주세요.');
+    const stars=FB_STAGES.map(id=>Math.max(0,Math.min(3,Number((st.stars||{})[id])||0)));
+    const nick=String(st.nick||ex.nick).slice(0,10),xp=fbXp(st),coins=Math.max(0,Math.min(99999,Number(st.coins)||0)),now=Date.now(),bonus=Number(ex.bonus)||0;
+    await a.update(path,{nick,last:now,state:json});
+    await a.set('rooms/'+r.code+'/board/main',{m:{[sid]:{cls:String(ex.cls),nick,xp,coins,stars,badges:(st.badges||[]).length,last:now,bonus,avatar:st.avatar||null,hasPin:true}}},true);
+    return{ok:true,bonus};
+  },
+  board:async(b,a)=>{
+    const r=await fbRoom(a,b.code);if(!r)throw new Error('방 코드를 찾을 수 없어요.');
+    const m=await fbBoardMap(a,r.code);const list=Object.keys(m).map(k=>fbPub(k,m[k]));
+    const classes=r.classes.map(c=>{const mm=list.filter(s=>s.cls===c);const sum=mm.reduce((x,s)=>x+s.xp,0);
+      return{cls:c,count:mm.length,avgXp:mm.length?Math.round(sum/mm.length):0,stars:mm.reduce((x,s)=>x+s.stars.reduce((p,q)=>p+q,0),0)};});
+    const top=list.slice().sort((x,y)=>y.xp-x.xp).slice(0,10).map(s=>({nick:s.nick,cls:s.cls,xp:s.xp,avatar:s.avatar}));
+    const now=Date.now();
+    return{ok:true,room:{code:r.code,name:r.name},classes,top,online:list.filter(s=>now-s.last<5*60*1000).length,total:list.length};
+  },
+  teacher:async(b,a)=>{
+    await fbEnsureTeacher(a,b.pw);
+    const r=await fbRoom(a,b.code);if(!r)throw new Error('방이 없어요.');
+    const m=await fbBoardMap(a,r.code);const students=Object.keys(m).map(k=>fbPub(k,m[k]));
+    if(b.full){ // 결과물(내 방)까지 필요할 때만 개인 기록을 읽어요
+      for(let i=0;i<students.length;i+=10)await Promise.all(students.slice(i,i+10).map(async s=>{
+        const d=await a.get('rooms/'+r.code+'/students/'+s.sid);const st=d&&fbParse(d.state)||{};s.s6=st.s6||null;s.s0=st.s0||null;if(!s.avatar)s.avatar=st.avatar||null;}));
+    }
+    students.sort(fbSort);
+    return{ok:true,room:{code:r.code,name:r.name,classes:r.classes,open:r.open},students,now:Date.now()};
+  },
+  bonus:async(b,a)=>{
+    await fbEnsureTeacher(a,b.pw);
+    const r=await fbRoom(a,b.code);if(!r)throw new Error('방이 없어요.');
+    const amt=Math.max(-1000,Math.min(1000,Math.round(Number(b.amount)||0)));const sids=(b.sids||[]).map(String),cls=b.cls?String(b.cls):'';
+    const m=await fbBoardMap(a,r.code);let n=0;
+    for(const sid of Object.keys(m)){
+      if(!((cls&&String(m[sid].cls)===cls)||sids.indexOf(sid)>=0||b.all))continue;
+      const p='rooms/'+r.code+'/students/'+sid;const d=await a.get(p);if(!d)continue;
+      const nb=(Number(d.bonus)||0)+amt;await a.update(p,{bonus:nb});
+      await a.set('rooms/'+r.code+'/board/main',{m:{[sid]:{bonus:nb}}},true);n++;
+    }
+    return{ok:true,count:n};
+  },
+  resetPin:async(b,a)=>{
+    await fbEnsureTeacher(a,b.pw);const r=await fbRoom(a,b.code);if(!r)throw new Error('방이 없어요.');
+    const sid=String(b.sid),p='rooms/'+r.code+'/students/'+sid;if(!(await a.get(p)))throw new Error('학생을 찾을 수 없어요.');
+    await a.update(p,{ph:''});await a.set('rooms/'+r.code+'/board/main',{m:{[sid]:{hasPin:false}}},true);return{ok:true};
+  },
+  removeStudent:async(b,a)=>{
+    await fbEnsureTeacher(a,b.pw);const r=await fbRoom(a,b.code);if(!r)throw new Error('방이 없어요.');
+    const sid=String(b.sid),p='rooms/'+r.code+'/students/'+sid;if(!(await a.get(p)))throw new Error('학생을 찾을 수 없어요.');
+    await a.del(p);await a.delField('rooms/'+r.code+'/board/main','m.'+sid);return{ok:true};
+  }
+};
+async function dodamApi(body){
+  const f=FB_API[body&&body.action];if(!f)return{ok:false,err:'알 수 없는 요청이에요.'};
+  try{const a=await withTimeout(fbReady(),25000,'서버에 연결하지 못했어요.');return await withTimeout(f(body,a),25000);}
+  catch(e){throw fbErr(e);}
+}
+/* 붙여넣은 설정 글(자바스크립트 객체 모양이어도 OK)에서 값을 뽑아요 */
+function parseFbConfig(txt){
+  const g=k=>{const m=String(txt).match(new RegExp('["\']?'+k+'["\']?\\s*[:=]\\s*["\']([^"\']*)["\']'));return m?m[1].trim():'';};
+  const c={apiKey:g('apiKey'),authDomain:g('authDomain'),projectId:g('projectId'),storageBucket:g('storageBucket'),messagingSenderId:g('messagingSenderId'),appId:g('appId'),teacherEmail:g('teacherEmail')};
+  return c.apiKey&&c.projectId?c:null;
+}
+
+'use strict';
+fbSetRole('teacher');
+const $=(s,r=document)=>r.querySelector(s);const $$=(s,r=document)=>Array.from(r.querySelectorAll(s));
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const LS={get(k){try{return localStorage.getItem(k);}catch(e){return null;}},set(k,v){try{localStorage.setItem(k,v);}catch(e){}},del(k){try{localStorage.removeItem(k);}catch(e){}}};
+const STAGE_COLS=[['s0','열기'],['s1','S1'],['s2','S2'],['s3','S3'],['s4','S4'],['s5','S5'],['s6','S6'],['bonus','B']];
+const T={pw:LS.get('dodam-t-pw')||'',room:LS.get('dodam-t-room')||'',rooms:[],data:null,cls:'all',timer:null,tab:'setup'};
+function toast(m,t=''){const e=document.createElement('div');e.className='toast '+t;e.innerHTML=m;$('#toasts').appendChild(e);setTimeout(()=>e.classList.add('out'),2600);setTimeout(()=>e.remove(),3100);}
+function modal(html,wide){closeModal();const bg=document.createElement('div');bg.className='modal-bg';bg.id='modal';bg.innerHTML=`<div class="modal ${wide?'wide':''}"><button class="mclose">✕</button>${html}</div>`;document.body.appendChild(bg);bg.querySelector('.mclose').onclick=closeModal;bg.addEventListener('pointerdown',e=>{if(e.target===bg)closeModal();});return bg.querySelector('.modal');}
+function closeModal(){const m=$('#modal');if(m)m.remove();}
+function api(body){return dodamApi(body);}
+async function adminApi(body){const r=await api({...body,pw:T.pw});if(!r.ok)throw new Error(r.err||'요청 실패');return r;}
+function setConn(ok,msg){$('#conn').innerHTML=ok?`<span class="ok">● 연결됨</span>`:`<span class="bad">● ${msg||'연결 안 됨'}</span>`;}
+function tab(name){T.tab=name;clearInterval(T.timer);$$('#nav button').forEach(b=>b.classList.toggle('on',b.dataset.tab===name));LS.set('dodam-t-tab',name);({setup,rooms,status,board,works,coins})[name]();}
+const fmtAgo=t=>{if(!t)return'-';const s=(Date.now()-t)/1000;if(s<60)return'방금';if(s<3600)return Math.floor(s/60)+'분 전';if(s<86400)return Math.floor(s/3600)+'시간 전';const d=new Date(t);return`${d.getMonth()+1}/${d.getDate()}`;};
+async function ensureRooms(){if(!T.rooms.length){const r=await adminApi({action:'listRooms'});T.rooms=r.rooms;}return T.rooms;}
+function roomPicker(after){
+  return `<div class="row"><b>방 선택</b><select id="room-sel">${T.rooms.map(r=>`<option value="${r.code}" ${r.code===T.room?'selected':''}>${esc(r.name)} (${r.code})</option>`).join('')}</select>${after||''}</div>`;
+}
+function bindRoomPicker(cb){const s=$('#room-sel');if(!s)return;if(!T.room&&T.rooms[0])T.room=T.rooms[0].code;s.value=T.room;s.onchange=()=>{T.room=s.value;LS.set('dodam-t-room',T.room);T.data=null;cb();};}
+async function needRooms(el,cb){
+  try{await ensureRooms();}catch(e){el.innerHTML=`<div class="card"><p class="bad">❌ ${esc(e.message)}</p><button class="btn" onclick="tab('setup')">① 연결 설정으로</button></div>`;return false;}
+  if(!T.rooms.length){el.innerHTML=`<div class="card"><p>아직 만든 방이 없어요.</p><button class="btn" onclick="tab('rooms')">② 방 만들러 가기</button></div>`;return false;}
+  if(!T.rooms.find(r=>r.code===T.room))T.room=T.rooms[0].code;return true;
+}
+
+/* ① 연결 설정 */
+function rulesText(email){return `rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() { return request.auth != null; }
+    function teacher() { return request.auth != null && request.auth.token.email == '${email||'선생님이메일@gmail.com'}'; }
+    match /rooms/{code} {
+      allow read: if signedIn();
+      allow write: if teacher();
+      match /board/{doc} {
+        allow read, write: if signedIn();
+      }
+      match /students/{sid} {
+        allow read: if signedIn();
+        allow create: if signedIn() && request.resource.data.bonus == 0
+                      && request.resource.data.state.size() < 60000;
+        allow update: if signedIn()
+                      && (teacher() || request.resource.data.bonus == resource.data.bonus)
+                      && request.resource.data.state.size() < 60000;
+        allow delete: if teacher();
+      }
+    }
+  }
+}`;}
+function cfgFileText(c){return `// 도담이네 집 짓기 — Firebase 설정 (학생 화면과 교사 화면이 함께 써요)
+window.DODAM_FB = {
+  apiKey: "${c.apiKey||''}",
+  authDomain: "${c.authDomain||''}",
+  projectId: "${c.projectId||''}",
+  storageBucket: "${c.storageBucket||''}",
+  messagingSenderId: "${c.messagingSenderId||''}",
+  appId: "${c.appId||''}",
+  teacherEmail: "${c.teacherEmail||''}"
+};
+`;}
+function setup(){
+  const c=fbCfg()||{};
+  $('#main').innerHTML=`<div class="card"><h2>① Firebase + GitHub 연결하기 <span class="hint">(처음 한 번만, 약 20분)</span></h2>
+  <p class="hint">학생 화면과 이 교사 화면을 <b>GitHub Pages</b>(무료 웹 주소)에 올리고, 기록은 <b>Firebase</b>(무료 저장소)에 쌓아요. 아래 순서대로 해 주세요.</p>
+  <h3>A. Firebase 만들기</h3>
+  <ol class="steps">
+   <li><a href="https://console.firebase.google.com" target="_blank">console.firebase.google.com</a>에 구글 계정으로 들어가 <kbd>프로젝트 추가</kbd> → 이름(예: dodam-house) → 구글 애널리틱스는 <b>끄기</b> → 만들기.</li>
+   <li>프로젝트 첫 화면에서 웹 아이콘 <kbd>&lt;/&gt;</kbd>을 눌러 앱 이름(예: dodam)을 쓰고 <kbd>앱 등록</kbd>. (호스팅 설정은 체크 안 해요)</li>
+   <li>화면에 나오는 <code>const firebaseConfig = { … }</code> 부분을 <b>복사</b>해서 아래 ‘설정 붙여넣기’ 칸에 넣어요.</li>
+   <li>왼쪽 <kbd>빌드</kbd> → <kbd>Authentication</kbd> → <kbd>시작하기</kbd> → <b>로그인 방법</b>에서 <b>익명</b>을 사용 설정, <b>이메일/비밀번호</b>도 사용 설정해요.</li>
+   <li>같은 화면 <kbd>사용자</kbd> 탭 → <kbd>사용자 추가</kbd>로 <b>선생님 이메일과 비밀번호</b>를 만들어요. (이 계정이 교사용 열쇠예요. 아래 칸에도 같은 이메일을 써요)</li>
+   <li><kbd>빌드</kbd> → <kbd>Firestore Database</kbd> → <kbd>데이터베이스 만들기</kbd> → 위치는 <b>asia-northeast3(서울)</b> → <b>프로덕션 모드</b>로 시작.</li>
+   <li>Firestore의 <kbd>규칙</kbd> 탭에 있는 내용을 모두 지우고 아래 ‘보안 규칙’을 붙여넣어 <kbd>게시</kbd>해요.</li></ol>
+  <h3>B. 설정 붙여넣기</h3>
+  <textarea id="in-cfg" rows="6" style="width:100%;font-family:monospace;font-size:12px" placeholder="const firebaseConfig = {&#10;  apiKey: &quot;AIza…&quot;,&#10;  authDomain: &quot;…firebaseapp.com&quot;,&#10;  projectId: &quot;…&quot;, …&#10;};">${esc(c.apiKey?cfgFileText(c):'')}</textarea>
+  <div class="row" style="margin-top:8px"><input type="text" id="in-mail" placeholder="선생님 이메일 (Firebase에 만든 계정)" style="width:300px" value="${esc(c.teacherEmail||'')}"><input type="password" id="in-pw" placeholder="교사 비밀번호" value="${esc(T.pw)}" style="width:220px"><label class="hint"><input type="checkbox" id="in-rem" ${LS.get('dodam-t-pw')?'checked':''}> 이 컴퓨터에서 비밀번호 기억하기</label></div>
+  <div class="row" style="margin-top:8px"><button class="btn" id="btn-test">🔌 연결 테스트</button><span id="test-msg"></span></div></div>
+  <div class="card"><h3>C. 보안 규칙 <span class="hint">(위 A-7에 붙여넣기 · 선생님 이메일이 자동으로 들어가요)</span></h3>
+   <div class="row"><button class="btn small" id="cp-rules">📋 규칙 복사</button></div><div class="code" id="rules">${esc(rulesText(c.teacherEmail))}</div></div>
+  <div class="card"><h3>D. GitHub에 올리기</h3>
+  <ol class="steps">
+   <li><a href="https://github.com" target="_blank">github.com</a>에 가입·로그인 → 오른쪽 위 <kbd>＋</kbd> → <kbd>New repository</kbd> → 이름(예: dodam-house) → <b>Public</b> → 만들기.</li>
+   <li>저장소 화면에서 <kbd>uploading an existing file</kbd>을 눌러 받은 파일 <b>index.html</b>, <b>teacher.html</b>을 끌어다 놓고, 아래에서 만든 <b>firebase-config.js</b>도 함께 올려요. → <kbd>Commit changes</kbd></li>
+   <li><kbd>Settings</kbd> → <kbd>Pages</kbd> → Branch를 <b>main</b> / <b>(root)</b>로 정하고 <kbd>Save</kbd>. 1~2분 뒤 <code>https://내아이디.github.io/dodam-house/</code> 주소가 생겨요.</li>
+   <li><b>학생 주소</b> = 위 주소 그대로, <b>교사 화면</b> = 주소 뒤에 <code>teacher.html</code>을 붙인 주소예요. (컴퓨터에서 파일을 바로 열면 구글 로그인 기능이 막힐 수 있어요. <b>연결 테스트는 GitHub 주소로 연 교사 화면에서</b> 해 주세요)</li></ol>
+   <div class="row"><button class="btn orange" id="dl-cfg">⬇ firebase-config.js 만들기</button><span class="hint">위 B칸을 채운 뒤 눌러요. 내려받은 파일을 GitHub에 올려요.</span></div>
+   <p class="hint">💡 설정 값(apiKey 등)은 공개돼도 괜찮은 값이에요. 대신 <b>보안 규칙</b>과 <b>교사 비밀번호</b>가 기록을 지켜 줘요. 학생 접속 연습만 할 때는 학생 화면 첫 화면의 ⚙ 연결 설정에 붙여넣어도 돼요.</p></div>
+  <div class="card"><h3>📊 무료 사용량 안내</h3><p class="hint">Firebase 무료 요금제(Spark)는 하루 읽기 5만·쓰기 2만 번까지예요. 한 반 30명이 한 시간 수업하는 정도는 충분하지만, 여러 반이 한꺼번에 몇 시간씩 쓰면 넘을 수 있어요. 넘으면 그날은 저장이 잠시 멈추고 자정(태평양 시간)에 풀려요. 학생 화면은 저장 실패 시 이 노트북에 먼저 저장하고 다시 시도해요.</p></div>`;
+  const parse=()=>{const base=parseFbConfig($('#in-cfg').value);if(!base)return null;base.teacherEmail=$('#in-mail').value.trim()||base.teacherEmail;return base;};
+  const saveIn=()=>{const cfg=parse();T.pw=$('#in-pw').value;if(cfg){LS.set('dodam-fb-cfg',JSON.stringify(cfg));}if($('#in-rem').checked)LS.set('dodam-t-pw',T.pw);else LS.del('dodam-t-pw');T.rooms=[];return cfg;};
+  $('#in-mail').oninput=()=>{$('#rules').textContent=rulesText($('#in-mail').value.trim());};
+  $('#cp-rules').onclick=()=>copyText(rulesText($('#in-mail').value.trim()),'보안 규칙을 복사했어요! Firestore 규칙 탭에 붙여넣으세요.');
+  $('#btn-test').onclick=async()=>{const cfg=saveIn();const m=$('#test-msg');
+    if(!cfg){m.innerHTML='<span class="bad">❌ 설정을 읽을 수 없어요. apiKey와 projectId가 들어 있어야 해요.</span>';return;}
+    if(!cfg.teacherEmail){m.innerHTML='<span class="bad">❌ 선생님 이메일을 써 주세요.</span>';return;}
+    m.innerHTML='⏳ 확인 중…';
+    try{await adminApi({action:'adminCheck'});await adminApi({action:'listRooms'});m.innerHTML='<span class="ok">✅ 연결 성공! 비밀번호와 규칙도 잘 맞아요.</span>';setConn(true);}
+    catch(e){m.innerHTML=`<span class="bad">❌ ${esc(e.message)}</span>`;setConn(false);}};
+  $('#dl-cfg').onclick=()=>{const cfg=saveIn();if(!cfg){toast('B칸에 설정을 먼저 붙여넣어 주세요.','bad');return;}if(!cfg.teacherEmail){toast('선생님 이메일을 써 주세요.','bad');return;}download('firebase-config.js',cfgFileText(cfg),'text/javascript');toast('내려받았어요! GitHub에 함께 올려 주세요.','good');};
+}
+function copyText(t,msg){(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>toast(msg,'good')).catch(()=>{const ta=document.createElement('textarea');ta.value=t;document.body.appendChild(ta);ta.select();try{document.execCommand('copy');toast(msg,'good');}catch(e){toast('복사하지 못했어요. 직접 선택해 복사해 주세요.','bad');}ta.remove();});}
+function download(name,text,type){const b=new Blob([text],{type:type+';charset=utf-8'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},1000);}
+
+/* ② 방 관리 */
+async function rooms(){
+  const el=$('#main');
+  el.innerHTML=`<div class="card"><h2>② 방 만들기</h2><div class="row"><input type="text" id="r-name" placeholder="방 이름 예) 2학년 주거 공간 구성" style="width:320px"></div>
+   <p class="hint" style="margin:10px 0 4px">참여할 반을 골라요 (반 대항전 대상)</p><div class="cls-pick" id="r-cls">${Array.from({length:15},(_,i)=>i+1).map(n=>`<label class="${n<=6?'on':''}"><input type="checkbox" value="${n}" ${n<=6?'checked':''}>${n}반</label>`).join('')}</div>
+   <div class="row" style="margin-top:12px"><button class="btn big" id="r-make">🏠 방 만들기</button></div></div>
+   <div class="card"><h2>내 방 목록</h2><div id="r-list" class="rooms"><p class="hint">⏳ 불러오는 중…</p></div></div>`;
+  $$('#r-cls label').forEach(l=>l.onclick=e=>{e.preventDefault();const i=$('input',l);i.checked=!i.checked;l.classList.toggle('on',i.checked);});
+  $('#r-make').onclick=async()=>{const classes=$$('#r-cls input:checked').map(i=>i.value);const name=$('#r-name').value.trim()||'우리 학년';
+    try{const r=await adminApi({action:'createRoom',name,classes});T.rooms=[];T.room=r.code;LS.set('dodam-t-room',r.code);
+      modal(`<div style="text-align:center"><h2>🎉 방을 만들었어요!</h2><p>학생들에게 이 <b>방 코드</b>를 알려 주세요.</p><div style="font-size:64px;font-weight:900;letter-spacing:10px;color:var(--accent)">${r.code}</div><p class="hint">${esc(name)} · ${classes.map(c=>c+'반').join(', ')}</p><p class="hint">학생 접속 주소: ${esc(location.href.replace(/teacher\.html.*$/,'').replace(/[#?].*$/,''))}</p></div>`);list();}
+    catch(e){toast('❌ '+e.message,'bad');}};
+  const list=async()=>{try{const r=await adminApi({action:'listRooms'});T.rooms=r.rooms;setConn(true);
+      $('#r-list').innerHTML=r.rooms.length?r.rooms.slice().reverse().map(x=>`<div class="room ${x.open?'':'closed'}"><div class="code-big">${x.code}</div><b>${esc(x.name)}</b><div class="hint">${x.classes.map(c=>c+'반').join(', ')} · 학생 ${x.count}명 · ${x.open?'<span class="ok">열림</span>':'<span class="bad">닫힘</span>'}</div>
+        <div class="row" style="margin-top:8px"><button class="btn small" data-see="${x.code}">📊 현황 보기</button><button class="btn small ghost" data-big="${x.code}" data-n="${esc(x.name)}">🔍 코드 크게</button><button class="btn small ${x.open?'red':'green'}" data-open="${x.code}" data-v="${x.open?0:1}">${x.open?'🔒 닫기':'🔓 열기'}</button></div></div>`).join(''):'<p class="hint">아직 방이 없어요. 위에서 만들어 보세요.</p>';
+      $$('[data-see]').forEach(b=>b.onclick=()=>{T.room=b.dataset.see;LS.set('dodam-t-room',T.room);tab('status');});
+      $$('[data-big]').forEach(b=>b.onclick=()=>modal(`<div style="text-align:center"><p style="font-size:22px">${b.dataset.n}</p><div style="font-size:120px;font-weight:900;letter-spacing:16px;color:var(--accent)">${b.dataset.big}</div><p class="hint">학생 파일을 열고 이 방 코드를 입력하세요</p></div>`,true));
+      $$('[data-open]').forEach(b=>b.onclick=async()=>{try{await adminApi({action:'setOpen',code:b.dataset.open,open:b.dataset.v==='1'});toast('바꿨어요.','good');list();}catch(e){toast('❌ '+e.message,'bad');}});
+    }catch(e){$('#r-list').innerHTML=`<p class="bad">❌ ${esc(e.message)}</p>`;setConn(false,'연결 실패');}};
+  list();
+}
+
+/* ③ 진행 현황 */
+async function load(full){const r=await adminApi({action:'teacher',code:T.room,full:!!full});T.data=r;return r;}
+async function status(){
+  const el=$('#main');el.innerHTML='<p class="hint">⏳ 불러오는 중…</p>';
+  if(!(await needRooms(el,status)))return;
+  el.innerHTML=`<div class="card">${roomPicker(`<label class="hint"><input type="checkbox" id="auto" checked> 15초마다 자동 새로고침</label><button class="btn small ghost" id="ref">↻ 새로고침</button><span id="upd" class="hint"></span>`)}</div><div id="st-body"></div>`;
+  bindRoomPicker(status);
+  const draw=()=>{
+    const d=T.data;if(!d)return;const now=Date.now();
+    const list=d.students.filter(s=>T.cls==='all'||s.cls===T.cls).sort((a,b)=>a.cls.localeCompare(b.cls,undefined,{numeric:true})||a.sid.localeCompare(b.sid,undefined,{numeric:true}));
+    const online=d.students.filter(s=>now-s.last<5*60000).length;
+    const avg=d.students.length?Math.round(d.students.reduce((a,s)=>a+s.xp,0)/d.students.length):0;
+    const s6done=d.students.filter(s=>s.stars[6]>0).length;
+    $('#st-body').innerHTML=`<div class="stats"><div class="stat"><b>${d.students.length}</b><span>참여 학생</span></div><div class="stat"><b>${online}</b><span>🟢 지금 접속 중 (5분 이내)</span></div><div class="stat"><b>${avg}</b><span>평균 경험치</span></div><div class="stat"><b>${s6done}</b><span>「내 방에게 묻다」 완료</span></div></div>
+    <div class="card"><div class="row"><div class="filters"><button data-c="all" class="${T.cls==='all'?'on':''}">전체</button>${d.room.classes.map(c=>`<button data-c="${c}" class="${T.cls===c?'on':''}">${c}반 (${d.students.filter(s=>s.cls===c).length})</button>`).join('')}</div>
+      <span style="margin-left:auto"></span><button class="btn small ghost" id="cp-tsv">📋 표 복사 (엑셀 붙여넣기)</button><button class="btn small ghost" id="dl-csv">⬇ CSV 저장</button></div>
+    <div style="overflow:auto"><table class="tb"><tr><th></th><th>반</th><th>학번</th><th>닉네임</th>${STAGE_COLS.map(c=>`<th>${c[1]}</th>`).join('')}<th>⭐XP</th><th>🪙코인</th><th>배지</th><th>칭찬</th><th>마지막 접속</th><th>관리</th></tr>
+    ${list.map(s=>`<tr><td><span class="dot ${now-s.last<5*60000?'on':''}"></span></td><td>${esc(s.cls)}</td><td>${esc(s.sid)}</td><td class="l">${esc(s.nick)}</td>${s.stars.map(v=>`<td class="st${v}">${v?'★'.repeat(v):'·'}</td>`).join('')}<td><b>${s.xp}</b></td><td>${s.coins}</td><td>${s.badges}</td><td>${s.bonus||''}</td><td>${fmtAgo(s.last)}</td>
+      <td><button class="iconbtn" title="칭찬 코인" data-coin="${esc(s.sid)}" data-n="${esc(s.nick)}">🪙</button><button class="iconbtn" title="비밀번호 초기화" data-pin="${esc(s.sid)}" data-n="${esc(s.nick)}">🔑</button><button class="iconbtn" title="삭제" data-del="${esc(s.sid)}" data-n="${esc(s.nick)}">🗑</button></td></tr>`).join('')||`<tr><td colspan="20" class="empty">아직 들어온 학생이 없어요. 방 코드 <b>${d.room.code}</b>를 알려 주세요.</td></tr>`}</table></div>
+    <p class="hint">★ = 받은 별 · 🟢 = 5분 안에 저장한 학생 · 🔑 비밀번호를 잊은 학생은 초기화하면 다음 로그인 때 새 비밀번호를 정해요.</p></div>`;
+    $$('.filters button').forEach(b=>b.onclick=()=>{T.cls=b.dataset.c;draw();});
+    const rowsOf=L=>[['반','학번','닉네임',...STAGE_COLS.map(c=>c[1]),'경험치','코인','배지','칭찬코인','방이름','중요한 조건','좋은 점','보완할 점','자기평가1','자기평가2']].concat(L.map(s=>[s.cls,s.sid,s.nick,...s.stars,s.xp,s.coins,s.badges,s.bonus,s.s6&&s.s6.roomName||'',s.s6&&s.s6.cond||'',s.s6&&s.s6.good||'',s.s6&&s.s6.bad||'',s.s6&&s.s6.ev1||'',s.s6&&s.s6.ev2||'']));
+    const fullList=async()=>{const r=await adminApi({action:'teacher',code:T.room,full:true});const ids=new Set(list.map(s=>s.sid));return r.students.filter(s=>ids.has(s.sid));};
+    $('#cp-tsv').onclick=async()=>{let L;try{L=await fullList();}catch(e){toast('❌ '+e.message,'bad');return;}copyText(rowsOf(L).map(r=>r.map(v=>String(v).replace(/[\t\n]/g,' ')).join('\t')).join('\n'),'표를 복사했어요. 엑셀·구글 시트에 붙여넣으세요!');};
+    $('#dl-csv').onclick=async()=>{let L;try{L=await fullList();}catch(e){toast('❌ '+e.message,'bad');return;}download(`진행현황_${d.room.code}.csv`,'﻿'+rowsOf(L).map(r=>r.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(',')).join('\n'),'text/csv');};
+    $$('[data-coin]').forEach(b=>b.onclick=()=>coinModal({sids:[b.dataset.coin]},`${b.dataset.n} (${b.dataset.coin})`,refresh));
+    $$('[data-pin]').forEach(b=>b.onclick=async()=>{if(!confirm2)return;try{await adminApi({action:'resetPin',code:T.room,sid:b.dataset.pin});toast(`${b.dataset.n}의 비밀번호를 초기화했어요. 다음 로그인 때 새로 정해요.`,'good');}catch(e){toast('❌ '+e.message,'bad');}});
+    $$('[data-del]').forEach(b=>b.onclick=()=>{modal(`<h3>🗑 ${esc(b.dataset.n)} (${esc(b.dataset.del)}) 학생 기록을 삭제할까요?</h3><p class="hint">별·코인·결과물이 모두 지워지고 되돌릴 수 없어요.</p><div class="m-actions"><button class="btn ghost" onclick="closeModal()">취소</button><button class="btn red" id="del-ok">삭제</button></div>`);$('#del-ok').onclick=async()=>{try{await adminApi({action:'removeStudent',code:T.room,sid:b.dataset.del});closeModal();toast('삭제했어요.');refresh();}catch(e){toast('❌ '+e.message,'bad');}};});
+  };
+  const refresh=async()=>{try{await load();setConn(true);$('#upd').textContent='업데이트 '+new Date().toLocaleTimeString();draw();}catch(e){$('#st-body').innerHTML=`<div class="card bad">❌ ${esc(e.message)}</div>`;setConn(false,'연결 실패');}};
+  $('#ref').onclick=refresh;
+  const auto=()=>{clearInterval(T.timer);if($('#auto').checked)T.timer=setInterval(()=>{if(T.tab==='status')refresh();},15000);};$('#auto').onchange=auto;auto();
+  refresh();
+}
+const confirm2=true;
+function coinModal(target,label,after){
+  modal(`<h3>🪙 칭찬 코인 주기 — ${esc(label)}</h3><div class="row"><input type="number" id="cn" value="20" style="width:110px"> 개 <span class="hint">(빼려면 음수, 예: -10)</span></div><p class="hint">학생이 다음에 저장하거나 로그인할 때 코인이 들어가고 알림이 떠요.</p><div class="m-actions"><button class="btn ghost" onclick="closeModal()">취소</button><button class="btn" id="cn-ok">보내기</button></div>`);
+  $('#cn-ok').onclick=async()=>{try{const r=await adminApi({action:'bonus',code:T.room,amount:+$('#cn').value,...target});closeModal();toast(`${r.count}명에게 보냈어요!`,'good');after&&after();}catch(e){toast('❌ '+e.message,'bad');}};
+}
+
+/* ④ 반 대항전 (발표 화면) */
+function houseSVG(floors,w=90){let s=`<svg width="${w}" height="${(40+floors*24)*w/90}" viewBox="0 0 90 ${40+floors*24}">`;for(let i=0;i<floors;i++){const y=40+(floors-1-i)*24;s+=`<rect x="12" y="${y}" width="66" height="24" fill="#fff3e0" stroke="#c99b6d" stroke-width="2.5"/><rect x="22" y="${y+7}" width="12" height="10" fill="#bfe6ff"/><rect x="56" y="${y+7}" width="12" height="10" fill="#bfe6ff"/>`;}return s+`<polygon points="5,41 45,8 85,41" fill="#ff8a65" stroke="#c96a4a" stroke-width="2.5"/></svg>`;}
+async function board(){
+  const el=$('#main');el.innerHTML='<p class="hint">⏳ 불러오는 중…</p>';
+  if(!(await needRooms(el,board)))return;
+  el.innerHTML=`<div class="card">${roomPicker(`<button class="btn small" id="fs">⛶ 전체 화면</button><span class="hint">20초마다 자동으로 바뀌어요</span>`)}</div><div id="board-wrap"><div id="bw"></div></div>`;
+  bindRoomPicker(board);
+  $('#fs').onclick=()=>{const w=$('#board-wrap');if(w.requestFullscreen)w.requestFullscreen().catch(()=>toast('전체 화면을 쓸 수 없어요.'));};
+  const draw=async()=>{
+    try{const r=await api({action:'board',code:T.room});if(!r.ok)throw new Error(r.err);
+      const cl=r.classes.slice().sort((a,b)=>b.avgXp-a.avgXp);const max=Math.max(1,...cl.map(c=>c.avgXp));
+      $('#bw').innerHTML=`<h2 style="text-align:center;font-size:30px;margin:6px 0 4px">🏆 ${esc(r.room.name)} 반 대항전</h2><p class="hint" style="text-align:center">참여 ${r.total}명 · 지금 접속 ${r.online}명 · 반 점수 = 반 평균 경험치 · 평균 250 XP마다 집이 한 층씩!</p>
+       <div class="board-grid"><div class="bd">${cl.map((c,i)=>{const fl=Math.min(8,1+Math.floor(c.avgXp/250));return`<div class="hcol"><div class="medal">${['🥇','🥈','🥉'][i]||(i+1)+'위'}</div>${houseSVG(fl)}<b>${esc(c.cls)}반</b><span style="font-weight:800">${c.avgXp} XP</span><small>${c.count}명 · ★${c.stars}</small><div class="hbar2"><i style="width:${c.avgXp/max*100}%"></i></div></div>`;}).join('')}</div>
+       <div class="card"><h3>🌟 개인 TOP 10</h3>${r.top.map((t,i)=>`<div class="trow"><span class="rk">${i+1}</span>${dodamSVG(36,t.avatar)}<b>${esc(t.nick)}</b><small>${esc(t.cls)}반</small><span class="x">${t.xp}</span></div>`).join('')||'<p class="hint">아직 기록이 없어요.</p>'}</div></div>`;setConn(true);
+    }catch(e){$('#bw').innerHTML=`<div class="card bad">❌ ${esc(e.message)}</div>`;setConn(false,'연결 실패');}
+  };
+  draw();T.timer=setInterval(()=>{if(T.tab==='board')draw();},20000);
+}
+
+/* ⑤ 결과물 */
+function planThumb(s6,w=600,h=380){const cv=document.createElement('canvas');cv.width=w;cv.height=h;const c=cv.getContext('2d');c.fillStyle='#fdf8f1';c.fillRect(0,0,w,h);try{drawPlanCanvas(c,s6.room,(s6.items||[]).filter(i=>FURN[i.type]),0,0,w,h);}catch(e){}return cv;}
+function showWork(s){
+  if(!s||!s.s6)return;const d=s.s6;
+  const m=modal(`<h2>🏠 「${esc(d.roomName||'이름 없는 방')}」 <span class="hint">${esc(s.cls)}반 ${esc(s.sid)} ${esc(s.nick)}</span></h2>
+   <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px"><div><div class="hint">바꾼 후</div><div id="w-after"></div>${d.before?'<div class="hint" style="margin-top:6px">바꾸기 전</div><div id="w-before"></div>':''}</div>
+   <div style="line-height:1.6"><div class="q">이름의 뜻</div>${esc(d.roomMeaning||'-')}<div class="q">꾸미고 싶은 공간 · 크기</div>${esc(d.space||'')} · ${d.room.W}×${d.room.H}cm · 가구 ${(d.items||[]).length}개 · 배치 경고 ${analyze(d.room,(d.items||[]).filter(i=>FURN[i.type])).warnings.length}개
+   <div class="q">가장 중요한 조건</div>${esc(d.cond||'-')}<div class="q">좋은 점</div>${esc(d.good||'-')}<div class="q">보완할 점</div>${esc(d.bad||'-')}<div class="q">스스로 평가</div>동선 고려: ${esc(d.ev1||'-')} · 형태·조건 표현: ${esc(d.ev2||'-')}</div></div>`,true);
+  $('#w-after',m).appendChild(planThumb(d,520,380));if(d.before)$('#w-before',m).appendChild(planThumb(d.before,520,300));
+  $$('canvas',m).forEach(c=>{c.style.width='100%';c.style.border='1px solid #e3dff0';c.style.borderRadius='10px';});
+}
+async function works(){
+  const el=$('#main');el.innerHTML='<p class="hint">⏳ 불러오는 중…</p>';
+  if(!(await needRooms(el,works)))return;
+  el.innerHTML=`<div class="card">${roomPicker('<button class="btn small ghost" id="ref">↻ 새로고침</button>')}<div class="filters" id="wf"></div></div><div id="wl" class="works"></div>`;
+  bindRoomPicker(works);
+  const draw=()=>{const d=T.data;
+    $('#wf').innerHTML=`<button data-c="all" class="${T.cls==='all'?'on':''}">전체</button>`+d.room.classes.map(c=>`<button data-c="${c}" class="${T.cls===c?'on':''}">${c}반</button>`).join('');
+    $$('#wf button').forEach(b=>b.onclick=()=>{T.cls=b.dataset.c;draw();});
+    const list=d.students.filter(s=>s.s6&&(s.s6.items||[]).length&&(T.cls==='all'||s.cls===T.cls)).sort((a,b)=>a.cls.localeCompare(b.cls,undefined,{numeric:true})||a.sid.localeCompare(b.sid,undefined,{numeric:true}));
+    $('#wl').innerHTML=list.length?'':'<div class="card empty">아직 「내 방에게 묻다」를 한 학생이 없어요.</div>';
+    list.forEach(s=>{const d6=s.s6;const w=document.createElement('div');w.className='work';
+      w.innerHTML=`<div class="tcanvas"></div><h4>「${esc(d6.roomName||'이름 없는 방')}」</h4><div class="hint">${esc(s.cls)}반 ${esc(s.sid)} ${esc(s.nick)} · ${s.stars[6]?'★'.repeat(s.stars[6]):'진행 중'}</div><div class="q">중요한 조건</div>${esc((d6.cond||'-').slice(0,80))}<div class="q">좋은 점 / 보완할 점</div>${esc((d6.good||'-').slice(0,60))} / ${esc((d6.bad||'-').slice(0,60))}<div style="margin-top:6px"><button class="btn small">🔍 크게 보기</button></div>`;
+      $('.tcanvas',w).appendChild(planThumb(d6,560,360));$('button',w).onclick=()=>showWork(s);$('#wl').appendChild(w);});
+  };
+  const refresh=async()=>{try{await load(true);draw();setConn(true);}catch(e){$('#wl').innerHTML=`<div class="card bad">❌ ${esc(e.message)}</div>`;}};
+  $('#ref').onclick=refresh;refresh();
+}
+
+/* ⑥ 칭찬 코인 */
+async function coins(){
+  const el=$('#main');el.innerHTML='<p class="hint">⏳ 불러오는 중…</p>';
+  if(!(await needRooms(el,coins)))return;
+  const room=T.rooms.find(r=>r.code===T.room);
+  el.innerHTML=`<div class="card">${roomPicker()}</div><div class="card"><h2>⑥ 칭찬 코인 보내기</h2>
+   <p class="hint">발표를 잘했거나, 친구를 도와줬거나, 모둠 활동을 열심히 한 학생에게 코인을 보내 주세요. 칭찬 코인은 <b>코인</b>만 늘고 <b>경험치(반 순위)</b>에는 영향이 없어요.</p>
+   <div class="row" style="margin:8px 0"><b>누구에게?</b><select id="cw"><option value="all">이 방 전체</option>${room.classes.map(c=>`<option value="cls:${c}">${c}반 전체</option>`).join('')}<option value="sids">학번 직접 입력</option></select><input type="text" id="cs" placeholder="학번을 쉼표로 (예: 20301,20315)" style="width:300px;display:none"></div>
+   <div class="row"><b>몇 개?</b><input type="number" id="ca" value="20" style="width:110px">개 <button class="btn big" id="cgo">🪙 보내기</button></div></div>`;
+  bindRoomPicker(coins);
+  $('#cw').onchange=()=>{$('#cs').style.display=$('#cw').value==='sids'?'':'none';};
+  $('#cgo').onclick=async()=>{const w=$('#cw').value;const t=w==='all'?{all:true}:w==='sids'?{sids:$('#cs').value.split(/[,\s]+/).filter(Boolean)}:{cls:w.slice(4)};
+    try{const r=await adminApi({action:'bonus',code:T.room,amount:+$('#ca').value,...t});toast(`🎉 ${r.count}명에게 칭찬 코인을 보냈어요!`,'good');}catch(e){toast('❌ '+e.message,'bad');}};
+}
+
+/* 시작 */
+$('#logo-svg').innerHTML=dodamSVG(30,{roof:'#7e57c2'});
+$$('#nav button').forEach(b=>b.onclick=()=>tab(b.dataset.tab));
+if(fbCfg()){setConn(true);}else setConn(false,'연결 설정 필요');
+tab(fbCfg()&&T.pw?(LS.get('dodam-t-tab')||'rooms'):'setup');
+
+</script>
+</body>
+</html>
