@@ -2406,12 +2406,12 @@ function renderLogin(msg){
     ${guests.length&&!url?`<div class="hint" style="margin-top:8px">💾 이 노트북에 <b>등록하지 않은 기록</b>이 있어요: ${guests.map(g=>`<button class="linkbtn" data-g="${g.gid}">⭐${g.stars} 🪙${g.coins} (${new Date(g.ts).toLocaleString().slice(0,-3)}) 이어서 하기</button>`).join(' ')}</div>`:''}
     ${url?'':`<div class="hint" style="margin-top:8px">ℹ️ 서버가 연결되지 않은 화면이라 이 노트북에만 저장돼요.</div>`}
     <div class="lg-msg" id="lg-msg">${msg||''}</div>
-    <div class="lg-foot"><span class="hint">${url?'☁️ 선생님 기록 저장소와 연결됨':''}</span><span><a class="linkbtn" href="teacher.html" style="text-decoration:none;margin-right:10px">👩‍🏫 교사용 화면</a><button class="linkbtn" id="lg-url">⚙ 연결 설정</button></span></div></div></div>`;
+    <div class="lg-foot"><span class="hint">${url?'☁️ 선생님 기록 저장소와 연결됨':''}</span><span>${url?'':'<button class="linkbtn" id="lg-url">⚙ 연결 설정</button>'}</span></div></div></div>`;
   if($('#lg-quick'))$('#lg-quick').onclick=()=>startGuest(null);
   $$('[data-g]').forEach(b=>b.onclick=()=>startGuest(b.dataset.g));
   if($('#lg-resume'))$('#lg-resume').onclick=()=>accountModal('resume');
   $$('[data-k]').forEach(b=>b.onclick=()=>pinModal(known[+b.dataset.k]));
-  $('#lg-url').onclick=()=>prompt2('Firebase 설정(firebase-config.js의 내용 또는 {apiKey:…} 부분)을 붙여넣으세요. 선생님만 쓰는 메뉴예요.',LS.get('dodam-fb-cfg')?'(저장된 설정이 있어요. 지우려면 비워 두고 확인)':'',val=>{if(!val||val.indexOf('(저장된')===0){LS.del('dodam-fb-cfg');renderLogin();return;}const c=parseFbConfig(val);if(!c){toast('설정을 읽을 수 없어요. apiKey와 projectId가 들어 있어야 해요.','bad');return;}LS.set('dodam-fb-cfg',JSON.stringify(c));renderLogin();});
+  if($('#lg-url'))$('#lg-url').onclick=()=>prompt2('Firebase 설정(firebase-config.js의 내용 또는 {apiKey:…} 부분)을 붙여넣으세요. 선생님만 쓰는 메뉴예요.',LS.get('dodam-fb-cfg')?'(저장된 설정이 있어요. 지우려면 비워 두고 확인)':'',val=>{if(!val||val.indexOf('(저장된')===0){LS.del('dodam-fb-cfg');renderLogin();return;}const c=parseFbConfig(val);if(!c){toast('설정을 읽을 수 없어요. apiKey와 projectId가 들어 있어야 해요.','bad');return;}LS.set('dodam-fb-cfg',JSON.stringify(c));renderLogin();});
 }
 function prompt2(title,val,cb){
   modal(`<h2 style="margin-top:0;font-size:18px">${title}</h2><input id="p2-in" style="width:100%;padding:8px;border:2px solid var(--line);border-radius:9px" value="${esc(val||'')}"><div class="m-actions"><button class="btn ghost" id="p2-no">취소</button><button class="btn" id="p2-ok">확인</button></div>`);
