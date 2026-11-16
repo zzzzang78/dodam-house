@@ -2406,7 +2406,7 @@ function renderLogin(msg){
     ${guests.length?`<div class="hint" style="margin-top:8px">💾 이 노트북에 <b>등록하지 않은 기록</b>이 있어요: ${guests.map(g=>`<button class="linkbtn" data-g="${g.gid}">⭐${g.stars} 🪙${g.coins} (${new Date(g.ts).toLocaleString().slice(0,-3)}) 이어서 하기</button>`).join(' ')}</div>`:''}
     ${url?'':`<div class="hint" style="margin-top:8px">ℹ️ 서버가 연결되지 않은 화면이라 이 노트북에만 저장돼요.</div>`}
     <div class="lg-msg" id="lg-msg">${msg||''}</div>
-    <div class="lg-foot"><span class="hint">${url?'☁️ 선생님 기록 저장소와 연결됨':''}</span><button class="linkbtn" id="lg-url">⚙ 연결 설정</button></div></div></div>`;
+    <div class="lg-foot"><span class="hint">${url?'☁️ 선생님 기록 저장소와 연결됨':''}</span><span><a class="linkbtn" href="teacher.html" style="text-decoration:none;margin-right:10px">👩‍🏫 교사용 화면</a><button class="linkbtn" id="lg-url">⚙ 연결 설정</button></span></div></div></div>`;
   $('#lg-quick').onclick=()=>startGuest(null);
   $$('[data-g]').forEach(b=>b.onclick=()=>startGuest(b.dataset.g));
   if($('#lg-resume'))$('#lg-resume').onclick=()=>accountModal('resume');
