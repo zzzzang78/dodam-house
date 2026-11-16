@@ -527,7 +527,7 @@ body.on-map header{display:none}body.login-mode #hud{display:none}
 .town .door-cell{border-radius:90px 90px 18px 18px;background:#ffc9a0;color:#a8643a;min-height:78px;font-size:15px}
 .npc2{position:absolute;left:calc(50% - 560px);bottom:50px;display:flex;flex-direction:column;align-items:center;z-index:3}
 .sp2{background:#fff;border:3px solid #ffd98a;border-radius:18px;padding:6px 12px;font-size:15px;margin-bottom:2px;white-space:nowrap}
-.sign{position:absolute;right:26px;bottom:42px;text-align:center;font-size:16px;border:none;background:none;z-index:3;cursor:pointer;color:var(--ink)}
+.sign{position:absolute;right:26px;bottom:6px;text-align:center;font-size:16px;border:none;background:none;z-index:3;cursor:pointer;color:var(--ink)}
 .sign .bd2{background:#fff;border:3px solid #ffc94d;border-radius:14px;padding:3px 12px;margin-top:-6px;position:relative;display:block;box-shadow:0 3px 0 #f0c066}
 .sign small{display:block;font-size:12px;color:#9a8aa8}.sign:hover{transform:translateY(-3px)}
 .town .tnote{position:absolute;left:50%;top:10px;transform:translateX(-50%);background:#ffffffd9;border-radius:999px;padding:4px 14px;font-size:14px;color:#7a6f6b;z-index:3;white-space:nowrap}
@@ -559,6 +559,10 @@ textarea,input,code,pre,kbd{word-break:normal}
 .heart-fly{position:fixed;z-index:99;pointer-events:none;font-size:20px;animation:hfly 1.1s ease-out forwards}
 @keyframes hfly{from{opacity:1;transform:translateY(0) scale(.7)}to{opacity:0;transform:translateY(-70px) scale(1.3)}}
 .modal:has(.peer-big){max-width:900px}.peer-big{min-width:min(820px,86vw)}.pb-tabs{display:flex;gap:6px;margin:8px 0}#pb-c canvas{max-height:54vh;width:auto!important;max-width:100%;display:block;margin:0 auto}
+.sign2{right:26px;bottom:192px}.mailbox{position:absolute;left:22px;bottom:44px;border:none;background:none;z-index:3;cursor:pointer;text-align:center;font-size:16px;color:var(--ink)}
+.mailbox .bd2{background:#fff;border:3px solid #ffb3b3;border-radius:14px;padding:2px 10px;margin-top:-6px;position:relative;display:block;box-shadow:0 3px 0 #ffb3b3}.mailbox:hover{transform:translateY(-3px)}
+.mail-cats{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}.mailbox-m textarea{width:100%;padding:10px;border:2px solid var(--line);border-radius:14px;font-family:inherit;font-size:16px;resize:vertical}
+.mail-list{display:flex;flex-direction:column;gap:6px;max-height:160px;overflow:auto}.mail-it{background:#fff8ec;border-radius:12px;padding:8px 12px;font-size:15px}.mail-it small{color:#9a8aa8}
 </style>
 </head>
 <body>
@@ -1423,7 +1427,7 @@ const FB_API={
     const m=await fbBoardMap(a,r.code);const students=Object.keys(m).map(k=>fbPub(k,m[k]));
     if(b.full){ // 결과물(내 방)까지 필요할 때만 개인 기록을 읽어요
       for(let i=0;i<students.length;i+=10)await Promise.all(students.slice(i,i+10).map(async s=>{
-        const d=await a.get('rooms/'+r.code+'/students/'+s.sid);const st=d&&fbParse(d.state)||{};s.s6=st.s6||null;s.s0=st.s0||null;if(!s.avatar)s.avatar=st.avatar||null;}));
+        const d=await a.get('rooms/'+r.code+'/students/'+s.sid);const st=d&&fbParse(d.state)||{};s.s6=st.s6||null;s.s0=st.s0||null;s.mail=(st.mail||[]).slice(-10);if(!s.avatar)s.avatar=st.avatar||null;}));
     }
     students.sort(fbSort);
     return{ok:true,room:{code:r.code,name:r.name,classes:r.classes,open:r.open},students,now:Date.now()};
@@ -1592,7 +1596,8 @@ function go(id){
   if(id==='shop'){renderShop();return;}
   if(id==='board'){renderBoard();return;}
   if(id==='peers'){renderPeers();return;}
-  if(id==='explore'){renderExplore();return;}
+  if(id==='explore'){renderExplore('tech');return;}
+  if(id==='know'){renderExplore('know');return;}
   const st=STAGES.find(s=>s.id===id);
   scr.innerHTML=`<div class="stage"><div class="stage-head">
     <button class="btn ghost small" id="btn-back">← 지도</button>
@@ -1666,9 +1671,12 @@ function renderMap(){
     <div class="floors">${STAGES.map(s=>`<button class="room-card ${lit(s.id)?'lit':''}" data-go="${s.id}"><div class="rc-win">${lit(s.id)?'💡':'🌙'}</div><div class="rc-no">${stLabel(s)}</div><div class="rc-title">${s.icon} ${s.title}</div><div class="rc-stars">${[1,2,3].map(i=>`<span class="${i<=(S.stars[s.id]||0)?'on':''}">★</span>`).join('')}</div></button>`).join('')}
      <div class="door-cell"><b>🚪</b>현관<br>${total===0?'처음이면 열기부터!':`별 ${total}개 모았어요`}</div></div></div>
    <div class="npc2"><div class="sp2">${next?`안녕! 다음은 <b style="font-weight:400;color:#e6903a">${stLabel(next)}</b>야!`:'모든 방에 불을 켰어! 대단해!'}</div>${dodamSVG(92,S.avatar)}</div>
-   <button class="sign" data-go="explore" title="심화 · 선택"><svg width="110" height="104" viewBox="0 0 120 120" aria-hidden="true"><rect x="56" y="60" width="8" height="56" fill="#b98657"/><rect x="14" y="14" width="92" height="52" rx="14" fill="#fff" stroke="#ffc94d" stroke-width="5"/><g stroke="#6fb8f0" stroke-width="5" stroke-linecap="round" fill="none"><path d="M40 52 V28 H72"/><path d="M72 28 V44"/><path d="M40 28 L56 16"/></g><rect x="66" y="44" width="12" height="9" rx="2" fill="#ffc94d"/></svg><span class="bd2">🏗️ 건설 기술 탐험<small>선택 · 심화</small></span></button>
+   <button class="sign" data-go="explore" title="심화 · 선택"><svg width="156" height="121" viewBox="0 0 160 124" aria-hidden="true"><defs><linearGradient id="gcA" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#bfe6ff"/><stop offset="1" stop-color="#fff4d9"/></linearGradient><clipPath id="gcC"><rect x="4" y="4" width="152" height="84" rx="16"/></clipPath></defs><rect x="76" y="84" width="8" height="40" fill="#b98657"/><rect x="4" y="4" width="152" height="84" rx="16" fill="url(#gcA)"/><g clip-path="url(#gcC)"><ellipse cx="34" cy="20" rx="15" ry="6" fill="#fff" opacity=".9"/><ellipse cx="46" cy="16" rx="9" ry="5" fill="#fff" opacity=".9"/><rect x="4" y="70" width="152" height="18" fill="#8fd18a"/><rect x="20" y="46" width="46" height="26" fill="#ffb08a"/><rect x="26" y="52" width="9" height="9" rx="2" fill="#fff"/><rect x="40" y="52" width="9" height="9" rx="2" fill="#fff"/><rect x="54" y="56" width="8" height="16" rx="2" fill="#b98657"/><rect x="20" y="32" width="46" height="14" fill="#ffd27a"/><path d="M20 32V20M43 32V20M66 32V20M20 20H66" stroke="#6fb8f0" stroke-width="3" fill="none" stroke-linecap="round"/><rect x="104" y="18" width="7" height="54" fill="#ff9f43"/><path d="M104 28L111 36M111 28L104 36M104 44L111 52M111 44L104 52M104 60L111 68M111 60L104 68" stroke="#fff" stroke-width="1.5"/><rect x="72" y="12" width="74" height="6" rx="2" fill="#ff9f43"/><polygon points="107.500,3 100,12 115,12" fill="#ff9f43"/><rect x="128" y="18" width="12" height="10" rx="2" fill="#8d8d99"/><rect x="100" y="12" width="14" height="8" rx="2" fill="#ffc94d"/><path d="M80 18V38" stroke="#555" stroke-width="1.8"/><rect x="72" y="38" width="16" height="9" rx="2" fill="#6fb8f0" stroke="#3f8fd0" stroke-width="1.5"/><circle cx="140" cy="76" r="5" fill="#ff9f43"/><path d="M135 76a5 5 0 0 1 10 0z" fill="#ffd84d"/></g><rect x="4" y="4" width="152" height="84" rx="16" fill="none" stroke="#ffc94d" stroke-width="5"/></svg><span class="bd2">🏗️ 건설 기술 탐험<small>선택 · 심화</small></span></button>
+  <button class="sign sign2" data-go="know" title="생활 · 선택"><svg width="156" height="121" viewBox="0 0 160 124" aria-hidden="true"><defs><linearGradient id="gkA" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#efe6ff"/><stop offset="1" stop-color="#fff"/></linearGradient></defs><rect x="76" y="84" width="8" height="40" fill="#b98657"/><rect x="4" y="4" width="152" height="84" rx="16" fill="url(#gkA)" stroke="#a98bf0" stroke-width="5"/><rect x="14" y="32" width="28" height="38" rx="4" fill="#fff" stroke="#a98bf0" stroke-width="2.5"/><path d="M20 42H36M20 50H36M20 58H30" stroke="#c9b5ff" stroke-width="3" stroke-linecap="round"/><path d="M30 64l3 3 6-7" stroke="#4fb477" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/><rect x="54" y="48" width="44" height="30" fill="#ffe3c2"/><polygon points="46,50 76,22 106,50" fill="#ff8f7a"/><rect x="69" y="58" width="14" height="20" rx="2" fill="#b98657"/><rect x="58" y="54" width="9" height="9" rx="2" fill="#bfe6ff"/><rect x="85" y="54" width="9" height="9" rx="2" fill="#bfe6ff"/><circle cx="128" cy="34" r="12" fill="#ffd84d" stroke="#f0b429" stroke-width="2.5"/><rect x="123" y="45" width="10" height="6" rx="2" fill="#a98bf0"/><path d="M128 14V10M144 22l3-3M112 22l-3-3M148 36h4M104 36h-4" stroke="#f0b429" stroke-width="2.5" stroke-linecap="round"/></svg><span class="bd2" style="border-color:#c9b5ff;box-shadow:0 3px 0 #c9b5ff">📌 알아두면 좋은 집 지식<small>선택 · 생활</small></span></button>
+  <button class="mailbox" id="mailbox" title="도담이에게 편지 보내기"><svg width="64" height="90" viewBox="0 0 64 90" aria-hidden="true"><rect x="28" y="46" width="8" height="42" fill="#b98657"/><rect x="6" y="14" width="52" height="38" rx="16" fill="#ff8a8a" stroke="#e86a6a" stroke-width="3"/><rect x="14" y="26" width="30" height="5" rx="2.5" fill="#fff" opacity=".9"/><rect x="46" y="8" width="5" height="24" rx="2" fill="#ffc94d"/><rect x="46" y="8" width="14" height="9" rx="2" fill="#ffc94d"/></svg><span class="bd2">💌 우체통</span></button>
   </div>`;
   $$('[data-go]').forEach(b=>b.onclick=()=>go(b.dataset.go));
+  $('#mailbox').onclick=openMail;
 }
 
 /* ===================== STAGE 1 : 구역화 퍼즐 ===================== */
@@ -2711,7 +2719,7 @@ const EMBED=(()=>{try{return window.self!==window.top;}catch(e){return true;}})(
 
 /* ===================== 건설 기술 탐험 (심화 · 선택) ===================== */
 const EXPLORE=[
- {id:'e1',icon:'🧱',title:'집을 지탱하는 구조와 재료',sub:'벽식·기둥식, 철근 콘크리트',color:'#d8ecff',
+ {grp:'tech',id:'e1',icon:'🧱',title:'집을 지탱하는 구조와 재료',sub:'벽식·기둥식, 철근 콘크리트',color:'#d8ecff',
   pages:[
    {t:'집은 어떻게 서 있을까? — 구조 방식',h:`<p>집의 무게와 바람·눈 같은 힘(<b>하중</b>)을 무엇이 받치느냐에 따라 구조가 나뉘어요.</p>
      <div class="ex-two"><div><b>🧱 벽식 구조</b><br>벽이 하중을 받아요. 아파트에 많아요.<br><small>벽 자체가 집을 지탱해서 <b>마음대로 허물 수 없어요</b>. 방 구조를 바꾸기 어려워요.</small></div>
@@ -2723,7 +2731,7 @@ const EXPLORE=[
    {q:'벽이 건물의 무게를 받치고 있어서, 함부로 허물면 위험한 구조는?',o:['벽식 구조','기둥식 구조','말뚝 기초','철골 구조'],a:0,w:'벽 자체가 하중을 받는 구조를 벽식 구조라고 해요.'},
    {q:'철근 콘크리트에서 철근이 특히 강한 힘은?',o:['누르는 힘','당기는 힘','불에 타지 않는 힘','소리를 막는 힘'],a:1,w:'콘크리트는 누르는 힘, 철근은 당기는 힘에 강해요.'},
    {q:'건물의 무게와 외부의 힘을 땅으로 전달하는 부분은?',o:['지붕','기둥 장식','기초','창틀'],a:2,w:'건물 맨 아래에서 힘을 땅으로 전달하는 부분이 기초예요.'}]},
- {id:'e2',icon:'🌤',title:'쾌적한 집을 만드는 기술',sub:'단열, 환기, 채광, 온돌',color:'#dff5e8',
+ {grp:'tech',id:'e2',icon:'🌤',title:'쾌적한 집을 만드는 기술',sub:'단열, 환기, 채광, 온돌',color:'#dff5e8',
   pages:[
    {t:'열을 지켜라 — 단열과 결로',h:`<p>겨울에 따뜻하고 여름에 시원하려면 열이 드나들지 않게 막아야 해요. 이것이 <b>단열</b>이에요.</p><ul class="ex-list"><li>열이 가장 많이 새는 곳은 <b>창문</b>이에요. 이중창은 사이 공기층이 열을 막아요.</li><li>벽·바닥·지붕에는 <b>단열재</b>를 넣어요.</li><li><b>결로</b>: 실내의 따뜻하고 습한 공기가 찬 벽이나 유리에 닿아 물방울이 맺히는 현상. 곰팡이의 원인이 돼요.</li></ul>`},
    {t:'공기와 햇빛 — 환기와 채광',h:`<ul class="ex-list"><li><b>자연 환기</b>: 마주 보는 두 방향의 창을 열면 바람이 지나가요 (맞통풍).</li><li><b>기계 환기</b>: 환기구·환기 장치로 공기를 바꿔요. 창을 열기 어려운 날에도 좋아요.</li><li><b>채광</b>: 남향 창으로 햇빛을 들여요. <b>처마·차양</b>은 높은 여름 햇빛은 막고 낮은 겨울 햇빛은 들여요.</li></ul>`},
@@ -2732,7 +2740,7 @@ const EXPLORE=[
    {q:'겨울에 실내의 습한 공기가 차가운 유리창에 닿아 물방울이 맺히는 현상은?',o:['환기','결로','채광','복사'],a:1,w:'습한 공기가 찬 곳에 닿아 물방울이 생기는 것이 결로예요.'},
    {q:'자연 환기를 잘 하려면 창을 어떻게 열면 좋을까요?',o:['한쪽 벽의 창만 연다','마주 보는 두 방향의 창을 연다','커튼을 모두 닫는다','문을 모두 잠근다'],a:1,w:'마주 보는 창을 열면 바람이 지나가요.'},
    {q:'처마나 차양이 하는 일은?',o:['여름 햇빛은 막고 겨울 햇빛은 들인다','항상 햇빛을 막는다','바닥을 데운다','소리를 줄인다'],a:0,w:'해가 높은 여름 햇빛은 막고, 낮은 겨울 햇빛은 들이는 데 도움이 돼요.'}]},
- {id:'e3',icon:'🌱',title:'소음·물·에너지, 똑똑하게 지키기',sub:'층간소음, 방수, 친환경 건축',color:'#fff0c9',
+ {grp:'tech',id:'e3',icon:'🌱',title:'소음·물·에너지, 똑똑하게 지키기',sub:'층간소음, 방수, 친환경 건축',color:'#fff0c9',
   pages:[
    {t:'층간소음 줄이기',h:`<ul class="ex-list"><li><b>충격음</b>: 뛰거나 물건을 떨어뜨릴 때 바닥을 타고 전해지는 소리.</li><li><b>공기음</b>: 말소리·TV 소리처럼 공기를 타고 전해지는 소리.</li></ul><p>줄이는 방법: 바닥에 <b>완충재</b>를 넣고 슬래브를 두껍게 짓기, 집 안에서 <b>매트·슬리퍼</b> 쓰기, 가구 다리에 <b>소음 방지 패드</b> 붙이기.</p>`},
    {t:'물이 새지 않게 — 방수',h:`<p>욕실·주방·베란다·옥상처럼 물을 쓰거나 비를 맞는 곳에는 <b>방수층</b>을 만들어요.</p><ul class="ex-list"><li>바닥을 <b>배수구 쪽으로 살짝 기울여</b> 물이 고이지 않게 해요.</li><li>방수가 깨지면 아래층에 누수가 생기고 곰팡이가 자라요.</li></ul>`},
@@ -2741,7 +2749,7 @@ const EXPLORE=[
    {q:'아이가 뛰는 소리처럼 바닥을 타고 전해지는 층간소음을 줄이는 방법은?',o:['바닥에 매트를 깐다','창문을 닫는다','TV를 켠다','커튼을 단다'],a:0,w:'충격음은 바닥 완충재와 매트로 줄일 수 있어요.'},
    {q:'욕실 바닥에서 방수와 함께 하는 일은?',o:['바닥을 배수구 반대로 기울인다','바닥을 배수구 쪽으로 살짝 기울인다','바닥을 항상 평평하게 한다','바닥을 비워 둔다'],a:1,w:'물이 배수구로 흐르도록 살짝 기울여요.'},
    {q:'제로에너지 건축의 특징으로 알맞은 것은?',o:['에어컨을 많이 단다','단열을 높이고 태양광 등으로 에너지를 만든다','창을 모두 없앤다','가장 높게 짓는다'],a:1,w:'에너지를 아끼고 직접 만들어 쓰는 것이 핵심이에요.'}]},
- {id:'e4',icon:'📐',title:'어른이 되면 쓰는 집 지식',sub:'평수와 ㎡, 면적 용어, 도면 읽기',color:'#f1e3ff',
+ {grp:'know',id:'e4',icon:'📐',title:'어른이 되면 쓰는 집 지식',sub:'평수와 ㎡, 면적 용어, 도면 읽기',color:'#f1e3ff',
   pages:[
    {t:'평수와 ㎡ — 얼마나 넓을까?',h:`<p>집의 넓이는 법적으로 <b>㎡(제곱미터)</b>로 써요. 하지만 일상에서는 아직 <b>평</b>도 많이 써요.</p><div class="ex-two"><div><b>📏 바꾸는 방법</b><br>1평 ≈ <b>3.3㎡</b><br><small>㎡ ÷ 3.3 = 평<br>평 × 3.3 = ㎡</small></div><div><b>🧮 예) 우리 방</b><br>11.9㎡ ÷ 3.3 ≈ <b>3.6평</b><br><small>10평은 약 33㎡예요.</small></div></div><p class="hint">6단계에서 만든 내 방의 넓이가 몇 평인지 직접 계산해 봐도 좋아요.</p>`},
    {t:'전용면적과 공급면적',h:`<p>집 광고에 나오는 면적에는 종류가 있어요. 이름이 비슷해도 <b>쓸 수 있는 넓이</b>가 달라요.</p><ul class="ex-list"><li><b>🛋 전용면적</b> — 우리 가족이 실제로 쓰는 집 안의 넓이 (방·거실·주방·욕실).</li><li><b>🚪 공용면적</b> — 현관 밖 복도, 계단, 엘리베이터처럼 이웃과 함께 쓰는 곳.</li><li><b>📦 공급면적</b> — 전용면적 + 공용면적 일부. 광고의 "OO평형"은 이 넓이일 때가 많아요.</li></ul><p class="hint">그래서 "34평"이라고 불러도 실제로 생활하는 전용면적은 훨씬 작을 수 있어요. 집을 고를 때는 <b>전용면적</b>을 꼭 확인해요!</p>`},
@@ -2751,24 +2759,53 @@ const EXPLORE=[
    {q:'1평은 약 몇 ㎡일까요?',o:['약 1.3㎡','약 3.3㎡','약 10㎡','약 33㎡'],a:1,w:'1평은 약 3.3㎡예요. 그래서 33㎡는 약 10평이에요.'},
    {q:'우리 가족이 실제로 생활하는 집 안의 넓이를 나타내는 것은?',o:['공용면적','공급면적','전용면적','대지면적'],a:2,w:'방·거실·주방·욕실처럼 집 안에서 쓰는 넓이가 전용면적이에요.'},
    {q:'겨울에 햇빛이 가장 깊이 들어와 따뜻한 방향은?',o:['북향','남향','어느 쪽이든 같다','천장 쪽'],a:1,w:'남향은 해가 낮은 겨울에 햇빛이 깊이 들어와요.'},
-   {q:'큰 보증금을 맡기고 일정 기간 집을 빌려 살다가, 끝나면 돌려받는 방식은?',o:['매매','월세','전세','관리비'],a:2,w:'전세는 보증금을 맡기고 집을 빌려 쓴 뒤 돌려받아요.'}]}
+   {q:'큰 보증금을 맡기고 일정 기간 집을 빌려 살다가, 끝나면 돌려받는 방식은?',o:['매매','월세','전세','관리비'],a:2,w:'전세는 보증금을 맡기고 집을 빌려 쓴 뒤 돌려받아요.'}]},
+ {grp:'know',id:'k2',icon:'📦',title:'이사와 계약, 이렇게 해요',sub:'이사 준비, 계약서, 보증금 지키기',color:'#ffe3d6',
+  pages:[
+   {t:'이사 전후에 할 일',h:`<ul class="ex-list"><li><b>🚚 이삿짐센터</b> — 여러 곳의 견적을 비교하고, 이사 날짜와 짐 양을 미리 알려요.</li><li><b>🧾 정산</b> — 전기·수도·가스 요금은 이사 날 기준으로 정리해요.</li><li><b>📮 주소 변경</b> — 우편물, 학교, 은행 등의 주소를 바꿔요.</li><li><b>🏛 전입신고</b> — 새 주소로 옮겼다고 주민센터나 온라인으로 알려요.</li></ul>`},
+   {t:'계약서 앞에서 확인할 것',h:`<ul class="ex-list"><li><b>👤 집주인이 맞는지</b> — <b>등기부등본</b>으로 집의 주인과 빚(저당) 여부를 확인할 수 있어요.</li><li><b>💵 금액과 날짜</b> — 보증금, 월세, 내는 날짜, 계약 기간을 꼼꼼히 봐요.</li><li><b>🔧 수리 책임</b> — 보일러나 수도가 고장 나면 누가 고치는지 적어 둬요.</li></ul><p class="hint">시세보다 너무 싼 집은 한 번 더 의심하고, 큰 계약은 꼭 <b>어른과 함께</b> 확인해요.</p>`},
+   {t:'내 보증금 지키는 방법',h:`<p>보증금은 큰돈이라 지키는 방법을 알아 두면 좋아요.</p><ul class="ex-list"><li><b>🏛 전입신고</b> — 내가 그 집에 살고 있다는 사실을 공식적으로 알려요.</li><li><b>📝 확정일자</b> — 계약서에 날짜를 확인받아, 계약한 순서를 증명하는 데 도움이 돼요.</li></ul><p class="hint">이 두 가지는 보증금을 지키는 데 중요한 기본 절차예요. 자세한 방법은 부모님이나 주민센터에 물어봐요.</p>`}],
+  quiz:[
+   {q:'새 주소로 이사했다고 공식적으로 알리는 절차는?',o:['전입신고','관리비 납부','등기 취소','이삿짐 정리'],a:0,w:'새 주소로 옮겼다고 알리는 것이 전입신고예요.'},
+   {q:'집주인이 누구인지, 집에 빚은 없는지 확인할 수 있는 서류는?',o:['버스 카드','등기부등본','학생증','가스 영수증'],a:1,w:'등기부등본에는 집의 주인과 권리 관계가 나와 있어요.'},
+   {q:'큰 계약을 할 때 알맞은 태도는?',o:['빨리 도장부터 찍는다','어른과 함께 계약서를 꼼꼼히 확인한다','광고만 믿는다','혼자 몰래 결정한다'],a:1,w:'큰 금액이 오가는 계약은 어른과 함께 꼼꼼히 확인해요.'}]},
+ {grp:'know',id:'k3',icon:'🧯',title:'집 안 안전, 이것만은!',sub:'화재, 미끄럼, 비상 연락',color:'#ffe0e0',
+  pages:[
+   {t:'불이 나지 않게, 나면 이렇게',h:`<ul class="ex-list"><li><b>🔌 콘센트</b> — 한 곳에 많이 꽂는 <b>문어발</b>과 젖은 손으로 만지는 건 위험해요.</li><li><b>🔥 가스</b> — 쓰고 나면 밸브를 잠가요.</li><li><b>🧯 소화기</b> — <b>핀 뽑기 → 불 쪽으로 겨누기 → 손잡이 누르기 → 쓸듯이 뿌리기</b> 순서예요.</li></ul><p class="hint">불이 커지면 끄려고 하지 말고 바로 대피해요!</p>`},
+   {t:'미끄러지고 넘어지지 않게',h:`<ul class="ex-list"><li><b>🛁 욕실</b> — 미끄럼 방지 매트를 깔고, 바닥의 물기는 바로 닦아요.</li><li><b>🚪 문턱·계단</b> — 물건을 쌓아 두지 않아요.</li><li><b>👶 어린 가족</b> — 가구 모서리에는 보호대를 붙이면 좋아요.</li></ul><p class="hint">6단계에서 동선을 비워 둔 것도 넘어짐을 막는 안전 습관이에요.</p>`},
+   {t:'비상 상황 알아두기',h:`<ul class="ex-list"><li><b>📞 119</b> — 불이 났거나 크게 다쳤을 때. <b>112</b>는 위험한 일이 생겼을 때.</li><li><b>🗺 대피로</b> — 우리 집에서 나가는 길을 <b>두 가지</b> 알아 둬요.</li><li><b>🪜 화재 대피</b> — 엘리베이터 대신 <b>계단</b>으로, 낮은 자세로 이동해요.</li></ul><p class="hint">전화할 때는 <b>우리 집 주소</b>를 침착하게 말해요.</p>`}],
+  quiz:[
+   {q:'소화기를 사용할 때 가장 먼저 하는 일은?',o:['손잡이를 누른다','안전핀을 뽑는다','불 위에 던진다','물을 붓는다'],a:1,w:'먼저 안전핀을 뽑고, 불 쪽으로 겨눠서 손잡이를 눌러요.'},
+   {q:'화재가 났을 때 대피 방법으로 알맞은 것은?',o:['엘리베이터를 탄다','계단으로 낮은 자세로 이동한다','방에 숨는다','창문으로 뛰어내린다'],a:1,w:'엘리베이터는 멈출 수 있어서 계단으로 대피해요.'},
+   {q:'콘센트 하나에 여러 개를 꽂는 문어발이 위험한 이유는?',o:['모양이 보기 싫어서','전기가 과하게 흘러 열이 나 불이 날 수 있어서','소리가 나서','돈이 더 들어서'],a:1,w:'과부하가 걸려 과열되면 화재 위험이 커져요.'}]},
+ {grp:'know',id:'k4',icon:'💡',title:'전기·물·난방 똑똑하게 아끼기',sub:'대기전력, 적정 온도, 관리비',color:'#e5f6d8',
+  pages:[
+   {t:'보이지 않게 새는 전기',h:`<ul class="ex-list"><li><b>🔌 대기전력</b> — 꺼 둔 것 같아도 플러그가 꽂혀 있으면 조금씩 전기가 써요.</li><li><b>🔘 멀티탭 스위치</b> — 안 쓸 때는 스위치를 꺼요.</li><li><b>🏷 에너지소비효율등급</b> — 숫자가 작은 <b>1등급</b>일수록 전기를 덜 써요.</li></ul>`},
+   {t:'냉난방은 알맞게',h:`<ul class="ex-list"><li><b>🌡 적정 온도</b> — 여름 <b>26℃</b>, 겨울 <b>20℃</b> 안팎이 건강과 절약에 좋아요.</li><li><b>🪟 단열</b> — 두꺼운 커튼과 창문 단열재는 열이 빠지는 걸 줄여요.</li><li><b>🌀 선풍기</b> — 에어컨과 함께 쓰면 시원한 공기가 골고루 퍼져요.</li></ul>`},
+   {t:'물 아끼고 관리비 읽기',h:`<ul class="ex-list"><li><b>🚿 물</b> — 양치할 땐 컵을 쓰고, 샤워 시간을 줄여요.</li><li><b>🧾 관리비 고지서</b> — 청소비, 경비비, 전기·수도·난방비처럼 항목이 나뉘어 있어요.</li></ul><p class="hint">우리 집 고지서를 가족과 함께 읽어 보면 어디에서 아낄 수 있는지 보여요.</p>`}],
+  quiz:[
+   {q:'전기 제품을 꺼 두어도 플러그를 꽂아 두면 쓰이는 전력은?',o:['대기전력','충격음','결로','채광'],a:0,w:'꺼진 것처럼 보여도 플러그가 꽂혀 있으면 대기전력이 들어요.'},
+   {q:'건강과 에너지 절약을 위한 실내 적정 온도로 알맞은 것은?',o:['여름 18℃, 겨울 28℃','여름 26℃, 겨울 20℃','여름 30℃, 겨울 10℃','계절과 상관없이 24℃만'],a:1,w:'여름 26℃, 겨울 20℃ 안팎이 권장돼요.'},
+   {q:'에너지소비효율등급에서 전기를 가장 덜 쓰는 등급은?',o:['5등급','3등급','2등급','1등급'],a:3,w:'1등급이 가장 효율이 좋아요.'}]}
 ];
 const EX_COIN=20,EX_ALL=20;
 function exDone(id){return !!(S.explore&&S.explore[id]);}
-function renderExplore(){
+const EXG={tech:{ico:'🏗️',name:'건설 기술 탐험',tag:'심화 (선택)',desc:'우리가 배운 주거 공간이 <b>어떤 기술</b>로 지어지는지 살펴봐요!',route:'explore'},know:{ico:'📌',name:'알아두면 좋은 집 지식',tag:'생활 (선택)',desc:'어른이 되어 집을 구하고 지킬 때 <b>꼭 필요한 지식</b>이에요!',route:'know'}};
+function renderExplore(grp){
+  grp=grp||'tech';const G=EXG[grp],LIST=EXPLORE.filter(t=>t.grp===grp);
   if(!S.explore)S.explore={};
-  const n=EXPLORE.filter(t=>exDone(t.id)).length;
-  $('#screen').innerHTML=`<div class="board"><div class="board-head"><h2>🏗️ 건설 기술 탐험 <span class="hint">· 심화 (선택)</span></h2><button class="btn ghost small" id="ex-back">← 지도</button></div>
-  <div class="bubble big" style="margin:8px 0 12px">${dodamSVG(36,S.avatar)} 우리가 배운 주거 공간이 <b>어떤 기술</b>로 지어지는지 살펴봐요! 별과 경험치에는 영향이 없고, 처음 끝내면 💰 코인이 조금 나와요. (${n}/${EXPLORE.length}개 완료)</div>
-  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px">${EXPLORE.map(t=>`<button class="room-card lit ex-card" data-ex="${t.id}" style="background:${t.color}"><div class="rc-win">${exDone(t.id)?'✅':'📖'}</div><div class="rc-title">${t.icon} ${t.title}</div><div class="rc-sub">${t.sub}</div><div class="rc-no" style="margin-top:6px">${exDone(t.id)?'완료! 다시 볼 수 있어요':'카드 '+t.pages.length+'장 + 퀴즈 '+t.quiz.length+'문제 · 💰 '+EX_COIN}</div></button>`).join('')}</div>
-  ${n===EXPLORE.length?`<p class="hint" style="text-align:center;margin-top:14px">🎉 건설 기술 탐험을 모두 마쳤어요!</p>`:''}</div>`;
+  const n=LIST.filter(t=>exDone(t.id)).length;
+  $('#screen').innerHTML=`<div class="board"><div class="board-head"><h2>${G.ico} ${G.name} <span class="hint">· ${G.tag}</span></h2><button class="btn ghost small" id="ex-back">← 지도</button></div>
+  <div class="bubble big" style="margin:8px 0 12px">${dodamSVG(36,S.avatar)} ${G.desc} 별과 경험치에는 영향이 없고, 처음 끝내면 💰 코인이 조금 나와요. (${n}/${LIST.length}개 완료)</div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px">${LIST.map(t=>`<button class="room-card lit ex-card" data-ex="${t.id}" style="background:${t.color}"><div class="rc-win">${exDone(t.id)?'✅':'📖'}</div><div class="rc-title">${t.icon} ${t.title}</div><div class="rc-sub">${t.sub}</div><div class="rc-no" style="margin-top:6px">${exDone(t.id)?'완료! 다시 볼 수 있어요':'카드 '+t.pages.length+'장 + 퀴즈 '+t.quiz.length+'문제 · 💰 '+EX_COIN}</div></button>`).join('')}</div>
+  ${n===LIST.length?`<p class="hint" style="text-align:center;margin-top:14px">🎉 ${G.name}을 모두 마쳤어요!</p>`:''}</div>`;
   $('#ex-back').onclick=()=>go('map');
   $$('[data-ex]').forEach(b=>b.onclick=()=>exTopic(EXPLORE.find(t=>t.id===b.dataset.ex)));
 }
 function exTopic(t){
   let p=0;
   const page=()=>{const pg=t.pages[p],last=p===t.pages.length-1;
-    const m=modal(`<div class="note"><div class="c-head">${dodamSVG(48,S.avatar)}<div><div class="c-kicker">🏗️ 건설 기술 탐험 · ${t.icon} ${t.title}</div><h2>${pg.t}</h2></div></div><div class="note-body">${pg.h}</div>
+    const m=modal(`<div class="note"><div class="c-head">${dodamSVG(48,S.avatar)}<div><div class="c-kicker">${EXG[t.grp].ico} ${EXG[t.grp].name} · ${t.icon} ${t.title}</div><h2>${pg.t}</h2></div></div><div class="note-body">${pg.h}</div>
       <div class="note-nav"><button class="btn ghost" id="n-prev" ${p===0?'disabled':''}>◀ 이전</button><div class="dots">${t.pages.map((_,i)=>`<i class="${i===p?'on':''}" data-p="${i}"></i>`).join('')}<span>${p+1} / ${t.pages.length}</span></div><button class="btn ${last?'green':''}" id="n-next">${last?'퀴즈 풀기 ▶':'다음 ▶'}</button></div></div>`,{wide:true});
     $('#n-prev').onclick=()=>{if(p>0){p--;page();}};$('#n-next').onclick=()=>{if(last)exQuiz(t);else{p++;page();}};
     $$('.dots i',m).forEach(d=>d.onclick=()=>{p=+d.dataset.p;page();});};
@@ -2791,11 +2828,11 @@ function exFinish(t,wrong){
   let coins=0,extra='';
   const first=!S.explore[t.id];
   if(first&&!(S.teacher&&serverURL())){S.explore[t.id]=1;coins=EX_COIN;
-    if(EXPLORE.every(x=>S.explore[x.id])){coins+=EX_ALL;extra=`<div class="f-badge"><span>🏗️</span> 건설 기술 탐험 <b>모두 완료!</b> 보너스 💰 ${EX_ALL}</div>`;}
+    if(EXPLORE.filter(x=>x.grp===t.grp).every(x=>S.explore[x.id])){coins+=EX_ALL;extra=`<div class="f-badge"><span>${EXG[t.grp].ico}</span> ${EXG[t.grp].name} <b>모두 완료!</b> 보너스 💰 ${EX_ALL}</div>`;}
     S.coins=(S.coins||0)+coins;save();}
   renderHeader();
-  modal(`<div class="finish"><h2>${t.icon} 탐험 완료!</h2><div class="f-reward">${coins?`<span>💰 +${coins} 코인</span>`:'<span>이미 완료한 탐험이에요 (코인은 처음 한 번만)</span>'}</div>${extra}<div class="f-sum">💡 틀린 횟수: <b>${wrong}번</b> — 끝까지 해결했어요!</div><div class="m-actions"><button class="btn ghost" id="f-list">🏗️ 목록으로</button><button class="btn" id="f-map">🗺 지도로</button></div></div>`);
-  $('#f-list').onclick=()=>{closeModal();go('explore');};$('#f-map').onclick=()=>go('map');if(coins)confetti();
+  modal(`<div class="finish"><h2>${t.icon} 탐험 완료!</h2><div class="f-reward">${coins?`<span>💰 +${coins} 코인</span>`:'<span>이미 완료한 탐험이에요 (코인은 처음 한 번만)</span>'}</div>${extra}<div class="f-sum">💡 틀린 횟수: <b>${wrong}번</b> — 끝까지 해결했어요!</div><div class="m-actions"><button class="btn ghost" id="f-list">📚 목록으로</button><button class="btn" id="f-map">🗺 지도로</button></div></div>`);
+  $('#f-list').onclick=()=>{closeModal();go(EXG[t.grp].route);};$('#f-map').onclick=()=>go('map');if(coins)confetti();
 }
 
 /* ===================== 접속 · 저장 · 코인 · 상점 · 반 대항전 ===================== */
@@ -2805,7 +2842,7 @@ let SESSION=null;           // 게스트: {mode:'guest',gid}  ·  등록: {mode:
 const isOnline=()=>!!(SESSION&&SESSION.mode==='online');
 const isDemo=()=>!!(SESSION&&SESSION.mode==='demo');
 const isGuest=()=>!!(SESSION&&SESSION.mode==='guest');
-function blankState(){return{v:2,nick:'',stars:{},badges:[],coins:0,avatar:{roof:'#ffa88a',body:'#fff0c4',acc:''},owned:[],explore:{},bonusClaimed:0,s6:null,s0:null,rev:0,ts:0,teacher:false};}
+function blankState(){return{v:2,nick:'',stars:{},badges:[],coins:0,avatar:{roof:'#ffa88a',body:'#fff0c4',acc:''},owned:[],explore:{},mail:[],bonusClaimed:0,s6:null,s0:null,rev:0,ts:0,teacher:false};}
 let S=blankState();
 const profKey=()=>!SESSION?'dodam-v2-x':SESSION.mode==='online'?'dodam-v2-p:'+SESSION.room+':'+SESSION.sid:'dodam-v2-g:'+SESSION.gid;
 function pack(){const o={...S};delete o.teacher;return o;}
@@ -2840,6 +2877,7 @@ function mergeStates(server,guest){
   m.badges=[...new Set([...(m.badges||[]),...(guest.badges||[])])];
   m.owned=[...new Set([...(m.owned||[]),...(guest.owned||[])])];
   m.explore={...(m.explore||{}),...(guest.explore||{})};
+  m.mail=[...(m.mail||[]),...(guest.mail||[]).filter(x=>!(m.mail||[]).some(y=>y.id===x.id))].slice(-10);
   m.coins=(m.coins||0)+(guest.coins||0);
   const items=x=>x&&x.items?x.items.length:0;
   if(items(guest.s6)&&(!items(m.s6)||(guest.ts||0)>(m.ts||0)))m.s6=guest.s6;else if(!m.s6&&guest.s6)m.s6=guest.s6;
@@ -3164,6 +3202,26 @@ function init(){
   renderLogin();
 }
 init();
+
+/* ---------- 우체통: 선생님께 보내는 제안 편지 ---------- */
+const MAIL_CATS=[['avatar','🎀 도담이 꾸미기 아이템'],['furn','🛋 가구'],['theme','🎨 방 테마'],['func','⚙ 기능 제안'],['bug','🐞 불편한 점']];
+function openMail(){
+  if(!isOnline()){modal(`<div style="text-align:center"><h2 style="margin-top:0">💌 우체통</h2><p>${isDemo()?'체험 중에는 편지가 전달되지 않아요. 학번으로 들어오면 선생님께 보낼 수 있어요!':'학번으로 시작해야 선생님께 편지를 보낼 수 있어요.'}</p><div class="m-actions"><button class="btn" onclick="closeModal()">확인</button></div></div>`);return;}
+  let cat='avatar';const today=new Date().toDateString();
+  const todayN=()=>(S.mail||[]).filter(x=>new Date(x.ts).toDateString()===today).length;
+  const view=()=>{const mine=(S.mail||[]).slice().reverse();
+    modal(`<div class="mailbox-m"><h2 style="margin-top:0">💌 선생님께 편지 보내기</h2><p class="hint">상점에 있으면 좋겠다 싶은 것, 있었으면 하는 기능, 불편한 점을 적어 보세요. <b>선생님만</b> 읽어요. 하루에 2통까지 보낼 수 있어요. (오늘 ${todayN()}/2)</p>
+    <div class="mail-cats">${MAIL_CATS.map(([k,t])=>`<button class="btn small ${cat===k?'':'ghost'}" data-cat="${k}">${t}</button>`).join('')}</div>
+    <textarea id="mail-t" maxlength="200" rows="4" placeholder="예) 고양이 귀 모자가 있으면 좋겠어요! 가격은 레어 정도가 좋을 것 같아요."></textarea><div class="hint" style="text-align:right"><span id="mail-n">0</span>/200자</div>
+    <div class="m-actions"><button class="btn ghost" id="mail-no">닫기</button><button class="btn" id="mail-ok" ${todayN()>=2?'disabled':''}>💌 보내기</button></div>
+    ${mine.length?`<div class="sec-title" style="margin-top:12px">📮 내가 보낸 편지</div><div class="mail-list">${mine.map(x=>`<div class="mail-it"><small>${esc((MAIL_CATS.find(c=>c[0]===x.cat)||['',''])[1])} · ${new Date(x.ts).toLocaleDateString()}</small><div>${esc(x.txt)}</div></div>`).join('')}</div>`:''}</div>`);
+    $$('[data-cat]').forEach(b=>b.onclick=()=>{const v=$('#mail-t').value;cat=b.dataset.cat;view();$('#mail-t').value=v;$('#mail-n').textContent=v.length;});
+    $('#mail-t').oninput=()=>{$('#mail-n').textContent=$('#mail-t').value.length;};
+    $('#mail-no').onclick=closeModal;
+    $('#mail-ok').onclick=()=>{const txt=$('#mail-t').value.trim();if(txt.length<5){toast('조금 더 자세히 적어 주세요 (5글자 이상)');return;}if(todayN()>=2)return;
+      S.mail=(S.mail||[]).concat({id:'m'+Date.now().toString(36),ts:Date.now(),cat,txt:txt.slice(0,200)}).slice(-10);save();toast('💌 편지를 보냈어요! 선생님이 읽어 볼 거예요.','good');view();};};
+  view();
+}
 
 /* ===== 체험하기(데모) 모드: 저장 없이 둘러보기 ===== */
 function startDemo(){
