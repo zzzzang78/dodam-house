@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap" rel="stylesheet"><link href="https://cdn.jsdelivr.net/gh/moonspam/NanumSquareRound@1.0/nanumsquareround.css" rel="stylesheet">
 <title>도담이네 집 짓기 · 주거 공간 구성 시뮬레이터</title>
 <style>
 :root{--bg:#fdf8f1;--panel:#fff;--ink:#3b3433;--sub:#7a6f6b;--line:#eadfd3;--accent:#ff8a65;--accent2:#5c9ded;--ok:#3fae7a;--warn:#e8554e;--gold:#f5b82e;--r:14px}
@@ -428,8 +428,8 @@ kbd{background:#f3ece4;border:1px solid #d9cbbb;border-bottom-width:3px;border-r
 
 /* ===== 깔끔 파스텔 테마 (단색) ===== */
 :root{--bg:#fffaf2;--panel:#fff;--ink:#5a4a5e;--sub:#9a8a9f;--line:#e0ecf6;--accent:#6fb8f0;--accent2:#8ec5ff;--ok:#62d0a1;--warn:#ff7a8a;--gold:#ffd166;--r:20px}
-html,body{font-family:"Gowun Dodum","Pretendard","Apple SD Gothic Neo","Malgun Gothic",sans-serif;background:var(--bg);font-weight:400}
-b,strong,h1,h2,h3,h4,th,.btn,.logo{font-weight:400}
+html,body{font-family:"NanumSquareRound","Nanum Square Round","Gowun Dodum","Pretendard","Apple SD Gothic Neo","Malgun Gothic",sans-serif;background:var(--bg);font-weight:400}
+b,strong,h1,h2,h3,h4,th,.btn,.logo{font-weight:700}
 header{background:#fff;border-bottom:3px solid #e3f0fa;border-radius:0 0 22px 22px}
 .logo{font-size:20px;color:#3f8ccb}
 .btn{border-radius:999px;padding:9px 18px;font-size:17px;background:var(--accent);box-shadow:0 3px 0 #4a9ad8;transition:.12s}
@@ -465,7 +465,7 @@ input,select,textarea{border-radius:14px}
 .room-card:hover{transform:translateY(-3px) rotate(-.6deg)}
 .room-card.lit{color:var(--ink);box-shadow:0 4px 0 #0000001a}
 .floors>*:nth-child(5n+1).lit{background:#ffe4cf}.floors>*:nth-child(5n+2).lit{background:#d9ecff}.floors>*:nth-child(5n+3).lit{background:#d8f5e8}.floors>*:nth-child(5n+4).lit{background:#e9e0ff}.floors>*:nth-child(5n+5).lit{background:#fff1b8}
-.rc-title{font-size:19px;font-weight:400}.rc-no{font-weight:400}
+.rc-title{font-size:19px;font-weight:700}.rc-no{font-weight:700}
 .rc-stars span{color:#e3dcea}.room-card.lit .rc-stars span{color:#fff}.rc-stars span.on{color:#ffc933!important;text-shadow:none}
 .door-cell{border-radius:90px 90px 22px 22px;background:#ffc9a0;color:#a8643a}
 .ground{height:26px;background:#c9efd7;border-radius:999px;margin:10px -6px 0;display:flex;justify-content:space-around;align-items:center;font-size:19px;font-style:normal}.ground i{font-style:normal;transform:translateY(-8px)}
@@ -485,13 +485,13 @@ input,select,textarea{border-radius:14px}
 .ex-btn:hover{transform:translateY(-8px)}
 .ex-two{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:8px 0}.ex-two>div{background:#f2f8fd;border-radius:18px;padding:10px 12px;line-height:1.6}
 .ex-list{line-height:1.8;padding-left:20px}.ex-opts{display:grid;gap:8px;margin-top:10px}.ex-opt{text-align:left;justify-content:flex-start;font-size:18px;padding:12px 16px}
-.ex-card{min-height:120px}
+.ex-card{min-height:120px;padding-right:44px}
 
 /* ===== 게임 화면 (마을 · 창 · 하단 바) ===== */
 body.on-map header{display:none}body.login-mode #hud{display:none}
 #hud{flex:0 0 auto;height:60px;background:#fff;border-top:4px solid #ffd98a;display:flex;align-items:center;gap:12px;padding:0 14px}
 #hud .lv,.win .lv{background:#ff9f43;color:#fff;border-radius:12px;padding:3px 10px;font-size:17px;white-space:nowrap}
-.hud-nick{font-weight:400;font-size:18px;white-space:nowrap}
+.hud-nick{font-weight:700;font-size:18px;white-space:nowrap}
 #hud .xp{flex:1;min-width:120px;height:22px;background:#ffeccc;border-radius:999px;position:relative;overflow:hidden;border:2px solid #ffd98a}
 #hud .xp i{position:absolute;left:0;top:0;bottom:0;background:#ffb347;border-radius:999px;transition:width .5s}
 #hud .xp span{position:absolute;inset:0;text-align:center;font-size:14px;line-height:18px}
@@ -506,7 +506,7 @@ body.on-map header{display:none}body.login-mode #hud{display:none}
 .town .hill{position:absolute;bottom:0;border-radius:50% 50% 0 0;background:#bfe8c8}
 .town .grass{position:absolute;left:0;right:0;bottom:0;height:78px;background:#9bdba9;border-top:6px solid #7ccb92}
 .win{position:absolute;background:#fff9ee;border:4px solid #ffd98a;border-radius:22px;box-shadow:0 5px 0 #f0c066;overflow:hidden;z-index:3}
-.win h4{margin:0;background:#6fb8f0;color:#fff;font-weight:400;font-size:17px;padding:6px 14px;letter-spacing:1px}
+.win h4{margin:0;background:#6fb8f0;color:#fff;font-weight:700;font-size:17px;padding:6px 14px;letter-spacing:1px}
 .win .bd{padding:10px 12px;font-size:16px;text-align:center}
 .win-l{left:16px;top:16px;width:190px}.win-r{right:16px;top:16px;width:210px}
 .win .badges{display:flex;flex-wrap:wrap;gap:4px;justify-content:center;margin-top:8px}
@@ -518,7 +518,7 @@ body.on-map header{display:none}body.login-mode #hud{display:none}
 .town .floors{background:#5a6296;border:5px solid #464d80;border-radius:10px 10px 24px 24px;padding:42px 14px 14px;margin:0;gap:10px;display:grid;grid-template-columns:repeat(3,1fr)}
 .town .room-card{min-height:78px;border-radius:18px;padding:8px 12px 6px;background:#6b74a8;color:#d9ddf5;box-shadow:none;text-align:left}
 .town .room-card:hover{transform:translateY(-3px)}
-.town .room-card .rc-title{font-size:18px;line-height:1.2;margin:3px 0 0;font-weight:400}.town .rc-no{font-weight:400;font-size:13.5px;opacity:.85}.town .rc-sub{display:none}
+.town .room-card .rc-title{font-size:18px;line-height:1.2;margin:3px 0 0;font-weight:700}.town .rc-no{font-weight:700;font-size:13.5px;opacity:.85}.town .rc-sub{display:none}
 .town .rc-win{font-size:19px;top:6px;right:8px}
 .town .rc-stars{font-size:16px;margin-top:2px}.town .rc-stars span{color:#8b94c4}
 .town .room-card.lit{color:#5a4a5e;box-shadow:0 0 0 4px #ffe79a}
@@ -533,7 +533,7 @@ body.on-map header{display:none}body.login-mode #hud{display:none}
 .town .tnote{position:absolute;left:50%;top:10px;transform:translateX(-50%);background:#ffffffd9;border-radius:999px;padding:4px 14px;font-size:14px;color:#7a6f6b;z-index:3;white-space:nowrap}
 @media (max-width:1180px){.npc2{display:none}.win-l{width:150px}.win-r{width:170px}.town .house{width:clamp(520px,calc(100vw - 380px),820px)}}
 @media (max-width:960px){.win-l,.win-r{display:none}.town .house{width:94vw}}
-.win .stat{display:flex;flex-direction:column;gap:2px;margin-top:6px;font-size:15px;text-align:left;padding:0 6px}.win .stat b{font-weight:400;font-size:17px}
+.win .stat{display:flex;flex-direction:column;gap:2px;margin-top:6px;font-size:15px;text-align:left;padding:0 6px}.win .stat b{font-weight:700;font-size:17px}
 .win-t{left:50%;transform:translateX(-50%);top:10px;width:min(620px,calc(100vw - 480px));padding:0}
 .bd2s{display:flex;gap:4px;justify-content:center;padding:6px 8px;flex-wrap:nowrap}
 .bdg{display:flex;flex-direction:column;align-items:center;font-size:23px;min-width:0;flex:1;filter:grayscale(1);opacity:.4}.bdg small{font-size:12px;white-space:nowrap;margin-top:1px}.bdg.got{filter:none;opacity:1}
@@ -541,7 +541,8 @@ body.on-map header{display:none}body.login-mode #hud{display:none}
 @media (max-width:1180px){.win-t{width:min(560px,calc(100vw - 380px))}}
 @media (max-width:1400px){.bdg small{display:none}}
 @media (max-width:960px){.win-t{width:94vw}}
-*,*::before,*::after{font-weight:400!important;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+body{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+b,strong,h1,h2,h3,h4,th{font-weight:800}
 .shop-it{position:relative}.tier{position:absolute;top:6px;left:6px;font-size:12px;padding:1px 8px;border-radius:999px;color:#fff;z-index:1}
 .tier.t20{background:#8fa8bf}.tier.t50{background:#4fb58a}.tier.t100{background:#8f6df0}.tier.t200{background:#f0a020}
 .shop-it .th.wide{width:100%;padding:0 0 4px}.shop-it .th.wide svg{border:2px solid #e0ecf6}
@@ -552,6 +553,12 @@ body.on-map header{display:none}body.login-mode #hud{display:none}
 html,body,*{word-break:keep-all;overflow-wrap:break-word;line-break:strict}
 h1,h2,h3,h4,.win h4,.rcard b,.stage-title,.bubble,.hint,p,b,small{text-wrap:balance}
 textarea,input,code,pre,kbd{word-break:normal}
+.peer-room .pe-c{cursor:zoom-in}.peer-room .pe-c:hover canvas{border-color:#6fb8f0!important}
+.heart-btn{margin-top:6px;border:2px solid #ffd3dc;background:#fff;border-radius:999px;padding:4px 14px;font-size:17px;cursor:pointer;color:#e0587a;font-family:inherit}
+.heart-btn.on{background:#ffe3ea;border-color:#ff9db3}.heart-btn.big{font-size:20px;padding:6px 18px;margin:0}.heart-btn:active{transform:scale(.94)}
+.heart-fly{position:fixed;z-index:99;pointer-events:none;font-size:20px;animation:hfly 1.1s ease-out forwards}
+@keyframes hfly{from{opacity:1;transform:translateY(0) scale(.7)}to{opacity:0;transform:translateY(-70px) scale(1.3)}}
+.modal:has(.peer-big){max-width:900px}.peer-big{min-width:min(820px,86vw)}.pb-tabs{display:flex;gap:6px;margin:8px 0}#pb-c canvas{max-height:54vh;width:auto!important;max-width:100%;display:block;margin:0 auto}
 </style>
 </head>
 <body>
@@ -1295,6 +1302,7 @@ function fbErr(e){
   return e instanceof Error?e:new Error(m);
 }
 
+const fbHid=async(code,sid)=>(await fbHash(code+':h:'+sid)).replace(/[^A-Za-z0-9]/g,'').slice(0,14);
 async function fbHash(s){
   try{const b=new TextEncoder().encode(String(s));const h=await crypto.subtle.digest('SHA-256',b);return btoa(String.fromCharCode(...new Uint8Array(h)));}
   catch(e){let h=2166136261;const t=String(s);for(let i=0;i<t.length;i++){h^=t.charCodeAt(i);h=Math.imul(h,16777619);}return 'f'+(h>>>0).toString(36);}
@@ -1393,12 +1401,21 @@ const FB_API={
   },
   peers:async(b,a)=>{ // 학생끼리 보기: 학번·비밀번호 없이 별명/별/방 이름만
     const r=await fbRoom(a,b.code);if(!r)throw new Error('방 코드를 찾을 수 없어요.');
-    const m=await fbBoardMap(a,r.code);const out=Object.keys(m).map(k=>{const p=fbPub(k,m[k]);return{k:p.sid,cls:p.cls,nick:p.nick,stars:p.stars,avatar:p.avatar,last:p.last};});
+    const bd=await a.get('rooms/'+r.code+'/board/main')||{},m=bd.m||{},HH=bd.h||{};const meH=b.sid?await fbHid(r.code,String(b.sid)):'';
+    const out=await Promise.all(Object.keys(m).map(async k=>{const p=fbPub(k,m[k]);const hid=await fbHid(r.code,p.sid),hh=HH[hid]||{};return{k:p.sid,hid,hearts:Object.keys(hh).filter(x=>hh[x]===true).length,mine:!!meH&&hh[meH]===true,cls:p.cls,nick:p.nick,stars:p.stars,avatar:p.avatar,last:p.last};}));
     if(b.works){const jobs=out.filter(s=>s.stars[6]>0||true);
       for(let i=0;i<jobs.length;i+=10)await Promise.all(jobs.slice(i,i+10).map(async s=>{const d=await a.get('rooms/'+r.code+'/students/'+s.k);const st=d&&fbParse(d.state)||{};const w=st.s6;
         if(w&&(w.items||[]).length)s.s6={room:w.room,items:w.items,roomName:String(w.roomName||'').slice(0,30),roomMeaning:String(w.roomMeaning||'').slice(0,60),space:String(w.space||'').slice(0,30)};}));}
     out.forEach(s=>delete s.k);out.sort((x,y)=>x.cls.localeCompare(y.cls,undefined,{numeric:true})||x.nick.localeCompare(y.nick));
     return{ok:true,classes:r.classes,students:out,me:b.cls};
+  },
+  heart:async(b,a)=>{ // 친구 방에 하트 누르기 (본인 확인 후 board에 기록)
+    const r=await fbRoom(a,b.code);if(!r)throw new Error('방 코드를 찾을 수 없어요.');
+    const sid=String(b.sid||'').trim(),ex=await a.get('rooms/'+r.code+'/students/'+sid);
+    if(!ex||ex.ph!==await fbHash(r.code+':'+sid+':'+b.pin))throw new Error('다시 로그인해 주세요.');
+    const me=await fbHid(r.code,sid),tid=String(b.target||'').replace(/[^A-Za-z0-9]/g,'').slice(0,14);
+    if(!tid||tid===me)throw new Error('내 방에는 하트를 누를 수 없어요.');
+    await a.set('rooms/'+r.code+'/board/main',{h:{[tid]:{[me]:!!b.on}}},true);return{ok:true};
   },
   teacher:async(b,a)=>{
     await fbEnsureTeacher(a,b.pw);
@@ -2723,7 +2740,18 @@ const EXPLORE=[
   quiz:[
    {q:'아이가 뛰는 소리처럼 바닥을 타고 전해지는 층간소음을 줄이는 방법은?',o:['바닥에 매트를 깐다','창문을 닫는다','TV를 켠다','커튼을 단다'],a:0,w:'충격음은 바닥 완충재와 매트로 줄일 수 있어요.'},
    {q:'욕실 바닥에서 방수와 함께 하는 일은?',o:['바닥을 배수구 반대로 기울인다','바닥을 배수구 쪽으로 살짝 기울인다','바닥을 항상 평평하게 한다','바닥을 비워 둔다'],a:1,w:'물이 배수구로 흐르도록 살짝 기울여요.'},
-   {q:'제로에너지 건축의 특징으로 알맞은 것은?',o:['에어컨을 많이 단다','단열을 높이고 태양광 등으로 에너지를 만든다','창을 모두 없앤다','가장 높게 짓는다'],a:1,w:'에너지를 아끼고 직접 만들어 쓰는 것이 핵심이에요.'}]}
+   {q:'제로에너지 건축의 특징으로 알맞은 것은?',o:['에어컨을 많이 단다','단열을 높이고 태양광 등으로 에너지를 만든다','창을 모두 없앤다','가장 높게 짓는다'],a:1,w:'에너지를 아끼고 직접 만들어 쓰는 것이 핵심이에요.'}]},
+ {id:'e4',icon:'📐',title:'어른이 되면 쓰는 집 지식',sub:'평수와 ㎡, 면적 용어, 도면 읽기',color:'#f1e3ff',
+  pages:[
+   {t:'평수와 ㎡ — 얼마나 넓을까?',h:`<p>집의 넓이는 법적으로 <b>㎡(제곱미터)</b>로 써요. 하지만 일상에서는 아직 <b>평</b>도 많이 써요.</p><div class="ex-two"><div><b>📏 바꾸는 방법</b><br>1평 ≈ <b>3.3㎡</b><br><small>㎡ ÷ 3.3 = 평<br>평 × 3.3 = ㎡</small></div><div><b>🧮 예) 우리 방</b><br>11.9㎡ ÷ 3.3 ≈ <b>3.6평</b><br><small>10평은 약 33㎡예요.</small></div></div><p class="hint">6단계에서 만든 내 방의 넓이가 몇 평인지 직접 계산해 봐도 좋아요.</p>`},
+   {t:'전용면적과 공급면적',h:`<p>집 광고에 나오는 면적에는 종류가 있어요. 이름이 비슷해도 <b>쓸 수 있는 넓이</b>가 달라요.</p><ul class="ex-list"><li><b>🛋 전용면적</b> — 우리 가족이 실제로 쓰는 집 안의 넓이 (방·거실·주방·욕실).</li><li><b>🚪 공용면적</b> — 현관 밖 복도, 계단, 엘리베이터처럼 이웃과 함께 쓰는 곳.</li><li><b>📦 공급면적</b> — 전용면적 + 공용면적 일부. 광고의 "OO평형"은 이 넓이일 때가 많아요.</li></ul><p class="hint">그래서 "34평"이라고 불러도 실제로 생활하는 전용면적은 훨씬 작을 수 있어요. 집을 고를 때는 <b>전용면적</b>을 꼭 확인해요!</p>`},
+   {t:'도면 읽기 — 해는 어디로 들까?',h:`<ul class="ex-list"><li><b>🧭 방향</b>: 도면에 북쪽 표시가 있어요. 거실이 <b>남쪽</b>이면 겨울에 햇빛이 깊이 들어와 따뜻해요.</li><li><b>🪟 창</b>: 벽에 가는 선 두 줄로 그려요. 창이 두 방향에 있으면 맞통풍이 돼요.</li><li><b>🚪 문</b>: 문이 열리는 방향이 호(둥근 선)로 나와요. 가구를 놓을 때 이 자리는 비워 둬야 해요.</li></ul><p class="hint">6단계에서 문 앞과 창 앞을 비워 둔 이유가 바로 도면 읽기의 기본이에요.</p>`},
+   {t:'집을 구하는 방법과 비용',h:`<ul class="ex-list"><li><b>🏠 매매</b> — 집을 돈을 주고 사서 내 집으로 만들어요.</li><li><b>🔑 전세</b> — 큰 <b>보증금</b>을 맡기고 일정 기간 빌려 살아요. 계약이 끝나면 보증금을 돌려받아요.</li><li><b>📅 월세</b> — 보증금과 함께 <b>매달 집세</b>를 내요.</li></ul><p>집세 외에도 전기·수도·난방, 건물 <b>관리비</b>가 매달 들어요. 집을 고를 땐 이 비용까지 함께 따져 봐요.</p><p class="hint">큰 계약은 부모님이나 어른과 꼭 함께 확인해요. 계약서와 등기를 살피는 일이 중요해요.</p>`}],
+  quiz:[
+   {q:'1평은 약 몇 ㎡일까요?',o:['약 1.3㎡','약 3.3㎡','약 10㎡','약 33㎡'],a:1,w:'1평은 약 3.3㎡예요. 그래서 33㎡는 약 10평이에요.'},
+   {q:'우리 가족이 실제로 생활하는 집 안의 넓이를 나타내는 것은?',o:['공용면적','공급면적','전용면적','대지면적'],a:2,w:'방·거실·주방·욕실처럼 집 안에서 쓰는 넓이가 전용면적이에요.'},
+   {q:'겨울에 햇빛이 가장 깊이 들어와 따뜻한 방향은?',o:['북향','남향','어느 쪽이든 같다','천장 쪽'],a:1,w:'남향은 해가 낮은 겨울에 햇빛이 깊이 들어와요.'},
+   {q:'큰 보증금을 맡기고 일정 기간 집을 빌려 살다가, 끝나면 돌려받는 방식은?',o:['매매','월세','전세','관리비'],a:2,w:'전세는 보증금을 맡기고 집을 빌려 쓴 뒤 돌려받아요.'}]}
 ];
 const EX_COIN=20,EX_ALL=20;
 function exDone(id){return !!(S.explore&&S.explore[id]);}
@@ -2732,7 +2760,7 @@ function renderExplore(){
   const n=EXPLORE.filter(t=>exDone(t.id)).length;
   $('#screen').innerHTML=`<div class="board"><div class="board-head"><h2>🏗️ 건설 기술 탐험 <span class="hint">· 심화 (선택)</span></h2><button class="btn ghost small" id="ex-back">← 지도</button></div>
   <div class="bubble big" style="margin:8px 0 12px">${dodamSVG(36,S.avatar)} 우리가 배운 주거 공간이 <b>어떤 기술</b>로 지어지는지 살펴봐요! 별과 경험치에는 영향이 없고, 처음 끝내면 💰 코인이 조금 나와요. (${n}/${EXPLORE.length}개 완료)</div>
-  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px">${EXPLORE.map(t=>`<button class="room-card lit ex-card" data-ex="${t.id}" style="background:${t.color}"><div class="rc-win">${exDone(t.id)?'✅':'📖'}</div><div class="rc-title">${t.icon} ${t.title}</div><div class="rc-sub">${t.sub}</div><div class="rc-no" style="margin-top:6px">${exDone(t.id)?'완료! 다시 볼 수 있어요':'카드 3장 + 퀴즈 3문제 · 💰 '+EX_COIN}</div></button>`).join('')}</div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px">${EXPLORE.map(t=>`<button class="room-card lit ex-card" data-ex="${t.id}" style="background:${t.color}"><div class="rc-win">${exDone(t.id)?'✅':'📖'}</div><div class="rc-title">${t.icon} ${t.title}</div><div class="rc-sub">${t.sub}</div><div class="rc-no" style="margin-top:6px">${exDone(t.id)?'완료! 다시 볼 수 있어요':'카드 '+t.pages.length+'장 + 퀴즈 '+t.quiz.length+'문제 · 💰 '+EX_COIN}</div></button>`).join('')}</div>
   ${n===EXPLORE.length?`<p class="hint" style="text-align:center;margin-top:14px">🎉 건설 기술 탐험을 모두 마쳤어요!</p>`:''}</div>`;
   $('#ex-back').onclick=()=>go('map');
   $$('[data-ex]').forEach(b=>b.onclick=()=>exTopic(EXPLORE.find(t=>t.id===b.dataset.ex)));
@@ -3055,6 +3083,26 @@ function renderBoard(){
 /* ---------- 친구들 (진행 현황 · 친구들 방) ---------- */
 function peerThumb(w,cw,ch){const cv=document.createElement('canvas');cv.width=cw;cv.height=ch;const c=cv.getContext('2d');c.fillStyle='#fdf8f1';c.fillRect(0,0,cw,ch);try{drawPlanCanvas(c,w.room,(w.items||[]).filter(i=>FURN[i.type]),0,0,cw,ch);}catch(e){}cv.style.cssText='width:100%;border:1px solid #e3dff0;border-radius:10px';return cv;}
 let PEER_PRESET=null;
+async function peerHeart(s,btn,after){
+  if(s.cls===String(SESSION.cls)&&s.nick===S.nick){toast('내 방에는 하트를 누를 수 없어요. 친구 방에 눌러 주세요! 💕');return;}
+  const on=!s.mine;s.mine=on;s.hearts=Math.max(0,(s.hearts||0)+(on?1:-1));if(on)hearts_fx(btn);after&&after();
+  try{const r=await api({action:'heart',code:SESSION.room,sid:SESSION.sid,pin:SESSION.pin,target:s.hid,on});if(!r.ok)throw new Error(r.err);}
+  catch(e){s.mine=!on;s.hearts=Math.max(0,(s.hearts||0)+(on?-1:1));after&&after();toast('하트를 저장하지 못했어요: '+esc(e.message));}
+}
+function hearts_fx(el){if(!el||!el.getBoundingClientRect)return;const r=el.getBoundingClientRect();for(let i=0;i<5;i++){const h=document.createElement('div');h.className='heart-fly';h.textContent='❤️';h.style.left=(r.left+r.width/2+(i-2)*10)+'px';h.style.top=r.top+'px';h.style.animationDelay=(i*60)+'ms';document.body.appendChild(h);setTimeout(()=>h.remove(),1200);}}
+function peerBig(s,after){
+  let mode='2d';const w=s.s6;
+  const html=()=>`<div class="peer-big"><div class="pb-head"><h2 style="margin:0">「${esc(w.roomName||'이름 없는 방')}」</h2><div class="hint">${esc(s.cls)}반 ${esc(s.nick)}${w.roomMeaning?' · '+esc(w.roomMeaning):''}</div></div>
+    <div class="pb-tabs"><button class="btn small ${mode==='2d'?'':'ghost'}" data-m="2d">🗺 평면도</button><button class="btn small ${mode==='3d'?'':'ghost'}" data-m="3d">🧊 3D</button></div>
+    <div id="pb-c"></div><div class="m-actions"><button class="heart-btn big ${s.mine?'on':''}" id="pb-heart">${s.mine?'❤️':'🤍'} <span>${s.hearts||0}</span></button><button class="btn ghost" id="pb-close">닫기</button></div></div>`;
+  const show=()=>{modal(html());const box=$('#pb-c');
+    if(mode==='2d')box.appendChild(peerThumb(w,760,540));
+    else{const cv=document.createElement('canvas');cv.style.cssText='width:100%;border:1px solid #e3dff0;border-radius:10px';try{render3D(cv,w.room,(w.items||[]).filter(i=>FURN[i.type]),{yaw:-0.6,pitch:0.85,zoom:1},[760,540]);}catch(e){}box.appendChild(cv);}
+    $$('.pb-tabs [data-m]').forEach(b=>b.onclick=()=>{mode=b.dataset.m;show();});
+    $('#pb-close').onclick=()=>{closeModal();after&&after();};
+    $('#pb-heart').onclick=()=>{peerHeart(s,$('#pb-heart'),()=>{const b=$('#pb-heart');if(b){b.className='heart-btn big'+(s.mine?' on':'');b.innerHTML=(s.mine?'❤️':'🤍')+' <span>'+(s.hearts||0)+'</span>';}});};};
+  show();
+}
 function renderPeers(){
   if(!isOnline()&&!isDemo()){$('#screen').innerHTML=`<div class="map"><div class="nb">연습 모드에서는 볼 수 없어요.</div></div>`;return;}
   let tab='status',cls=String(SESSION.cls),data=null,withWorks=false;if(PEER_PRESET){tab=PEER_PRESET.tab||tab;cls=String(PEER_PRESET.cls);PEER_PRESET=null;}
@@ -3072,11 +3120,12 @@ function renderPeers(){
       $('#pe-body').innerHTML=list.length?`<div class="dodam-grid">${list.slice().sort((a,b)=>x(b)-x(a)).map(s=>`<div class="dodam-card ${s.cls===String(SESSION.cls)&&s.nick===S.nick?'me':''}">${dodamSVG(110,s.avatar)}<b>${esc(s.nick)}</b><small>${esc(s.cls)}반 · ⭐ ${x(s)}</small></div>`).join('')}</div>`:'<div class="nb">아직 친구가 없어요.</div>';
     }else{
       const ws=list.filter(s=>s.s6);
-      $('#pe-body').innerHTML=ws.length?`<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px">${ws.map((s,i)=>`<div class="panel" style="padding:10px"><div class="pe-c"></div><b>「${esc(s.s6.roomName||'이름 없는 방')}」</b><div class="hint">${esc(s.cls)}반 ${esc(s.nick)}${s.s6.roomMeaning?' · '+esc(s.s6.roomMeaning):''}</div></div>`).join('')}</div>`:'<div class="nb">아직 「내 방에게 묻다」를 마친 친구가 없어요.</div>';
-      $$('#pe-body .pe-c').forEach((el,i)=>el.appendChild(peerThumb(ws[i].s6,420,300)));
+      $('#pe-body').innerHTML=ws.length?`<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px">${ws.map((s,i)=>`<div class="panel peer-room" style="padding:10px"><div class="pe-c" data-i="${i}" title="눌러서 크게 보기"></div><b>「${esc(s.s6.roomName||'이름 없는 방')}」</b><div class="hint">${esc(s.cls)}반 ${esc(s.nick)}${s.s6.roomMeaning?' · '+esc(s.s6.roomMeaning):''}</div><button class="heart-btn ${s.mine?'on':''}" data-h="${i}">${s.mine?'❤️':'🤍'} <span>${s.hearts||0}</span></button></div>`).join('')}</div>`:'<div class="nb">아직 「내 방에게 묻다」를 마친 친구가 없어요.</div>';
+      $$('#pe-body .pe-c').forEach((el,i)=>{el.appendChild(peerThumb(ws[i].s6,420,300));el.onclick=()=>peerBig(ws[i],()=>draw());});
+      $$('#pe-body .heart-btn').forEach(b=>b.onclick=()=>peerHeart(ws[+b.dataset.h],b,()=>draw()));
     }};
   const load=async()=>{try{if(tab==='works')withWorks=true;
-      const r=await api({action:'peers',code:SESSION.room,cls:SESSION.cls,works:withWorks});if(!r.ok)throw new Error(r.err);data=r;draw();}
+      const r=await api({action:'peers',code:SESSION.room,cls:SESSION.cls,sid:SESSION.sid,works:withWorks});if(!r.ok)throw new Error(r.err);data=r;draw();}
     catch(e){if($('#pe-body'))$('#pe-body').innerHTML=`<div class="nb">❌ ${esc(e.message)}</div>`;}};
   $$('#pe-tabs button').forEach(b=>b.onclick=()=>{tab=b.dataset.t;if(tab==='works'&&!withWorks){load();}else if(data)draw();});
   $('#pe-ref').onclick=load;load();
@@ -3125,6 +3174,7 @@ function startDemo(){
   setTimeout(()=>toast('👀 <b>체험 중</b>이에요. 기록은 저장되지 않고, 나가면 사라져요.','good'),400);
 }
 const DEMO_NAMES=['별빛','구름','하늘','달님','햇살','보리','콩이','몽실','토리','모모','두부','단비','나무','솜이','하루','소라'];
+const DEMO_H={};
 function demoPeers(){
   const pick=(o,i)=>{const k=Object.keys(o);return k[i%k.length];};
   const it=(type,x,y,rot=0)=>({id:'d'+type+x+y,type,x,y,rot});
@@ -3133,11 +3183,12 @@ function demoPeers(){
     {roomName:'햇살 놀이터',roomMeaning:'친구와 노는 곳',items:[it('bed',210,10),it('sofa',10,10),it('beanbag',150,200)]},
     {roomName:'나의 작은 우주',roomMeaning:'혼자 집중하는 곳',items:[it('bed',10,150),it('wdesk',150,10),it('armchair',230,200)]}
   ].map(r=>({...r,room:Object.assign(makeRoom(330,360,'bottom','top'),{wall:'#e3eef8',floor:'lwood'}),mood:'calm'}));
-  const students=DEMO_NAMES.map((n,i)=>({cls:String(1+i%3),nick:n,stars:STAGES.map((s,j)=>Math.max(0,Math.min(3,3-Math.floor((j+i*2)/3)+(i%2)))),avatar:{roof:pick(ROOFS,i),body:pick(BODIES,i+2),face:pick(FACES,i),shape:pick(SHAPES,i),chim:pick(CHIMS,i),pet:pick(PETS,i),fx:pick(FXS,i),bg:pick(BGS,i),deco:pick(DECOS,i),acc:'' },last:Date.now(),s6:i%4===0?rooms[(i/4|0)%3]:null}));
+  const students=DEMO_NAMES.map((n,i)=>({cls:String(1+i%3),nick:n,stars:STAGES.map((s,j)=>Math.max(0,Math.min(3,3-Math.floor((j+i*2)/3)+(i%2)))),avatar:{roof:pick(ROOFS,i),body:pick(BODIES,i+2),face:pick(FACES,i),shape:pick(SHAPES,i),chim:pick(CHIMS,i),pet:pick(PETS,i),fx:pick(FXS,i),bg:pick(BGS,i),deco:pick(DECOS,i),acc:'' },hid:'d'+i,hearts:(i*3)%7+(DEMO_H['d'+i]?1:0),mine:!!DEMO_H['d'+i],last:Date.now(),s6:i%4===0?rooms[(i/4|0)%3]:null}));
   return students;
 }
 async function demoApi(b){
   const st=demoPeers();
+  if(b.action==='heart'){DEMO_H[b.target]=!!b.on;return{ok:true};}
   if(b.action==='peers')return{ok:true,classes:['1','2','3'],students:b.works?st:st.map(s=>({...s,s6:null})),me:{}};
   if(b.action==='board'){const xp=s=>s.stars.reduce((a,c)=>a+c,0)*100;const cl=['1','2','3'].map(c=>{const l=st.filter(s=>s.cls===c);return{cls:c,count:l.length,avgXp:Math.round(l.reduce((a,s)=>a+xp(s),0)/l.length)+(c==='1'?200:0)};});
     return{ok:true,classes:cl,total:st.length,online:4,top:st.map(s=>({nick:s.nick,cls:s.cls,xp:xp(s),avatar:s.avatar})).sort((a,c)=>c.xp-a.xp).slice(0,10)};}

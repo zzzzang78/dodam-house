@@ -681,6 +681,7 @@ function fbErr(e){
   return e instanceof Error?e:new Error(m);
 }
 
+const fbHid=async(code,sid)=>(await fbHash(code+':h:'+sid)).replace(/[^A-Za-z0-9]/g,'').slice(0,14);
 async function fbHash(s){
   try{const b=new TextEncoder().encode(String(s));const h=await crypto.subtle.digest('SHA-256',b);return btoa(String.fromCharCode(...new Uint8Array(h)));}
   catch(e){let h=2166136261;const t=String(s);for(let i=0;i<t.length;i++){h^=t.charCodeAt(i);h=Math.imul(h,16777619);}return 'f'+(h>>>0).toString(36);}
@@ -779,12 +780,21 @@ const FB_API={
   },
   peers:async(b,a)=>{ // 학생끼리 보기: 학번·비밀번호 없이 별명/별/방 이름만
     const r=await fbRoom(a,b.code);if(!r)throw new Error('방 코드를 찾을 수 없어요.');
-    const m=await fbBoardMap(a,r.code);const out=Object.keys(m).map(k=>{const p=fbPub(k,m[k]);return{k:p.sid,cls:p.cls,nick:p.nick,stars:p.stars,avatar:p.avatar,last:p.last};});
+    const bd=await a.get('rooms/'+r.code+'/board/main')||{},m=bd.m||{},HH=bd.h||{};const meH=b.sid?await fbHid(r.code,String(b.sid)):'';
+    const out=await Promise.all(Object.keys(m).map(async k=>{const p=fbPub(k,m[k]);const hid=await fbHid(r.code,p.sid),hh=HH[hid]||{};return{k:p.sid,hid,hearts:Object.keys(hh).filter(x=>hh[x]===true).length,mine:!!meH&&hh[meH]===true,cls:p.cls,nick:p.nick,stars:p.stars,avatar:p.avatar,last:p.last};}));
     if(b.works){const jobs=out.filter(s=>s.stars[6]>0||true);
       for(let i=0;i<jobs.length;i+=10)await Promise.all(jobs.slice(i,i+10).map(async s=>{const d=await a.get('rooms/'+r.code+'/students/'+s.k);const st=d&&fbParse(d.state)||{};const w=st.s6;
         if(w&&(w.items||[]).length)s.s6={room:w.room,items:w.items,roomName:String(w.roomName||'').slice(0,30),roomMeaning:String(w.roomMeaning||'').slice(0,60),space:String(w.space||'').slice(0,30)};}));}
     out.forEach(s=>delete s.k);out.sort((x,y)=>x.cls.localeCompare(y.cls,undefined,{numeric:true})||x.nick.localeCompare(y.nick));
     return{ok:true,classes:r.classes,students:out,me:b.cls};
+  },
+  heart:async(b,a)=>{ // 친구 방에 하트 누르기 (본인 확인 후 board에 기록)
+    const r=await fbRoom(a,b.code);if(!r)throw new Error('방 코드를 찾을 수 없어요.');
+    const sid=String(b.sid||'').trim(),ex=await a.get('rooms/'+r.code+'/students/'+sid);
+    if(!ex||ex.ph!==await fbHash(r.code+':'+sid+':'+b.pin))throw new Error('다시 로그인해 주세요.');
+    const me=await fbHid(r.code,sid),tid=String(b.target||'').replace(/[^A-Za-z0-9]/g,'').slice(0,14);
+    if(!tid||tid===me)throw new Error('내 방에는 하트를 누를 수 없어요.');
+    await a.set('rooms/'+r.code+'/board/main',{h:{[tid]:{[me]:!!b.on}}},true);return{ok:true};
   },
   teacher:async(b,a)=>{
     await fbEnsureTeacher(a,b.pw);
