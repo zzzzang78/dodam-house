@@ -424,6 +424,68 @@ kbd{background:#f3ece4;border:1px solid #d9cbbb;border-bottom-width:3px;border-r
   @page{size:A4 landscape;margin:8mm}
 }
 @media (max-width:1300px){.ed-selinfo{display:none}.three{grid-template-columns:225px 1fr 240px}.studio{grid-template-columns:250px 1fr 230px}.goal{display:none}}
+
+/* ===== 깔끔 파스텔 테마 (단색) ===== */
+@import url('https://fonts.googleapis.com/css2?family=Jua&display=swap');
+:root{--bg:#fffaf2;--panel:#fff;--ink:#5a4a5e;--sub:#9a8a9f;--line:#e0ecf6;--accent:#6fb8f0;--accent2:#8ec5ff;--ok:#62d0a1;--warn:#ff7a8a;--gold:#ffd166;--r:20px}
+html,body{font-family:"Jua","Pretendard","Apple SD Gothic Neo","Malgun Gothic",sans-serif;background:var(--bg);font-weight:400}
+b,strong,h1,h2,h3,h4,th,.btn,.logo{font-weight:400}
+header{background:#fff;border-bottom:3px solid #e3f0fa;border-radius:0 0 22px 22px}
+.logo{font-size:19px;color:#3f8ccb}
+.btn{border-radius:999px;padding:9px 18px;font-size:15px;background:var(--accent);box-shadow:0 3px 0 #4a9ad8;transition:.12s}
+.btn:hover{transform:translateY(-1px);filter:none}.btn:active{transform:translateY(3px);box-shadow:none}
+.btn.ghost{background:#fff;color:#3f8ccb;border:2px solid #c9e3f6;box-shadow:0 3px 0 #c9e3f6}
+.btn.blue{background:var(--accent2);box-shadow:0 3px 0 #6aaaf0}.btn.green{background:var(--ok);box-shadow:0 3px 0 #3fb383}.btn.purple{background:#b39dff;box-shadow:0 3px 0 #8f78e6}
+.btn.small{padding:6px 13px;font-size:13.5px}.btn.big{padding:13px 30px;font-size:19px}
+.panel,.card,.modal{border:2.5px solid #dbeaf6;border-radius:24px;box-shadow:none}
+.bar{height:14px;border-radius:999px;background:#e8f3fb}.bar>i{background:#6fb8f0;border-radius:999px}
+.login{background:var(--bg)}
+.login-card{border:3px solid #c9e3f6;border-radius:34px;box-shadow:0 8px 0 #e3f0fa}
+.login-card input{border:2.5px solid #dbeaf6;border-radius:999px;padding:11px 18px;background:#fff}
+.login-card input:focus{border-color:#6fb8f0;outline:none}
+.login-hero h1{color:#3f8ccb}
+input,select,textarea{border-radius:14px}
+.stage-head{background:#fff;border-bottom:2.5px solid #e3f0fa}
+.toast{border-radius:999px}
+.rcard{border-radius:16px}.slot{border-radius:16px}
+.opt{border-radius:24px!important}
+.opt.main{background:#6fb8f0!important;color:#fff;border:none!important;box-shadow:0 5px 0 #4a9ad8!important;width:100%}
+.opt.main:hover{transform:translateY(-2px)}
+.cls-btns button{border:2.5px solid #dbeaf6;border-radius:999px}.cls-btns button.on{background:#6fb8f0;border-color:#6fb8f0}
+.room-ok{background:#e2f7ee;border-radius:18px}
+::-webkit-scrollbar{width:12px;height:12px}::-webkit-scrollbar-thumb{background:#c9e3f6;border-radius:999px;border:3px solid #fffaf2}
+
+/* 둥글둥글 집 */
+.house{margin-top:30px}
+.roof{height:150px;background:none;clip-path:none;border-radius:0;margin:0 -14px -34px;position:relative;display:block;padding:0;z-index:2;pointer-events:none}
+.roof svg{width:100%;height:100%;display:block;overflow:visible}
+.roof-title{position:absolute;left:0;right:0;top:84px;text-align:center;color:#fff;font-size:21px;letter-spacing:1px;margin:0}
+.floors{background:#fffdf6;border:6px solid #d6e8f6;border-top:6px solid #d6e8f6;border-radius:10px 10px 40px 40px;gap:14px;padding:50px 18px 18px;margin:0 14px;position:relative}
+.room-card{background:#f3eef7;color:#9a8fa8;border-radius:26px;box-shadow:none;min-height:108px;padding:12px 14px 10px}
+.room-card:hover{transform:translateY(-3px) rotate(-.6deg)}
+.room-card.lit{color:var(--ink);box-shadow:0 4px 0 #0000001a}
+.floors>*:nth-child(5n+1).lit{background:#ffe4cf}.floors>*:nth-child(5n+2).lit{background:#d9ecff}.floors>*:nth-child(5n+3).lit{background:#d8f5e8}.floors>*:nth-child(5n+4).lit{background:#e9e0ff}.floors>*:nth-child(5n+5).lit{background:#fff1b8}
+.rc-title{font-size:18px;font-weight:400}.rc-no{font-weight:400}
+.rc-stars span{color:#e3dcea}.room-card.lit .rc-stars span{color:#fff}.rc-stars span.on{color:#ffc933!important;text-shadow:none}
+.door-cell{border-radius:90px 90px 22px 22px;background:#ffc9a0;color:#a8643a}
+.ground{height:26px;background:#c9efd7;border-radius:999px;margin:10px -6px 0;display:flex;justify-content:space-around;align-items:center;font-size:18px;font-style:normal}.ground i{font-style:normal;transform:translateY(-8px)}
+.badge-shelf{border:2.5px solid #dbeaf6;border-radius:24px}
+.bubble{border:2.5px solid #dbeaf6;border-radius:22px}
+.shop-head{align-items:flex-start;position:sticky;top:0;z-index:6;background:var(--bg);padding:6px 0 8px}
+.pv-stage{background:#fff;border:3px solid #dbeaf6;border-radius:30px;padding:10px;flex:0 0 auto}
+.pv-box{background:#fff9e0;border:2.5px dashed #ffd36b;border-radius:18px;padding:8px 12px;margin:6px 0;font-size:14px;max-width:520px}
+.sub-tabs{margin-bottom:8px}.sub-tabs button{flex:1 0 15%;border:2.5px solid #dbeaf6;border-radius:999px;padding:7px 4px;font-size:13.5px;background:#fff;color:var(--ink)}
+.sub-tabs button.on{background:#6fb8f0;border-color:#6fb8f0;color:#fff}
+.shop-it{border:2.5px solid #dbeaf6;border-radius:22px;cursor:pointer;background:#fff}
+.shop-it.sel{border-color:#ffc94d;background:#fffbea}
+.shop-it.eq{border-color:#62d0a1;background:#effaf4}
+.shop-it .th{background:#f4f9fd;border-radius:18px;padding:2px}
+.ground{height:auto;min-height:30px;padding:2px 10px}
+.ex-btn{border:none;border-radius:999px;background:#fff;color:#4a8fc4;font-size:14px;padding:6px 14px;box-shadow:0 3px 0 #bfe0f5;transform:translateY(-6px)}
+.ex-btn:hover{transform:translateY(-8px)}
+.ex-two{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:8px 0}.ex-two>div{background:#f2f8fd;border-radius:18px;padding:10px 12px;line-height:1.6}
+.ex-list{line-height:1.8;padding-left:20px}.ex-opts{display:grid;gap:8px;margin-top:10px}.ex-opt{text-align:left;justify-content:flex-start;font-size:16px;padding:12px 16px}
+.ex-card{min-height:120px}
 </style>
 </head>
 <body>
@@ -842,8 +904,8 @@ if(typeof module!=='undefined'&&module.exports)module.exports={xpOf,FURN,zoningR
 
 /* ===================== 코인 상점 ===================== */
 const ACCS={crown:{e:'👑',n:'왕관',p:120,pos:'top'},tophat:{e:'🎩',n:'신사 모자',p:60,pos:'top'},cap:{e:'🧢',n:'캡 모자',p:40,pos:'top'},ribbon:{e:'🎀',n:'리본',p:40,pos:'top'},flower:{e:'🌸',n:'꽃핀',p:30,pos:'top'},star:{e:'⭐',n:'반짝 별',p:80,pos:'top'},glasses:{e:'🕶️',n:'선글라스',p:50,pos:'face'},grad:{e:'🎓',n:'학사모',p:100,pos:'top'}};
-const ROOFS={'#ff8a65':['기본 주황',0],'#5c9ded':['파랑',30],'#66bb6a':['초록',30],'#9b8cf2':['보라',30],'#f48fb1':['분홍',30],'#26a69a':['청록',30],'#f5b82e':['황금',80]};
-const BODIES={'#ffd27a':['기본 노랑',0],'#b2dfdb':['민트',30],'#bbdefb':['하늘',30],'#e1bee7':['라벤더',30],'#ffccbc':['복숭아',30],'#fafafa':['하양',30]};
+const ROOFS={'#ffa88a':['기본 코랄',0],'#ff8a65':['주황',0],'#5c9ded':['파랑',30],'#66bb6a':['초록',30],'#9b8cf2':['보라',30],'#f48fb1':['분홍',30],'#26a69a':['청록',30],'#f5b82e':['황금',80]};
+const BODIES={'#fff0c4':['기본 크림',0],'#ffd27a':['노랑',0],'#b2dfdb':['민트',30],'#bbdefb':['하늘',30],'#e1bee7':['라벤더',30],'#ffccbc':['복숭아',30],'#fafafa':['하양',30]};
 const PREM_WALLS=[['#2c3566','밤하늘',80],['#ffcfe3','솜사탕',50],['#c5f2d9','민트 크림',50]];
 const PREM_FLOORS=['marble','check'];
 function xpOf(st){let s=0;['s0','s1','s2','s3','s4','s5','s6','bonus'].forEach(id=>s+=Math.max(0,Math.min(3,(st.stars||{})[id]||0)));return s*100+Math.min(8,(st.badges||[]).length)*50;}
@@ -889,16 +951,100 @@ function drawPlanCanvas(ctx,room,items,x,y,w,h){
 
 /* ---------- 배치 점검 패널 ---------- */
 
-function dodamSVG(size=52,av){av=av||{};const roof=av.roof||'#ff8a65',body=av.body||'#ffd27a',acc=ACCS[av.acc];
+
+/* ===== 도담이 꾸미기 요소 ===== */
+const EYE='#3b3433';
+const AV_DEF={face:'smile',shape:'tri',chim:'one',bg:'none',deco:'none',pet:'none',fx:'none'};
+const FACES={smile:['방긋',0],happy:['눈웃음',30],wink:['윙크',30],sleepy:['졸려요',30],cat:['고양이 입',40],surprised:['깜짝',30],sparkle:['반짝눈',50],love:['하트눈',60]};
+const SHAPES={tri:['기본 지붕',0],dome:['둥근 지붕',40],tall:['뾰족 지붕',40],bow:['리본 지붕',60]};
+const CHIMS={one:['굴뚝',0],none:['굴뚝 없음',0],smoke:['뭉게 연기',30],heart:['하트 연기',50]};
+const BGS={none:['없음',0],sky:['맑은 하늘',50],forest:['초록 숲',50],sea:['푸른 바다',50],sunset:['노을',60],night:['별밤',80]};
+const DECOS={none:['없음',0],flower:['꽃',30],mush:['버섯',30],tree:['나무',40],cloud:['구름',30]};
+const PETS={none:['없음',0],chick:['병아리',60],cat:['아기 고양이',80],bunny:['토끼',80],bear:['곰돌이',100]};
+const FXS={none:['없음',0],sparkle:['반짝반짝',60],hearts:['두근두근',60],bubbles:['방울방울',50],notes:['음표',50]};
+const AV_TABLES={face:FACES,shape:SHAPES,chim:CHIMS,bg:BGS,deco:DECOS,pet:PETS,fx:FXS};
+const cheek='<ellipse cx="18.5" cy="48" rx="3.5" ry="2.2" fill="#ff9e9e" opacity=".7"/><ellipse cx="45.5" cy="48" rx="3.5" ry="2.2" fill="#ff9e9e" opacity=".7"/>';
+const dots=`<circle cx="24" cy="41" r="3.4" fill="${EYE}"/><circle cx="40" cy="41" r="3.4" fill="${EYE}"/><circle cx="25" cy="40" r="1.1" fill="#fff"/><circle cx="41" cy="40" r="1.1" fill="#fff"/>`;
+const ln=(p,w=2.4)=>`<path d="${p}" fill="none" stroke="${EYE}" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round"/>`;
+const heart=(x,y,s,c)=>`<path transform="translate(${x} ${y}) scale(${s})" d="M0 4 C-5 0 -4 -4 0 -2 C4 -4 5 0 0 4Z" fill="${c}"/>`;
+function faceSVG(k){
+  switch(k){
+    case 'happy':return ln('M20 43 Q24 37 28 43')+ln('M36 43 Q40 37 44 43')+`<path d="M26 48 Q32 58 38 48 Z" fill="#8a3b3b" stroke="#8a3b3b" stroke-width="2" stroke-linejoin="round"/>`+cheek;
+    case 'wink':return `<circle cx="24" cy="41" r="3.4" fill="${EYE}"/><circle cx="25" cy="40" r="1.1" fill="#fff"/>`+ln('M36 42 Q40 37 44 42')+ln('M27 49 Q32 54 37 49',2.4)+cheek;
+    case 'sleepy':return ln('M20 41 Q24 45 28 41')+ln('M36 41 Q40 45 44 41')+ln('M29 50 Q32 52 35 50')+`<text x="48" y="34" font-size="9" fill="#9a8fa8" font-family="sans-serif">z</text><text x="53" y="28" font-size="7" fill="#9a8fa8" font-family="sans-serif">z</text>`+cheek;
+    case 'cat':return dots+ln('M26 49 Q29 53 32 49 Q35 53 38 49',2.2)+cheek;
+    case 'surprised':return `<circle cx="24" cy="40" r="4" fill="${EYE}"/><circle cx="40" cy="40" r="4" fill="${EYE}"/><circle cx="25.2" cy="38.8" r="1.4" fill="#fff"/><circle cx="41.2" cy="38.8" r="1.4" fill="#fff"/><ellipse cx="32" cy="51" rx="3" ry="4" fill="#8a3b3b"/>`+cheek;
+    case 'sparkle':return `<circle cx="24" cy="41" r="5" fill="${EYE}"/><circle cx="40" cy="41" r="5" fill="${EYE}"/><circle cx="25.8" cy="39" r="1.9" fill="#fff"/><circle cx="41.8" cy="39" r="1.9" fill="#fff"/><circle cx="22.6" cy="43.2" r="1" fill="#fff"/><circle cx="38.6" cy="43.2" r="1" fill="#fff"/>`+ln('M28 50 Q32 54 36 50')+cheek;
+    case 'love':return heart(24,41,1.5,'#ff6b81')+heart(40,41,1.5,'#ff6b81')+ln('M27 49 Q32 55 37 49')+cheek;
+    default:return dots+ln('M27 49 Q32 54 37 49')+cheek;
+  }
+}
+function roofSVG(k,roof){
+  const sw='stroke-linejoin="round" stroke-linecap="round"';
+  switch(k){
+    case 'dome':return `<path d="M11 28 C11 7 53 7 53 28 Z" fill="${roof}" stroke="${roof}" stroke-width="8" ${sw}/>`;
+    case 'tall':return `<path d="M32 -1 L52 28 L12 28 Z" fill="${roof}" stroke="${roof}" stroke-width="8" ${sw}/>`;
+    case 'bow':return `<path d="M32 9 L55 28 L9 28 Z" fill="${roof}" stroke="${roof}" stroke-width="9" ${sw}/><g transform="translate(32 6) scale(1.35)"><path d="M0 0 L-9 -6 Q-11 0 -9 6 Z M0 0 L9 -6 Q11 0 9 6 Z" fill="#fff" stroke="#fff" stroke-width="1.5" ${sw}/><circle r="2.6" fill="#ffd166"/></g>`;
+    default:return `<path d="M32 9 L55 28 L9 28 Z" fill="${roof}" stroke="${roof}" stroke-width="9" ${sw}/>`;
+  }
+}
+function chimSVG(k,roof){
+  if(k==='none')return '';
+  let s=`<rect x="41" y="6" width="9" height="18" rx="4.5" fill="${shade(roof,0.18)}"/>`;
+  if(k==='smoke')s+=`<circle cx="46" cy="2" r="3" fill="#fff" stroke="#dfe6ee" stroke-width="1"><animate attributeName="cy" values="3;-4;3" dur="3s" repeatCount="indefinite"/></circle><circle cx="50" cy="-2" r="2.2" fill="#fff" stroke="#dfe6ee" stroke-width="1"/>`;
+  if(k==='heart')s+=`<g><animateTransform attributeName="transform" type="translate" values="0 0;0 -3;0 0" dur="2.4s" repeatCount="indefinite"/>${heart(46,0,1.3,'#ff8aa5')}</g>`;
+  return s;
+}
+const tw=(d)=>`<animate attributeName="opacity" values="1;.2;1" dur="${d}s" repeatCount="indefinite"/>`;
+function bgSVG(k){
+  const R=(c)=>`<rect x="0" y="-6" width="64" height="70" rx="18" fill="${c}"/>`;
+  switch(k){
+    case 'sky':return R('#d8eefc')+`<g fill="#fff"><ellipse cx="14" cy="4" rx="9" ry="4"/><ellipse cx="20" cy="2" rx="6" ry="4"/><ellipse cx="50" cy="12" rx="8" ry="3.5"/></g>`;
+    case 'forest':return R('#e1f3dc')+`<circle cx="6" cy="44" r="12" fill="#c3e6bb"/><circle cx="58" cy="40" r="14" fill="#cdeac6"/><circle cx="32" cy="62" r="16" fill="#cdeac6"/>`;
+    case 'sea':return R('#d6eef3')+`<path d="M0 54 Q8 50 16 54 T32 54 T48 54 T64 54 V64 H0Z" fill="#bfe3ea"/><path d="M0 60 Q8 56 16 60 T32 60 T48 60 T64 60 V64 H0Z" fill="#a9d8e2"/>`;
+    case 'sunset':return R('#ffe6cf')+`<circle cx="50" cy="8" r="9" fill="#ffc98a"/><path d="M0 58 Q16 52 32 58 T64 58 V64 H0Z" fill="#ffd2ae"/>`;
+    case 'night':return R('#4e5489')+`<g fill="#fff"><circle cx="10" cy="6" r="1.4">${tw(2.2)}</circle><circle cx="54" cy="4" r="1.2">${tw(1.6)}</circle><circle cx="58" cy="22" r="1">${tw(2.8)}</circle><circle cx="6" cy="26" r="1.1">${tw(1.9)}</circle></g><circle cx="50" cy="12" r="5" fill="#ffeaa0"/>`;
+    default:return '';
+  }
+}
+function decoSVG(k){
+  switch(k){
+    case 'flower':return `<path d="M8 62 V52" stroke="#6bbf88" stroke-width="2" stroke-linecap="round"/><g fill="#ffd166"><circle cx="8" cy="48" r="3"/><circle cx="12" cy="52" r="3"/><circle cx="4" cy="52" r="3"/><circle cx="8" cy="56" r="0"/></g><g fill="#ffb3a7"><circle cx="8" cy="46" r="3.2"/><circle cx="11.5" cy="49" r="3.2"/><circle cx="4.5" cy="49" r="3.2"/></g><circle cx="8" cy="49" r="2.4" fill="#fff3b0"/>`;
+    case 'mush':return `<rect x="4" y="54" width="6" height="8" rx="3" fill="#fff4e0"/><path d="M0 55 C0 44 14 44 14 55 Z" fill="#ff8f7a"/><circle cx="5" cy="51" r="1.6" fill="#fff"/><circle cx="10" cy="50" r="1.2" fill="#fff"/>`;
+    case 'tree':return `<rect x="5" y="52" width="5" height="10" rx="2" fill="#c99a6b"/><circle cx="7.5" cy="46" r="9" fill="#8fd19e"/><circle cx="4" cy="50" r="5" fill="#9bdba9"/>`;
+    case 'cloud':return `<g fill="#fff" stroke="#dfeaf3" stroke-width="1.2"><ellipse cx="9" cy="6" rx="8" ry="4.5"/><ellipse cx="14" cy="3" rx="5" ry="4"/></g>`;
+    default:return '';
+  }
+}
+function petSVG(k){
+  const eye=(x,y)=>`<circle cx="${x}" cy="${y}" r="1" fill="${EYE}"/>`;
+  let b='';
+  switch(k){
+    case 'chick':b=`<circle cx="55" cy="54" r="7" fill="#ffe066"/>${eye(52.5,53)}${eye(57.5,53)}<path d="M54 56 L56 56 L55 58 Z" fill="#ff9f43"/><path d="M52 61 v2 M58 61 v2" stroke="#ff9f43" stroke-width="1.4" stroke-linecap="round"/>`;break;
+    case 'cat':b=`<path d="M48.5 50 L49.5 43 L54 47 Z M61.5 50 L60.5 43 L56 47 Z" fill="#b9b3c9"/><circle cx="55" cy="54" r="7.5" fill="#cfc9dc"/>${eye(52.3,53.5)}${eye(57.7,53.5)}<path d="M54 56 Q55 57.2 56 56" stroke="${EYE}" stroke-width=".9" fill="none"/>`;break;
+    case 'bunny':b=`<ellipse cx="51.5" cy="44" rx="2.3" ry="6" fill="#fff" stroke="#e6e0ec" stroke-width="1"/><ellipse cx="58.5" cy="44" rx="2.3" ry="6" fill="#fff" stroke="#e6e0ec" stroke-width="1"/><circle cx="55" cy="54" r="7.2" fill="#fff" stroke="#e6e0ec" stroke-width="1"/>${eye(52.3,53.5)}${eye(57.7,53.5)}<circle cx="55" cy="56.2" r=".9" fill="#ffb3a7"/>`;break;
+    case 'bear':b=`<circle cx="49.6" cy="47.6" r="3" fill="#b98657"/><circle cx="60.4" cy="47.6" r="3" fill="#b98657"/><circle cx="55" cy="54" r="7.4" fill="#cf9d6c"/><ellipse cx="55" cy="56.4" rx="3" ry="2.2" fill="#f1d3b3"/>${eye(52.3,52.8)}${eye(57.7,52.8)}<circle cx="55" cy="55.6" r=".9" fill="${EYE}"/>`;break;
+    default:return '';
+  }
+  return `<g>${b}<animateTransform attributeName="transform" type="translate" values="0 0;0 -2;0 0" dur="1.7s" repeatCount="indefinite"/></g>`;
+}
+function fxSVG(k){
+  const star=(x,y,s,d)=>`<path transform="translate(${x} ${y}) scale(${s})" d="M0 -4 L1.2 -1.2 L4 0 L1.2 1.2 L0 4 L-1.2 1.2 L-4 0 L-1.2 -1.2Z" fill="#ffd34d">${tw(d)}</path>`;
+  switch(k){
+    case 'sparkle':return star(6,16,1.2,1.8)+star(58,24,1,2.4)+star(52,2,1.3,2.1)+star(12,56,.9,2.7);
+    case 'hearts':return `<g>${heart(8,20,1,'#ff8aa5')}<animateTransform attributeName="transform" type="translate" values="0 6;0 -8" dur="2.6s" repeatCount="indefinite"/><animate attributeName="opacity" values="0;1;0" dur="2.6s" repeatCount="indefinite"/></g><g>${heart(58,30,1.1,'#ff8aa5')}<animateTransform attributeName="transform" type="translate" values="0 6;0 -8" dur="3.1s" repeatCount="indefinite"/><animate attributeName="opacity" values="0;1;0" dur="3.1s" repeatCount="indefinite"/></g>`;
+    case 'bubbles':return `<g fill="#fff" fill-opacity=".7" stroke="#8fcff5" stroke-width="1"><circle cx="7" cy="40" r="3"><animate attributeName="cy" values="50;8" dur="3.2s" repeatCount="indefinite"/></circle><circle cx="58" cy="44" r="2.4"><animate attributeName="cy" values="52;12" dur="2.7s" repeatCount="indefinite"/></circle><circle cx="12" cy="30" r="1.8"><animate attributeName="cy" values="46;4" dur="2.2s" repeatCount="indefinite"/></circle></g>`;
+    case 'notes':return `<g font-family="sans-serif" fill="#7aa7e6" font-size="10"><text x="5" y="20">♪<animate attributeName="opacity" values="0;1;0" dur="2.4s" repeatCount="indefinite"/><animateTransform attributeName="transform" type="translate" values="0 6;0 -6" dur="2.4s" repeatCount="indefinite"/></text><text x="55" y="26">♫<animate attributeName="opacity" values="0;1;0" dur="3s" repeatCount="indefinite"/><animateTransform attributeName="transform" type="translate" values="0 6;0 -6" dur="3s" repeatCount="indefinite"/></text></g>`;
+    default:return '';
+  }
+}
+function dodamSVG(size=52,av){av=av||{};const roof=av.roof||'#ffa88a',body=av.body||'#fff0c4',acc=ACCS[av.acc];
+const g=k=>av[k]||AV_DEF[k];
 return `<svg class="dodam" width="${size}" height="${size}" viewBox="0 -6 64 70" aria-hidden="true" style="flex:0 0 auto">
-<rect x="44" y="9" width="7" height="14" rx="1.5" fill="${roof}" stroke="${shade(roof,-0.18)}" stroke-width="2"/>
-<path d="M12 28 L52 28 L52 56 Q52 60 48 60 L16 60 Q12 60 12 56 Z" fill="${body}" stroke="${shade(body,-0.25)}" stroke-width="2.5" stroke-linejoin="round"/>
-<path d="M32 5 L59 29 L5 29 Z" fill="${roof}" stroke="${shade(roof,-0.18)}" stroke-width="2.5" stroke-linejoin="round"/>
-<circle cx="24" cy="41" r="3.4" fill="#3b3433"/><circle cx="40" cy="41" r="3.4" fill="#3b3433"/>
-<circle cx="25" cy="40" r="1.1" fill="#fff"/><circle cx="41" cy="40" r="1.1" fill="#fff"/>
-<ellipse cx="18.5" cy="48" rx="3.5" ry="2.2" fill="#ff9e9e" opacity=".75"/><ellipse cx="45.5" cy="48" rx="3.5" ry="2.2" fill="#ff9e9e" opacity=".75"/>
-<path d="M27 49 Q32 54 37 49" fill="none" stroke="#3b3433" stroke-width="2.4" stroke-linecap="round"/>
-${acc?(acc.pos==='face'?`<text x="32" y="45" font-size="22" text-anchor="middle">${acc.e}</text>`:`<text x="32" y="9" font-size="19" text-anchor="middle">${acc.e}</text>`):''}</svg>`;}
+${bgSVG(g('bg'))}${chimSVG(g('chim'),roof)}
+<rect x="10" y="26" width="44" height="35" rx="15" fill="${body}" stroke="${shade(body,-0.12)}" stroke-width="2"/>
+${decoSVG(g('deco'))}${roofSVG(g('shape'),roof)}${faceSVG(g('face'))}${petSVG(g('pet'))}
+${acc?(acc.pos==='face'?`<text x="32" y="45" font-size="22" text-anchor="middle">${acc.e}</text>`:`<text x="32" y="9" font-size="19" text-anchor="middle">${acc.e}</text>`):''}${fxSVG(g('fx'))}</svg>`;}
 
 /* ===================== Firebase(Firestore) 저장소 + API (학생·교사 공용) =====================
    데이터 구조
@@ -1244,6 +1390,7 @@ function go(id){
   if(id==='shop'){renderShop();return;}
   if(id==='board'){renderBoard();return;}
   if(id==='peers'){renderPeers();return;}
+  if(id==='explore'){renderExplore();return;}
   const st=STAGES.find(s=>s.id===id);
   scr.innerHTML=`<div class="stage"><div class="stage-head">
     <button class="btn ghost small" id="btn-back">← 지도</button>
@@ -1302,14 +1449,14 @@ function renderMap(){
   const total=STAGES.reduce((a,s)=>a+(S.stars[s.id]||0),0);
   $('#screen').innerHTML=`<div class="map">
   <div class="map-intro">${dodamSVG(70,S.avatar)}<div class="bubble big">안녕! 나는 집 요정 <b>도담이</b>야. 🏠<br>방마다 미션을 깨면 그 방에 <b>불이 켜져요</b>. 모든 방에 불을 켜서 <b>나를 성장시키는 집</b>을 완성해 줘!</div></div>
-  <div class="house"><div class="roof"><div class="roof-title">나를 성장시키는 공간, 집</div></div>
+  <div class="house"><div class="roof"><svg viewBox="0 0 1000 150" preserveAspectRatio="none" aria-hidden="true"><g stroke-linejoin="round" stroke-linecap="round"><rect x="735" y="18" width="62" height="70" rx="14" fill="#b6e1fa" stroke="#b6e1fa" stroke-width="14"/><rect x="722" y="8" width="88" height="26" rx="13" fill="#6fb8f0"/><polygon points="500,26 960,128 40,128" fill="#8fcff5" stroke="#8fcff5" stroke-width="44"/></g><g fill="#fff" opacity=".9"><circle cx="772" cy="-2" r="0"/></g></svg><div class="roof-title">나를 성장시키는 공간, 집</div></div>
   <div class="floors">${STAGES.map(s=>`<button class="room-card ${lit(s.id)?'lit':''}" data-go="${s.id}">
     <div class="rc-win">${lit(s.id)?'💡':'🌙'}</div>
     <div class="rc-no">${stLabel(s)} · ${s.period}</div>
     <div class="rc-title">${s.icon} ${s.title}</div><div class="rc-sub">${s.sub}</div>
     <div class="rc-stars">${[1,2,3].map(i=>`<span class="${i<=(S.stars[s.id]||0)?'on':''}">★</span>`).join('')}</div></button>`).join('')}
     <div class="door-cell"><b>🚪</b>현관<br>${total===0?'처음이면 단원 열기부터!':`별 ${total}개 모았어요`}</div></div>
-  <div class="ground"></div></div>
+  <div class="ground"><i>🌷</i><i>🌳</i><button class="ex-btn" data-go="explore" title="심화 · 선택">🏗️ 건설 기술 탐험</button><i>🌼</i></div></div>
   <div class="badge-shelf"><b>🏅 내 배지</b>${Object.keys(BADGES).map(k=>`<span class="badge ${S.badges.includes(k)?'got':''}" title="${BADGES[k].name}">${BADGES[k].icon}<small>${BADGES[k].name}</small></span>`).join('')}</div>
   <div class="map-note">${isOnline()?`☁️ ${esc(SESSION.roomName)} · ${esc(SESSION.cls)}반 ${esc(SESSION.sid)} — 기록이 자동으로 저장돼요. 다른 노트북에서도 학번으로 이어서 할 수 있어요.`:serverURL()?'💾 아직 등록 전이에요 — 이 노트북에만 저장 중! 수업 끝나기 전에 위쪽 <b>🏆 랭킹 등록</b>을 누르면 반 점수에 들어가고, 예전 기록과 합쳐져요.':'💾 이 노트북 브라우저에만 저장돼요.'}</div></div>`;
   $$('[data-go]').forEach(b=>b.onclick=()=>go(b.dataset.go));
@@ -2344,13 +2491,91 @@ function resultCard(d,an){
 
 const EMBED=(()=>{try{return window.self!==window.top;}catch(e){return true;}})();
 
+/* ===================== 건설 기술 탐험 (심화 · 선택) ===================== */
+const EXPLORE=[
+ {id:'e1',icon:'🧱',title:'집을 지탱하는 구조와 재료',sub:'벽식·기둥식, 철근 콘크리트',color:'#d8ecff',
+  pages:[
+   {t:'집은 어떻게 서 있을까? — 구조 방식',h:`<p>집의 무게와 바람·눈 같은 힘(<b>하중</b>)을 무엇이 받치느냐에 따라 구조가 나뉘어요.</p>
+     <div class="ex-two"><div><b>🧱 벽식 구조</b><br>벽이 하중을 받아요. 아파트에 많아요.<br><small>벽 자체가 집을 지탱해서 <b>마음대로 허물 수 없어요</b>. 방 구조를 바꾸기 어려워요.</small></div>
+     <div><b>🏛 기둥식 구조</b><br>기둥과 보가 하중을 받아요. 한옥, 큰 건물에 많아요.<br><small>벽은 칸막이일 뿐이라 <b>내부 공간을 자유롭게</b> 나누고 바꿀 수 있어요.</small></div></div>
+     <p class="hint">우리가 6단계에서 방 배치를 바꾸는 건 가구지만, 실제 집에서는 구조가 공간 구성의 한계를 정해요.</p>`},
+   {t:'집을 만드는 재료',h:`<ul class="ex-list"><li><b>🪵 목재</b> — 가볍고 가공하기 쉬워요. 습기와 불에 약해요.</li><li><b>🧱 벽돌</b> — 튼튼하고 열을 잘 막아요. 쌓아서 만들어요.</li><li><b>🏗 철근 콘크리트</b> — 콘크리트는 <b>누르는 힘</b>에, 철근은 <b>당기는 힘</b>에 강해서 둘이 서로 보완해요.</li><li><b>🔩 철골</b> — 가벼우면서 강해서 높은 건물과 넓은 공간에 쓰여요.</li></ul>`},
+   {t:'힘은 땅으로! — 기초',h:`<p>건물의 무게와 외부의 힘은 <b>기초</b>를 통해 땅으로 전달돼요.</p><ul class="ex-list"><li>단단한 땅: 넓은 판 모양의 기초</li><li>무른 땅: 깊은 땅속 단단한 층까지 <b>말뚝</b>을 박아요</li></ul><p class="hint">기초가 약하면 건물이 기울거나 금이 가요.</p>`}],
+  quiz:[
+   {q:'벽이 건물의 무게를 받치고 있어서, 함부로 허물면 위험한 구조는?',o:['벽식 구조','기둥식 구조','말뚝 기초','철골 구조'],a:0,w:'벽 자체가 하중을 받는 구조를 벽식 구조라고 해요.'},
+   {q:'철근 콘크리트에서 철근이 특히 강한 힘은?',o:['누르는 힘','당기는 힘','불에 타지 않는 힘','소리를 막는 힘'],a:1,w:'콘크리트는 누르는 힘, 철근은 당기는 힘에 강해요.'},
+   {q:'건물의 무게와 외부의 힘을 땅으로 전달하는 부분은?',o:['지붕','기둥 장식','기초','창틀'],a:2,w:'건물 맨 아래에서 힘을 땅으로 전달하는 부분이 기초예요.'}]},
+ {id:'e2',icon:'🌤',title:'쾌적한 집을 만드는 기술',sub:'단열, 환기, 채광, 온돌',color:'#dff5e8',
+  pages:[
+   {t:'열을 지켜라 — 단열과 결로',h:`<p>겨울에 따뜻하고 여름에 시원하려면 열이 드나들지 않게 막아야 해요. 이것이 <b>단열</b>이에요.</p><ul class="ex-list"><li>열이 가장 많이 새는 곳은 <b>창문</b>이에요. 이중창은 사이 공기층이 열을 막아요.</li><li>벽·바닥·지붕에는 <b>단열재</b>를 넣어요.</li><li><b>결로</b>: 실내의 따뜻하고 습한 공기가 찬 벽이나 유리에 닿아 물방울이 맺히는 현상. 곰팡이의 원인이 돼요.</li></ul>`},
+   {t:'공기와 햇빛 — 환기와 채광',h:`<ul class="ex-list"><li><b>자연 환기</b>: 마주 보는 두 방향의 창을 열면 바람이 지나가요 (맞통풍).</li><li><b>기계 환기</b>: 환기구·환기 장치로 공기를 바꿔요. 창을 열기 어려운 날에도 좋아요.</li><li><b>채광</b>: 남향 창으로 햇빛을 들여요. <b>처마·차양</b>은 높은 여름 햇빛은 막고 낮은 겨울 햇빛은 들여요.</li></ul>`},
+   {t:'우리나라의 난방 — 온돌',h:`<p>바닥을 데워 방 전체를 따뜻하게 하는 <b>온돌</b>은 열이 바닥에서 퍼지는 <b>복사 난방</b>이에요. 오늘날 보일러 바닥 난방으로 이어지고 있어요.</p><p class="hint">공기를 데우는 난방은 위쪽이 따뜻하고, 바닥 난방은 발이 따뜻해요.</p>`}],
+  quiz:[
+   {q:'겨울에 실내의 습한 공기가 차가운 유리창에 닿아 물방울이 맺히는 현상은?',o:['환기','결로','채광','복사'],a:1,w:'습한 공기가 찬 곳에 닿아 물방울이 생기는 것이 결로예요.'},
+   {q:'자연 환기를 잘 하려면 창을 어떻게 열면 좋을까요?',o:['한쪽 벽의 창만 연다','마주 보는 두 방향의 창을 연다','커튼을 모두 닫는다','문을 모두 잠근다'],a:1,w:'마주 보는 창을 열면 바람이 지나가요.'},
+   {q:'처마나 차양이 하는 일은?',o:['여름 햇빛은 막고 겨울 햇빛은 들인다','항상 햇빛을 막는다','바닥을 데운다','소리를 줄인다'],a:0,w:'해가 높은 여름 햇빛은 막고, 낮은 겨울 햇빛은 들이는 데 도움이 돼요.'}]},
+ {id:'e3',icon:'🌱',title:'소음·물·에너지, 똑똑하게 지키기',sub:'층간소음, 방수, 친환경 건축',color:'#fff0c9',
+  pages:[
+   {t:'층간소음 줄이기',h:`<ul class="ex-list"><li><b>충격음</b>: 뛰거나 물건을 떨어뜨릴 때 바닥을 타고 전해지는 소리.</li><li><b>공기음</b>: 말소리·TV 소리처럼 공기를 타고 전해지는 소리.</li></ul><p>줄이는 방법: 바닥에 <b>완충재</b>를 넣고 슬래브를 두껍게 짓기, 집 안에서 <b>매트·슬리퍼</b> 쓰기, 가구 다리에 <b>소음 방지 패드</b> 붙이기.</p>`},
+   {t:'물이 새지 않게 — 방수',h:`<p>욕실·주방·베란다·옥상처럼 물을 쓰거나 비를 맞는 곳에는 <b>방수층</b>을 만들어요.</p><ul class="ex-list"><li>바닥을 <b>배수구 쪽으로 살짝 기울여</b> 물이 고이지 않게 해요.</li><li>방수가 깨지면 아래층에 누수가 생기고 곰팡이가 자라요.</li></ul>`},
+   {t:'지구를 생각하는 집 — 친환경 건축',h:`<ul class="ex-list"><li><b>제로에너지 건축</b>: 단열을 강화해 에너지를 아끼고, 태양광 같은 신재생에너지로 필요한 에너지를 스스로 만들어 쓰는 건축.</li><li><b>친환경 자재</b>: 유해 물질이 적은 페인트·벽지. 새집증후군을 줄이려면 자주 <b>환기</b>해요.</li></ul>`}],
+  quiz:[
+   {q:'아이가 뛰는 소리처럼 바닥을 타고 전해지는 층간소음을 줄이는 방법은?',o:['바닥에 매트를 깐다','창문을 닫는다','TV를 켠다','커튼을 단다'],a:0,w:'충격음은 바닥 완충재와 매트로 줄일 수 있어요.'},
+   {q:'욕실 바닥에서 방수와 함께 하는 일은?',o:['바닥을 배수구 반대로 기울인다','바닥을 배수구 쪽으로 살짝 기울인다','바닥을 항상 평평하게 한다','바닥을 비워 둔다'],a:1,w:'물이 배수구로 흐르도록 살짝 기울여요.'},
+   {q:'제로에너지 건축의 특징으로 알맞은 것은?',o:['에어컨을 많이 단다','단열을 높이고 태양광 등으로 에너지를 만든다','창을 모두 없앤다','가장 높게 짓는다'],a:1,w:'에너지를 아끼고 직접 만들어 쓰는 것이 핵심이에요.'}]}
+];
+const EX_COIN=20,EX_ALL=20;
+function exDone(id){return !!(S.explore&&S.explore[id]);}
+function renderExplore(){
+  if(!S.explore)S.explore={};
+  const n=EXPLORE.filter(t=>exDone(t.id)).length;
+  $('#screen').innerHTML=`<div class="board"><div class="board-head"><h2>🏗️ 건설 기술 탐험 <span class="hint">· 심화 (선택)</span></h2><button class="btn ghost small" id="ex-back">← 지도</button></div>
+  <div class="bubble big" style="margin:8px 0 12px">${dodamSVG(36,S.avatar)} 우리가 배운 주거 공간이 <b>어떤 기술</b>로 지어지는지 살펴봐요! 별과 경험치에는 영향이 없고, 처음 끝내면 🪙 코인이 조금 나와요. (${n}/${EXPLORE.length}개 완료)</div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px">${EXPLORE.map(t=>`<button class="room-card lit ex-card" data-ex="${t.id}" style="background:${t.color}"><div class="rc-win">${exDone(t.id)?'✅':'📖'}</div><div class="rc-title">${t.icon} ${t.title}</div><div class="rc-sub">${t.sub}</div><div class="rc-no" style="margin-top:6px">${exDone(t.id)?'완료! 다시 볼 수 있어요':'카드 3장 + 퀴즈 3문제 · 🪙 '+EX_COIN}</div></button>`).join('')}</div>
+  ${n===EXPLORE.length?`<p class="hint" style="text-align:center;margin-top:14px">🎉 건설 기술 탐험을 모두 마쳤어요!</p>`:''}</div>`;
+  $('#ex-back').onclick=()=>go('map');
+  $$('[data-ex]').forEach(b=>b.onclick=()=>exTopic(EXPLORE.find(t=>t.id===b.dataset.ex)));
+}
+function exTopic(t){
+  let p=0;
+  const page=()=>{const pg=t.pages[p],last=p===t.pages.length-1;
+    const m=modal(`<div class="note"><div class="c-head">${dodamSVG(48,S.avatar)}<div><div class="c-kicker">🏗️ 건설 기술 탐험 · ${t.icon} ${t.title}</div><h2>${pg.t}</h2></div></div><div class="note-body">${pg.h}</div>
+      <div class="note-nav"><button class="btn ghost" id="n-prev" ${p===0?'disabled':''}>◀ 이전</button><div class="dots">${t.pages.map((_,i)=>`<i class="${i===p?'on':''}" data-p="${i}"></i>`).join('')}<span>${p+1} / ${t.pages.length}</span></div><button class="btn ${last?'green':''}" id="n-next">${last?'퀴즈 풀기 ▶':'다음 ▶'}</button></div></div>`,{wide:true});
+    $('#n-prev').onclick=()=>{if(p>0){p--;page();}};$('#n-next').onclick=()=>{if(last)exQuiz(t);else{p++;page();}};
+    $$('.dots i',m).forEach(d=>d.onclick=()=>{p=+d.dataset.p;page();});};
+  page();
+}
+function exQuiz(t){
+  let i=0,wrong=0;
+  const ask=()=>{const q=t.quiz[i];
+    modal(`<div class="note"><div class="c-head">${dodamSVG(48,S.avatar)}<div><div class="c-kicker">${t.icon} ${t.title} · 퀴즈 ${i+1}/${t.quiz.length}</div><h2>${q.q}</h2></div></div>
+      <div class="ex-opts">${q.o.map((o,k)=>`<button class="btn ghost ex-opt" data-k="${k}">${'①②③④'[k]} ${o}</button>`).join('')}</div><p class="hint" id="ex-msg" style="min-height:22px;margin-top:10px"></p></div>`,{wide:true});
+    $$('.ex-opt').forEach(b=>b.onclick=()=>{
+      if(+b.dataset.k===q.a){b.classList.remove('ghost');b.classList.add('green');$('#ex-msg').innerHTML=`<span class="ok">⭕ 맞아요!</span> ${q.w}`;$$('.ex-opt').forEach(x=>x.disabled=true);
+        setTimeout(()=>{i++;if(i<t.quiz.length)ask();else exFinish(t,wrong);},1400);}
+      else{wrong++;b.disabled=true;b.style.opacity='.45';$('#ex-msg').innerHTML='<span class="bad">❌ 다시 생각해 볼까요?</span>';}
+    });};
+  ask();
+}
+function exFinish(t,wrong){
+  if(!S.explore)S.explore={};
+  let coins=0,extra='';
+  const first=!S.explore[t.id];
+  if(first&&!(S.teacher&&serverURL())){S.explore[t.id]=1;coins=EX_COIN;
+    if(EXPLORE.every(x=>S.explore[x.id])){coins+=EX_ALL;extra=`<div class="f-badge"><span>🏗️</span> 건설 기술 탐험 <b>모두 완료!</b> 보너스 🪙 ${EX_ALL}</div>`;}
+    S.coins=(S.coins||0)+coins;save();}
+  renderHeader();
+  modal(`<div class="finish"><h2>${t.icon} 탐험 완료!</h2><div class="f-reward">${coins?`<span>🪙 +${coins} 코인</span>`:'<span>이미 완료한 탐험이에요 (코인은 처음 한 번만)</span>'}</div>${extra}<div class="f-sum">💡 틀린 횟수: <b>${wrong}번</b> — 끝까지 해결했어요!</div><div class="m-actions"><button class="btn ghost" id="f-list">🏗️ 목록으로</button><button class="btn" id="f-map">🗺 지도로</button></div></div>`);
+  $('#f-list').onclick=()=>{closeModal();go('explore');};$('#f-map').onclick=()=>go('map');if(coins)confetti();
+}
+
 /* ===================== 접속 · 저장 · 코인 · 상점 · 반 대항전 ===================== */
 const LS={get(k){try{return localStorage.getItem(k);}catch(e){return null;}},set(k,v){try{localStorage.setItem(k,v);}catch(e){}},del(k){try{localStorage.removeItem(k);}catch(e){}}};
 const SSS={get(k){try{return sessionStorage.getItem(k);}catch(e){return null;}},set(k,v){try{sessionStorage.setItem(k,v);}catch(e){}},del(k){try{sessionStorage.removeItem(k);}catch(e){}}};
 let SESSION=null;           // 게스트: {mode:'guest',gid}  ·  등록: {mode:'online',room,roomName,classes,cls,sid,pin}
 const isOnline=()=>!!(SESSION&&SESSION.mode==='online');
 const isGuest=()=>!!(SESSION&&SESSION.mode==='guest');
-function blankState(){return{v:2,nick:'',stars:{},badges:[],coins:0,avatar:{roof:'#ff8a65',body:'#ffd27a',acc:''},owned:[],bonusClaimed:0,s6:null,s0:null,rev:0,ts:0,teacher:false};}
+function blankState(){return{v:2,nick:'',stars:{},badges:[],coins:0,avatar:{roof:'#ffa88a',body:'#fff0c4',acc:''},owned:[],explore:{},bonusClaimed:0,s6:null,s0:null,rev:0,ts:0,teacher:false};}
 let S=blankState();
 const profKey=()=>!SESSION?'dodam-v2-x':SESSION.mode==='online'?'dodam-v2-p:'+SESSION.room+':'+SESSION.sid:'dodam-v2-g:'+SESSION.gid;
 function pack(){const o={...S};delete o.teacher;return o;}
@@ -2384,6 +2609,7 @@ function mergeStates(server,guest){
   m.stars={...m.stars};Object.entries(guest.stars||{}).forEach(([k,v])=>{m.stars[k]=Math.max(m.stars[k]||0,v||0);});
   m.badges=[...new Set([...(m.badges||[]),...(guest.badges||[])])];
   m.owned=[...new Set([...(m.owned||[]),...(guest.owned||[])])];
+  m.explore={...(m.explore||{}),...(guest.explore||{})};
   m.coins=(m.coins||0)+(guest.coins||0);
   const items=x=>x&&x.items?x.items.length:0;
   if(items(guest.s6)&&(!items(m.s6)||(guest.ts||0)>(m.ts||0)))m.s6=guest.s6;else if(!m.s6&&guest.s6)m.s6=guest.s6;
@@ -2536,24 +2762,52 @@ function buyPrompt(id,price,label,after){
 }
 /* ---------- 상점 ---------- */
 function renderShop(){
-  let tab='avatar';
+  let tab='avatar',sub='color',pv={};
+  const SUBS=[['color','🎨 색'],['face','😊 표정'],['roof','🏠 지붕·굴뚝'],['acc','🎩 액세서리'],['friend','🐥 친구·반짝'],['scene','🌈 배경·장식']];
+  const PRICE=(key,v)=>key==='acc'?(ACCS[v]?ACCS[v].p:0):key==='roof'?(ROOFS[v]||[0,0])[1]:key==='body'?(BODIES[v]||[0,0])[1]:((AV_TABLES[key]||{})[v]||[0,0])[1];
+  const NAME=(key,v)=>key==='acc'?(ACCS[v]?ACCS[v].e+' '+ACCS[v].n:'없음'):key==='roof'?(ROOFS[v]||['색'])[0]+' 지붕':key==='body'?(BODIES[v]||['색'])[0]+' 몸':((AV_TABLES[key]||{})[v]||[v])[0];
+  const KEYN={roof:'지붕 색',body:'몸 색',face:'표정',shape:'지붕 모양',chim:'굴뚝',acc:'액세서리',pet:'친구',fx:'효과',bg:'배경',deco:'장식'};
+  const cur=(av,k)=>av[k]||AV_DEF[k]||'';
   const draw=()=>{
-    const av=S.avatar;
+    const av=S.avatar,view={...av,...pv};
     let items='';
     if(tab==='avatar'){
-      const row=(title,map,key)=>`<div class="sec-title">${title}</div><div class="shop-grid">${Object.entries(map).map(([v,[n,p]])=>{const id=key+':'+v,own=!p||owns(id),eq=av[key]===v;return`<div class="shop-it ${eq?'eq':''}"><div class="sw-big" style="background:${v}"></div><b>${n}</b>${eq?'<span class="tag">사용 중</span>':own?`<button class="btn small" data-eq="${key}" data-v="${v}">입기</button>`:`<button class="btn small blue" data-buy="${id}" data-p="${p}" data-n="${n} ${key==='roof'?'지붕':'몸'}">🪙 ${p}</button>`}</div>`;}).join('')}</div>`;
-      items=row('🏠 지붕 색',ROOFS,'roof')+row('🎨 몸 색',BODIES,'body')+`<div class="sec-title">🎩 액세서리</div><div class="shop-grid"><div class="shop-it ${!av.acc?'eq':''}"><div class="em">🚫</div><b>없음</b>${!av.acc?'<span class="tag">사용 중</span>':'<button class="btn small" data-eq="acc" data-v="">빼기</button>'}</div>${Object.entries(ACCS).map(([k,a])=>{const id='acc:'+k,own=owns(id),eq=av.acc===k;return`<div class="shop-it ${eq?'eq':''}"><div class="em">${a.e}</div><b>${a.n}</b>${eq?'<span class="tag">사용 중</span>':own?`<button class="btn small" data-eq="acc" data-v="${k}">쓰기</button>`:`<button class="btn small blue" data-buy="${id}" data-p="${a.p}" data-n="${a.e} ${a.n}">🪙 ${a.p}</button>`}</div>`;}).join('')}</div>`;
+      const card=(key,v,nm,p,thumb)=>{const id=key+':'+v,own=!p||owns(id),eq=cur(av,key)===v,sel=pv[key]===v;
+        return`<div class="shop-it ${eq?'eq':''} ${sel?'sel':''}" data-pv="${key}" data-v="${v}">${thumb}<b>${nm}</b>${eq?'<span class="tag">사용 중</span>':own?`<button class="btn small" data-eq="${key}" data-v="${v}">입기</button>`:`<button class="btn small blue" data-buy="${id}" data-p="${p}" data-n="${nm}" data-k="${key}" data-v="${v}">🪙 ${p}</button>`}</div>`;};
+      const rowT=(title,key,map)=>`<div class="sec-title">${title}</div><div class="shop-grid">${Object.entries(map).map(([v,[n,p]])=>card(key,v,n,p,`<div class="th">${dodamSVG(64,{...av,[key]:v})}</div>`)).join('')}</div>`;
+      const rowC=(title,key,map)=>`<div class="sec-title">${title}</div><div class="shop-grid">${Object.entries(map).map(([v,[n,p]])=>card(key,v,n,p,`<div class="sw-big" style="background:${v}"></div>`)).join('')}</div>`;
+      const rowA=()=>`<div class="sec-title">🎩 액세서리</div><div class="shop-grid">${card('acc','','없음',0,'<div class="em">🚫</div>')}${Object.entries(ACCS).map(([k,a])=>card('acc',k,a.n,a.p,`<div class="em">${a.e}</div>`)).join('')}</div>`;
+      items=sub==='color'?rowC('🏠 지붕 색','roof',ROOFS)+rowC('🎨 몸 색','body',BODIES)
+        :sub==='face'?rowT('😊 표정','face',FACES)
+        :sub==='roof'?rowT('🏠 지붕 모양','shape',SHAPES)+rowT('💨 굴뚝','chim',CHIMS)
+        :sub==='acc'?rowA()
+        :sub==='friend'?rowT('🐥 반려 친구','pet',PETS)+rowT('✨ 반짝 효과','fx',FXS)
+        :rowT('🌈 배경','bg',BGS)+rowT('🌷 주변 장식','deco',DECOS);
+      items=`<div class="cat-tabs sub-tabs">${SUBS.map(([k,t])=>`<button data-sub="${k}" class="${sub===k?'on':''}">${t}</button>`).join('')}</div><p class="hint" style="margin:2px 0 8px">👆 카드를 누르면 도담이가 <b>미리 입어봐요</b>. 마음에 들면 입기·구입을 눌러요!</p>`+items;
     }else if(tab==='furn'){
       items=`<p class="hint">산 가구는 6단계 「내 방에게 묻다」 가구 목록의 <b>✨ 특별 가구</b>에서 쓸 수 있어요.</p><div class="shop-grid">${Object.entries(FURN).filter(([k,f])=>f.prem).map(([k,f])=>{const id='f:'+k,own=owns(id);return`<div class="shop-it ${own?'eq':''}"><div class="em">${f.icon}</div><b>${f.name}</b><small>${f.d}<br>${f.w}×${f.h}cm</small>${own?'<span class="tag">보유 중</span>':`<button class="btn small blue" data-buy="${id}" data-p="${f.prem}" data-n="${f.icon} ${f.name}">🪙 ${f.prem}</button>`}</div>`;}).join('')}</div>`;
     }else{
       items=`<p class="hint">산 테마는 6단계 「내 방에게 묻다」 4단계의 벽지·바닥재에서 고를 수 있어요.</p><div class="shop-grid">${PREM_WALLS.map(([c,n,p])=>{const id='wall:'+c,own=owns(id);return`<div class="shop-it ${own?'eq':''}"><div class="sw-big" style="background:${c}"></div><b>${n} 벽지</b>${own?'<span class="tag">보유 중</span>':`<button class="btn small blue" data-buy="${id}" data-p="${p}" data-n="✨ ${n} 벽지">🪙 ${p}</button>`}</div>`;}).join('')}${PREM_FLOORS.map(k=>{const f=FLOORS[k],id='floor:'+k,own=owns(id);return`<div class="shop-it ${own?'eq':''}"><div class="sw-big" style="background:repeating-linear-gradient(45deg,${f.c} 0 10px,${f.l} 10px 12px)"></div><b>${f.name} 바닥</b>${own?'<span class="tag">보유 중</span>':`<button class="btn small blue" data-buy="${id}" data-p="${f.prem}" data-n="✨ ${f.name} 바닥">🪙 ${f.prem}</button>`}</div>`;}).join('')}</div>`;
     }
-    $('#screen').innerHTML=`<div class="shop-page"><div class="shop-head">${dodamSVG(110,S.avatar)}<div><h2>🛒 도담이 상점</h2><div class="shop-coins">내 코인 <b>🪙 ${S.coins||0}</b></div><p class="hint">🪙 코인 얻는 법: 미션을 <b>처음</b> 할 때 정답·발견·콤보마다 · 스테이지 클리어 · 별을 더 받을 때 · 배지 · 선생님의 칭찬 코인<br>⭐ 경험치(순위)는 코인을 써도 줄지 않아요!</p></div></div>
+    const chg=Object.entries(pv).filter(([k,v])=>cur(av,k)!==v),unowned=chg.filter(([k,v])=>PRICE(k,v)&&!owns(k+':'+v)),total=unowned.reduce((s,[k,v])=>s+PRICE(k,v),0);
+    const pvBox=chg.length?`<div class="pv-box">👀 미리 입어보는 중: <b>${chg.map(([k,v])=>NAME(k,v)).join(' · ')}</b><div class="row" style="display:flex;gap:6px;margin-top:6px;flex-wrap:wrap"><button class="btn small ${unowned.length?'blue':''}" id="pv-go">${unowned.length?`🛒 모두 사서 입기 🪙 ${total}`:'👗 이대로 입기'}</button><button class="btn small ghost" id="pv-reset">↩ 원래대로</button></div></div>`:'';
+    $('#screen').innerHTML=`<div class="shop-page"><div class="shop-head"><div class="pv-stage">${dodamSVG(150,view)}</div><div><h2>🛒 도담이 상점</h2><div class="shop-coins">내 코인 <b>🪙 ${S.coins||0}</b></div>${pvBox}<p class="hint">🪙 코인 얻는 법: 미션을 <b>처음</b> 할 때 정답·발견·콤보마다 · 스테이지 클리어 · 별을 더 받을 때 · 배지 · 선생님의 칭찬 코인</p></div></div>
       <div class="cat-tabs shop-tabs"><button data-t="avatar" class="${tab==='avatar'?'on':''}">🏠 도담이 꾸미기</button><button data-t="furn" class="${tab==='furn'?'on':''}">✨ 특별 가구</button><button data-t="theme" class="${tab==='theme'?'on':''}">🎨 방 테마</button></div>
       <div class="panel">${items}</div><div style="text-align:center;margin-top:10px"><button class="btn ghost" onclick="go('map')">🗺 지도로 돌아가기</button></div></div>`;
     $$('[data-t]').forEach(b=>b.onclick=()=>{tab=b.dataset.t;draw();});
-    $$('[data-eq]').forEach(b=>b.onclick=()=>{S.avatar={...S.avatar,[b.dataset.eq]:b.dataset.v};save();draw();});
-    $$('[data-buy]').forEach(b=>b.onclick=()=>buyPrompt(b.dataset.buy,+b.dataset.p,b.dataset.n,()=>{const [k,v]=b.dataset.buy.split(':');if(k==='roof'||k==='body'||k==='acc')S.avatar={...S.avatar,[k]:v};save();draw();}));
+    $$('[data-sub]').forEach(b=>b.onclick=()=>{sub=b.dataset.sub;draw();});
+    $$('[data-pv]').forEach(c=>c.onclick=e=>{if(e.target.closest('button'))return;const k=c.dataset.pv,v=c.dataset.v;if(pv[k]===v)delete pv[k];else pv[k]=v;draw();});
+    $$('[data-eq]').forEach(b=>b.onclick=()=>{S.avatar={...S.avatar,[b.dataset.eq]:b.dataset.v};delete pv[b.dataset.eq];save();draw();});
+    $$('[data-buy]').forEach(b=>b.onclick=()=>buyPrompt(b.dataset.buy,+b.dataset.p,b.dataset.n,()=>{S.avatar={...S.avatar,[b.dataset.k]:b.dataset.v};delete pv[b.dataset.k];save();draw();}));
+    if($('#pv-reset'))$('#pv-reset').onclick=()=>{pv={};draw();};
+    if($('#pv-go'))$('#pv-go').onclick=()=>{
+      const equip=()=>{S.avatar={...S.avatar,...pv};pv={};save();draw();};
+      if(!unowned.length){equip();return;}
+      const can=(S.coins||0)>=total;
+      modal(`<div style="text-align:center"><h2 style="margin:0 0 8px">🛒 한꺼번에 구입할까요?</h2><div style="margin:8px 0;line-height:1.8">${unowned.map(([k,v])=>`<div><b>${NAME(k,v)}</b> <span class="hint">🪙 ${PRICE(k,v)}</span></div>`).join('')}</div><div style="font-size:16px">합계 <b>🪙 ${total}</b> · 내 코인 <b>🪙 ${S.coins||0}</b></div>${can?'':`<p class="hint">코인이 ${total-(S.coins||0)}개 부족해요.</p>`}<div class="m-actions"><button class="btn ghost" id="b-no">취소</button><button class="btn" id="b-yes" ${can?'':'disabled'}>구입하고 입기</button></div></div>`);
+      $('#b-no').onclick=closeModal;
+      $('#b-yes').onclick=()=>{if((S.coins||0)<total)return;S.coins-=total;S.owned=(S.owned||[]).concat(unowned.map(([k,v])=>k+':'+v));closeModal();toast('🎉 구입 완료!','good');confetti();equip();};
+    };
   };
   draw();
 }
