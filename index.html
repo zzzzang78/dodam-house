@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
 <title>도담이네 집 짓기 · 주거 공간 구성 시뮬레이터</title>
 <style>
 :root{--bg:#fdf8f1;--panel:#fff;--ink:#3b3433;--sub:#7a6f6b;--line:#eadfd3;--accent:#ff8a65;--accent2:#5c9ded;--ok:#3fae7a;--warn:#e8554e;--gold:#f5b82e;--r:14px}
@@ -319,7 +320,7 @@ ul.nlist li{padding-left:14px;position:relative}ul.nlist li::before{content:'•
 .cat-item .pr{font-size:10.5px;color:#d84315;font-weight:800}
 
 /* header player */
-#hdr-player{display:flex;align-items:center;gap:8px;margin-left:10px}
+#hdr-player{display:flex;align-items:center;gap:8px;margin-left:10px;margin-right:auto}
 .pl-name{display:flex;flex-direction:column;line-height:1.15}.pl-name b{font-size:14px}.pl-name small{font-size:11px;color:var(--sub)}
 .chip{border-radius:20px;padding:4px 10px;font-weight:800;font-size:13px;white-space:nowrap}
 .chip.xp{background:#fff4d1;color:#8a5a00}.chip.coin{background:#fff0e0;color:#c75b12}
@@ -426,7 +427,6 @@ kbd{background:#f3ece4;border:1px solid #d9cbbb;border-bottom-width:3px;border-r
 @media (max-width:1300px){.ed-selinfo{display:none}.three{grid-template-columns:225px 1fr 240px}.studio{grid-template-columns:250px 1fr 230px}.goal{display:none}}
 
 /* ===== 깔끔 파스텔 테마 (단색) ===== */
-@import url('https://fonts.googleapis.com/css2?family=Jua&display=swap');
 :root{--bg:#fffaf2;--panel:#fff;--ink:#5a4a5e;--sub:#9a8a9f;--line:#e0ecf6;--accent:#6fb8f0;--accent2:#8ec5ff;--ok:#62d0a1;--warn:#ff7a8a;--gold:#ffd166;--r:20px}
 html,body{font-family:"Jua","Pretendard","Apple SD Gothic Neo","Malgun Gothic",sans-serif;background:var(--bg);font-weight:400}
 b,strong,h1,h2,h3,h4,th,.btn,.logo{font-weight:400}
@@ -486,25 +486,85 @@ input,select,textarea{border-radius:14px}
 .ex-two{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:8px 0}.ex-two>div{background:#f2f8fd;border-radius:18px;padding:10px 12px;line-height:1.6}
 .ex-list{line-height:1.8;padding-left:20px}.ex-opts{display:grid;gap:8px;margin-top:10px}.ex-opt{text-align:left;justify-content:flex-start;font-size:16px;padding:12px 16px}
 .ex-card{min-height:120px}
+
+/* ===== 게임 화면 (마을 · 창 · 하단 바) ===== */
+body.on-map header{display:none}body.login-mode #hud{display:none}
+#hud{flex:0 0 auto;height:60px;background:#fff;border-top:4px solid #ffd98a;display:flex;align-items:center;gap:12px;padding:0 14px}
+#hud .lv,.win .lv{background:#ff9f43;color:#fff;border-radius:12px;padding:3px 10px;font-size:15px;white-space:nowrap}
+.hud-nick{font-weight:400;font-size:16px;white-space:nowrap}
+#hud .xp{flex:1;min-width:120px;height:22px;background:#ffeccc;border-radius:999px;position:relative;overflow:hidden;border:2px solid #ffd98a}
+#hud .xp i{position:absolute;left:0;top:0;bottom:0;background:#ffb347;border-radius:999px;transition:width .5s}
+#hud .xp span{position:absolute;inset:0;text-align:center;font-size:12px;line-height:18px}
+#hud .hdr-btns{margin-left:0;gap:6px;align-items:center;flex:0 0 auto;display:flex}
+#hud .xp{flex:1 1 100px}
+@media (max-width:1100px){.btn.slot{width:42px;height:44px}.hud-nick{display:none}}
+.btn.slot{position:static;flex:0 0 auto;width:48px;height:48px;padding:0;border-radius:14px;flex-direction:column;justify-content:center;font-size:20px;gap:0;background:#e8f3fc;border:3px solid #b9d9f3;color:var(--ink);box-shadow:0 3px 0 #b9d9f3}
+.btn.slot small{font-size:10px;line-height:1;margin-top:1px}
+.btn.slot.teacher-on{background:#b39dff!important;border-color:#8f78e6!important}
+.town{position:relative;height:100%;min-height:560px;background:#cdeaff;overflow:hidden}
+.town .cl{position:absolute;background:#fff;border-radius:999px;opacity:.95}
+.town .hill{position:absolute;bottom:0;border-radius:50% 50% 0 0;background:#bfe8c8}
+.town .grass{position:absolute;left:0;right:0;bottom:0;height:78px;background:#9bdba9;border-top:6px solid #7ccb92}
+.win{position:absolute;background:#fff9ee;border:4px solid #ffd98a;border-radius:22px;box-shadow:0 5px 0 #f0c066;overflow:hidden;z-index:3}
+.win h4{margin:0;background:#6fb8f0;color:#fff;font-weight:400;font-size:15px;padding:6px 14px;letter-spacing:1px}
+.win .bd{padding:10px 12px;font-size:14px;text-align:center}
+.win-l{left:16px;top:16px;width:190px}.win-r{right:16px;top:16px;width:210px}
+.win .badges{display:flex;flex-wrap:wrap;gap:4px;justify-content:center;margin-top:8px}
+.win .badges span{font-size:20px;filter:grayscale(1);opacity:.35}.win .badges span.got{filter:none;opacity:1}
+.town .house{position:absolute;left:50%;transform:translateX(-50%);bottom:70px;width:clamp(560px,calc(100vw - 500px),820px);margin:0}
+.town .roof{height:112px;margin:0 -18px -34px;position:relative;z-index:2;background:none;clip-path:none;display:block;padding:0;pointer-events:none}
+.town .roof svg{width:100%;height:100%;display:block;overflow:visible}
+.town .roof-title{position:absolute;left:0;right:0;top:66px;text-align:center;color:#fff;font-size:22px;letter-spacing:1px;margin:0}
+.town .floors{background:#5a6296;border:5px solid #464d80;border-radius:10px 10px 24px 24px;padding:42px 14px 14px;margin:0;gap:10px;display:grid;grid-template-columns:repeat(3,1fr)}
+.town .room-card{min-height:78px;border-radius:18px;padding:8px 12px 6px;background:#6b74a8;color:#d9ddf5;box-shadow:none;text-align:left}
+.town .room-card:hover{transform:translateY(-3px)}
+.town .room-card .rc-title{font-size:16px;line-height:1.2;margin:3px 0 0;font-weight:400}.town .rc-no{font-weight:400;font-size:11.5px;opacity:.85}.town .rc-sub{display:none}
+.town .rc-win{font-size:18px;top:6px;right:8px}
+.town .rc-stars{font-size:14px;margin-top:2px}.town .rc-stars span{color:#8b94c4}
+.town .room-card.lit{color:#5a4a5e;box-shadow:0 0 0 4px #ffe79a}
+.town .floors>*:nth-child(5n+1).lit{background:#ffe2cf}.town .floors>*:nth-child(5n+2).lit{background:#d9ecff}.town .floors>*:nth-child(5n+3).lit{background:#d8f5e8}.town .floors>*:nth-child(5n+4).lit{background:#e9e0ff}.town .floors>*:nth-child(5n+5).lit{background:#fff1b8}
+.town .room-card.lit .rc-stars span{color:#fff}.town .room-card.lit .rc-stars span.on{color:#ffc933!important}
+.town .door-cell{border-radius:90px 90px 18px 18px;background:#ffc9a0;color:#a8643a;min-height:78px;font-size:13px}
+.npc2{position:absolute;left:calc(50% - 560px);bottom:50px;display:flex;flex-direction:column;align-items:center;z-index:3}
+.sp2{background:#fff;border:3px solid #ffd98a;border-radius:18px;padding:6px 12px;font-size:13px;margin-bottom:2px;white-space:nowrap}
+.sign{position:absolute;right:26px;bottom:42px;text-align:center;font-size:14px;border:none;background:none;z-index:3;cursor:pointer;color:var(--ink)}
+.sign .bd2{background:#fff;border:3px solid #ffc94d;border-radius:14px;padding:3px 12px;margin-top:-6px;position:relative;display:block;box-shadow:0 3px 0 #f0c066}
+.sign small{display:block;font-size:10px;color:#9a8aa8}.sign:hover{transform:translateY(-3px)}
+.town .tnote{position:absolute;left:50%;top:10px;transform:translateX(-50%);background:#ffffffd9;border-radius:999px;padding:4px 14px;font-size:12px;color:#7a6f6b;z-index:3;white-space:nowrap}
+@media (max-width:1180px){.npc2{display:none}.win-l{width:150px}.win-r{width:170px}.town .house{width:clamp(520px,calc(100vw - 380px),820px)}}
+@media (max-width:960px){.win-l,.win-r{display:none}.town .house{width:94vw}}
+.win .stat{display:flex;flex-direction:column;gap:2px;margin-top:6px;font-size:13px;text-align:left;padding:0 6px}.win .stat b{font-weight:400;font-size:15px}
+.win-t{left:50%;transform:translateX(-50%);top:10px;width:min(620px,calc(100vw - 480px));padding:0}
+.bd2s{display:flex;gap:4px;justify-content:center;padding:6px 8px;flex-wrap:nowrap}
+.bdg{display:flex;flex-direction:column;align-items:center;font-size:22px;min-width:0;flex:1;filter:grayscale(1);opacity:.4}.bdg small{font-size:10px;white-space:nowrap;margin-top:1px}.bdg.got{filter:none;opacity:1}
+.town{min-height:620px}
+@media (max-width:1180px){.win-t{width:min(560px,calc(100vw - 380px))}}
+@media (max-width:1100px){.bdg small{display:none}}
+@media (max-width:960px){.win-t{width:94vw}}
 </style>
 </head>
 <body>
 <div id="app">
 <header>
   <div class="logo" id="logo"><span id="logo-svg"></span>도담이네 집 짓기</div>
-  <div id="hdr-player"></div><span id="sync" class="sync"></span>
-  <div class="hdr-btns">
-  <button class="btn ghost small" id="btn-map">🗺 지도</button>
-  <button class="btn ghost small" id="btn-shop">🛒 상점</button>
-  <button class="btn small" id="btn-register" style="display:none">🏆 랭킹 등록</button>
-  <button class="btn ghost small" id="btn-board">🏆 반 대항전</button>
-  <button class="btn ghost small" id="btn-peers">👀 친구들</button>
-  <button class="btn ghost small" id="btn-keys" title="단축키">⌨</button>
-  <button class="btn ghost small" id="btn-teacher" title="선생님 모드">👩‍🏫</button>
-  <button class="btn ghost small" id="btn-reset" title="연습 기록 지우기">↺</button>
-  <button class="btn ghost small" id="btn-logout">⏏ 나가기</button></div>
+  <div id="hdr-player"></div>
 </header>
 <main id="screen"></main>
+<footer id="hud">
+  <span class="lv" id="hud-lv">Lv.1</span><b class="hud-nick" id="hud-nick"></b><span id="sync" class="sync"></span>
+  <div class="xp" title="경험치: 별 1개 100, 배지 1개 50"><i id="hud-xpbar"></i><span id="hud-xp"></span></div>
+  <div class="hdr-btns">
+  <button class="btn small" id="btn-register" style="display:none">🏆 랭킹 등록</button>
+  <button class="btn ghost small slot" id="btn-map">🗺<small>지도</small></button>
+  <button class="btn ghost small slot" id="btn-shop">🛒<small>상점</small></button>
+  <button class="btn ghost small slot" id="btn-board">🏆<small>대항전</small></button>
+  <button class="btn ghost small slot" id="btn-peers">👀<small>친구들</small></button>
+  <button class="btn ghost small slot" id="btn-keys" title="단축키">⌨<small>단축키</small></button>
+  <button class="btn ghost small slot" id="btn-teacher" title="선생님 모드">👩‍🏫<small>교사</small></button>
+  <button class="btn ghost small slot" id="btn-reset" title="연습 기록 지우기">↺<small>초기화</small></button>
+  <button class="btn ghost small slot" id="btn-logout">⏏<small>나가기</small></button></div>
+</footer>
+
 </div>
 <div id="toasts"></div>
 <div id="print-area"></div>
@@ -1385,7 +1445,7 @@ const RENDER={};let cleanup=null;let current='map';
 function go(id){
   if(cleanup){try{cleanup();}catch(e){}cleanup=null;}
   closeModal();hideCtx&&hideCtx();
-  current=id;const scr=$('#screen');scr.scrollTop=0;
+  current=id;const scr=$('#screen');scr.scrollTop=0;document.body.classList.toggle('on-map',id==='map');
   if(id==='map'){renderMap();return;}
   if(id==='shop'){renderShop();return;}
   if(id==='board'){renderBoard();return;}
@@ -1446,19 +1506,26 @@ function finishStage(id,stars,extra=''){
 }
 function renderMap(){
   const lit=id=>(S.stars[id]||0)>0;
-  const total=STAGES.reduce((a,s)=>a+(S.stars[s.id]||0),0);
-  $('#screen').innerHTML=`<div class="map">
-  <div class="map-intro">${dodamSVG(70,S.avatar)}<div class="bubble big">안녕! 나는 집 요정 <b>도담이</b>야. 🏠<br>방마다 미션을 깨면 그 방에 <b>불이 켜져요</b>. 모든 방에 불을 켜서 <b>나를 성장시키는 집</b>을 완성해 줘!</div></div>
-  <div class="house"><div class="roof"><svg viewBox="0 0 1000 150" preserveAspectRatio="none" aria-hidden="true"><g stroke-linejoin="round" stroke-linecap="round"><rect x="735" y="18" width="62" height="70" rx="14" fill="#b6e1fa" stroke="#b6e1fa" stroke-width="14"/><rect x="722" y="8" width="88" height="26" rx="13" fill="#6fb8f0"/><polygon points="500,26 960,128 40,128" fill="#8fcff5" stroke="#8fcff5" stroke-width="44"/></g><g fill="#fff" opacity=".9"><circle cx="772" cy="-2" r="0"/></g></svg><div class="roof-title">나를 성장시키는 공간, 집</div></div>
-  <div class="floors">${STAGES.map(s=>`<button class="room-card ${lit(s.id)?'lit':''}" data-go="${s.id}">
-    <div class="rc-win">${lit(s.id)?'💡':'🌙'}</div>
-    <div class="rc-no">${stLabel(s)} · ${s.period}</div>
-    <div class="rc-title">${s.icon} ${s.title}</div><div class="rc-sub">${s.sub}</div>
-    <div class="rc-stars">${[1,2,3].map(i=>`<span class="${i<=(S.stars[s.id]||0)?'on':''}">★</span>`).join('')}</div></button>`).join('')}
-    <div class="door-cell"><b>🚪</b>현관<br>${total===0?'처음이면 단원 열기부터!':`별 ${total}개 모았어요`}</div></div>
-  <div class="ground"><i>🌷</i><i>🌳</i><button class="ex-btn" data-go="explore" title="심화 · 선택">🏗️ 건설 기술 탐험</button><i>🌼</i></div></div>
-  <div class="badge-shelf"><b>🏅 내 배지</b>${Object.keys(BADGES).map(k=>`<span class="badge ${S.badges.includes(k)?'got':''}" title="${BADGES[k].name}">${BADGES[k].icon}<small>${BADGES[k].name}</small></span>`).join('')}</div>
-  <div class="map-note">${isOnline()?`☁️ ${esc(SESSION.roomName)} · ${esc(SESSION.cls)}반 ${esc(SESSION.sid)} — 기록이 자동으로 저장돼요. 다른 노트북에서도 학번으로 이어서 할 수 있어요.`:serverURL()?'💾 아직 등록 전이에요 — 이 노트북에만 저장 중! 수업 끝나기 전에 위쪽 <b>🏆 랭킹 등록</b>을 누르면 반 점수에 들어가고, 예전 기록과 합쳐져요.':'💾 이 노트북 브라우저에만 저장돼요.'}</div></div>`;
+  const total=STAGES.reduce((a,s)=>a+(S.stars[s.id]||0),0),doneN=STAGES.filter(s=>lit(s.id)).length;
+  const next=STAGES.find(s=>!lit(s.id));
+  const xp=xpOf(S),lv=1+Math.floor(xp/300);
+  const note=isOnline()?'☁️ 기록이 자동으로 저장돼요 · 다른 노트북에서도 학번으로 이어서 할 수 있어요':serverURL()?'💾 아직 등록 전이에요':'💾 이 노트북에만 저장돼요';
+  $('#screen').innerHTML=`<div class="town">
+   <div class="cl" style="left:90px;top:40px;width:120px;height:36px"></div><div class="cl" style="left:140px;top:24px;width:70px;height:40px"></div>
+   <div class="cl" style="left:62%;top:70px;width:150px;height:40px"></div><div class="cl" style="left:70%;top:50px;width:80px;height:44px"></div>
+   <div class="hill" style="left:-80px;width:520px;height:190px"></div><div class="hill" style="right:-100px;width:600px;height:230px;background:#b3e2bf"></div><div class="grass"></div>
+   
+   <div class="win win-l"><h4>내 정보</h4><div class="bd">${dodamSVG(96,S.avatar)}<div style="font-size:18px">${esc(S.nick||'도담이')}</div><div style="font-size:12px;color:#9a8aa8">${isOnline()?esc(SESSION.cls)+'반 '+esc(SESSION.sid):'연습 모드'}</div>
+     <div style="margin-top:6px"><span class="lv">Lv.${lv}</span></div>
+     <div class="stat"><span>⭐ 별 <b>${total}</b>개</span><span>✨ <b>${xp}</b> XP</span><span>🪙 <b>${S.coins||0}</b></span></div></div></div>
+   <div class="win win-t"><h4>🏅 내 업적 <span style="font-size:12px;opacity:.9">${S.badges.length} / ${Object.keys(BADGES).length}</span></h4><div class="bd2s">${Object.keys(BADGES).map(k=>`<div class="bdg ${S.badges.includes(k)?'got':''}" title="${BADGES[k].name}">${BADGES[k].icon}<small>${BADGES[k].name}</small></div>`).join('')}</div></div>
+   <div class="win win-r"><h4>지금 할 일</h4><div class="bd">${next?`<div style="font-size:30px">${next.icon}</div><div style="font-size:17px;margin:2px 0">${next.title}</div><div style="font-size:12px;color:#9a8aa8;margin-bottom:8px">${next.sub}</div><button class="btn small" data-go="${next.id}">▶ 시작하기</button>`:`<div style="font-size:30px">🎉</div><div style="font-size:16px;margin:4px 0">모든 방에 불이 켜졌어요!</div>`}<div style="margin-top:10px;font-size:12px;color:#7a9a82">진행 ${doneN} / ${STAGES.length} 완료</div></div></div>
+   <div class="house"><div class="roof"><svg viewBox="0 0 1000 150" preserveAspectRatio="none" aria-hidden="true"><g stroke-linejoin="round" stroke-linecap="round"><rect x="735" y="18" width="62" height="70" rx="14" fill="#b6e1fa" stroke="#b6e1fa" stroke-width="14"/><rect x="722" y="8" width="88" height="26" rx="13" fill="#6fb8f0"/><polygon points="500,26 960,128 40,128" fill="#8fcff5" stroke="#8fcff5" stroke-width="44"/></g></svg><div class="roof-title">나를 성장시키는 공간, 집</div></div>
+    <div class="floors">${STAGES.map(s=>`<button class="room-card ${lit(s.id)?'lit':''}" data-go="${s.id}"><div class="rc-win">${lit(s.id)?'💡':'🌙'}</div><div class="rc-no">${stLabel(s)}</div><div class="rc-title">${s.icon} ${s.title}</div><div class="rc-stars">${[1,2,3].map(i=>`<span class="${i<=(S.stars[s.id]||0)?'on':''}">★</span>`).join('')}</div></button>`).join('')}
+     <div class="door-cell"><b>🚪</b>현관<br>${total===0?'처음이면 열기부터!':`별 ${total}개 모았어요`}</div></div></div>
+   <div class="npc2"><div class="sp2">${next?`안녕! 다음은 <b style="font-weight:400;color:#e6903a">${stLabel(next)}</b>야!`:'모든 방에 불을 켰어! 대단해!'}</div>${dodamSVG(92,S.avatar)}</div>
+   <button class="sign" data-go="explore" title="심화 · 선택"><svg width="110" height="104" viewBox="0 0 120 120" aria-hidden="true"><rect x="56" y="60" width="8" height="56" fill="#b98657"/><rect x="14" y="14" width="92" height="52" rx="14" fill="#fff" stroke="#ffc94d" stroke-width="5"/><g stroke="#6fb8f0" stroke-width="5" stroke-linecap="round" fill="none"><path d="M40 52 V28 H72"/><path d="M72 28 V44"/><path d="M40 28 L56 16"/></g><rect x="66" y="44" width="12" height="9" rx="2" fill="#ffc94d"/></svg><span class="bd2">🏗️ 건설 기술 탐험<small>선택 · 심화</small></span></button>
+  </div>`;
   $$('[data-go]').forEach(b=>b.onclick=()=>go(b.dataset.go));
 }
 
@@ -2622,7 +2689,8 @@ function renderHeader(){
   const h=$('#hdr-player');if(!h)return;
   h.innerHTML=SESSION?`${dodamSVG(34,S.avatar)}<div class="pl-name"><b>${esc(isOnline()?S.nick:'손님')}</b><small>${isOnline()?`${esc(SESSION.cls)}반 ${esc(SESSION.sid)}`:'등록 전'}</small></div>
     <span class="chip xp" title="경험치: 별 1개 100, 배지 1개 50">⭐ ${xpOf(S)} XP</span><span class="chip coin" id="coin-chip" title="코인: 상점에서 사용">🪙 ${S.coins||0}</span>`:'';
-  const bt=$('#btn-teacher');bt.classList.toggle('teacher-on',!!S.teacher);bt.textContent=S.teacher?'👩‍🏫 ON':'👩‍🏫';
+  const _xp=xpOf(S);if($('#hud-lv')){$('#hud-lv').textContent='Lv.'+(1+Math.floor(_xp/300));$('#hud-nick').textContent=isOnline()?S.nick:'손님';$('#hud-xpbar').style.width=(_xp%300)/3+'%';$('#hud-xp').textContent='EXP '+(_xp%300)+' / 300 · 🪙 '+(S.coins||0);}
+  const bt=$('#btn-teacher');bt.classList.toggle('teacher-on',!!S.teacher);bt.innerHTML=S.teacher?'👩‍🏫<small>ON</small>':'👩‍🏫<small>교사</small>';
   document.body.classList.toggle('teacher',!!S.teacher);
   $('#btn-board').style.display=isOnline()?'':'none';$('#btn-peers').style.display=isOnline()?'':'none';
   $('#btn-register').style.display=isGuest()&&serverURL()?'':'none';
