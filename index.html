@@ -511,7 +511,7 @@ body.on-map header{display:none}body.login-mode #hud{display:none}
 .win-l{left:16px;top:16px;width:190px}.win-r{right:16px;top:16px;width:210px}
 .win .badges{display:flex;flex-wrap:wrap;gap:4px;justify-content:center;margin-top:8px}
 .win .badges span{font-size:21px;filter:grayscale(1);opacity:.35}.win .badges span.got{filter:none;opacity:1}
-.town .house{position:absolute;left:50%;transform:translateX(-50%);bottom:70px;width:clamp(560px,calc(100vw - 500px),820px);margin:0}
+.town .house{position:absolute;left:50%;transform:translateX(-50%);bottom:52px;width:clamp(560px,calc(100vw - 450px),910px);margin:0}
 .town .roof{height:112px;margin:0 -18px -34px;position:relative;z-index:2;background:none;clip-path:none;display:block;padding:0;pointer-events:none}
 .town .roof svg{width:100%;height:100%;display:block;overflow:visible}
 .town .roof-title{position:absolute;left:0;right:0;top:66px;text-align:center;color:#fff;font-size:23px;letter-spacing:1px;margin:0}
@@ -531,7 +531,7 @@ body.on-map header{display:none}body.login-mode #hud{display:none}
 .sign .bd2{background:#fff;border:3px solid #ffc94d;border-radius:14px;padding:3px 12px;margin-top:-6px;position:relative;display:block;box-shadow:0 3px 0 #f0c066}
 .sign small{display:block;font-size:12px;color:#9a8aa8}.sign:hover{transform:translateY(-3px)}
 .town .tnote{position:absolute;left:50%;top:10px;transform:translateX(-50%);background:#ffffffd9;border-radius:999px;padding:4px 14px;font-size:14px;color:#7a6f6b;z-index:3;white-space:nowrap}
-@media (max-width:1180px){.npc2{display:none}.win-l{width:150px}.win-r{width:170px}.town .house{width:clamp(520px,calc(100vw - 380px),820px)}}
+@media (max-width:1180px){.npc2{display:none}.win-l{width:150px}.win-r{width:170px}.town .house{width:clamp(520px,calc(100vw - 400px),820px)}}
 @media (max-width:960px){.win-l,.win-r{display:none}.town .house{width:94vw}}
 .win .stat{display:flex;flex-direction:column;gap:2px;margin-top:6px;font-size:15px;text-align:left;padding:0 6px}.win .stat b{font-weight:700;font-size:17px}
 .win-t{left:50%;transform:translateX(-50%);top:10px;width:min(620px,calc(100vw - 480px));padding:0}
@@ -1652,6 +1652,16 @@ function finishStage(id,stars,extra=''){
   $('#f-retry').onclick=()=>go(id);$('#f-map').onclick=()=>go('map');if(next)$('#f-next').onclick=()=>go(next.id);
   confetti();
 }
+function fitHouse(){
+  const h=document.querySelector('.town .house'),t=document.querySelector('.town');if(!h||!t)return;
+  h.style.transform='translateX(-50%)';h.style.transformOrigin='50% 100%';
+  const W=h.offsetWidth,H=h.offsetHeight,vw=window.innerWidth;
+  if(vw<=960||!W||!H)return;
+  const sw=(vw*0.62)/W,sh=(t.clientHeight-52-130)/H;
+  const s=Math.max(1,Math.min(sw,sh,1.7));
+  h.style.transform='translateX(-50%) scale('+s.toFixed(3)+')';
+  const n=document.querySelector('.npc2');if(n)n.style.left=Math.max(150,Math.round(vw/2-W*s/2-215))+'px';
+}
 function renderMap(){
   const lit=id=>(S.stars[id]||0)>0;
   const total=STAGES.reduce((a,s)=>a+(S.stars[s.id]||0),0),doneN=STAGES.filter(s=>lit(s.id)).length;
@@ -1678,6 +1688,7 @@ function renderMap(){
   </div>`;
   $$('[data-go]').forEach(b=>b.onclick=()=>go(b.dataset.go));
   $('#mailbox').onclick=openMail;
+  fitHouse();if(!window.__fh){window.__fh=1;window.addEventListener('resize',()=>{if(window.fitHouse)fitHouse();});}
 }
 
 /* ===================== STAGE 1 : 구역화 퍼즐 ===================== */
