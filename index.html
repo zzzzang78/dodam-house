@@ -973,7 +973,7 @@ function fbXp(state){
   FB_STAGES.forEach(id=>{stars+=Math.max(0,Math.min(3,Number((state.stars||{})[id])||0));});
   return stars*100+Math.min(FB_STAGES.length,(state.badges||[]).length)*50;
 }
-function fbCode(){const A='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';let s='';for(let i=0;i<6;i++)s+=A.charAt(Math.floor(Math.random()*A.length));return s;}
+function fbCode(){let s='';for(let i=0;i<4;i++)s+=Math.floor(Math.random()*10);return s;}
 const fbSort=(a,b)=>String(a.cls).localeCompare(String(b.cls),undefined,{numeric:true})||String(a.sid).localeCompare(String(b.sid),undefined,{numeric:true});
 
 async function fbEnsureTeacher(a,pw){
@@ -981,7 +981,7 @@ async function fbEnsureTeacher(a,pw){
   throw new Error('이 화면에서는 할 수 없어요. 교사용 화면을 이용해 주세요.');
 }
 async function fbRoom(a,code){
-  code=String(code||'').toUpperCase().trim();if(!/^[A-Z0-9]{6}$/.test(code))return null;
+  code=String(code||'').toUpperCase().trim();if(!/^[A-Z0-9]{3,8}$/.test(code))return null;
   const r=await a.get('rooms/'+code);return r?{code,name:r.name,classes:r.classes||[],open:r.open!==false}:null;
 }
 const fbPub=(sid,x)=>({sid:String(sid),cls:String(x.cls||''),nick:String(x.nick||''),xp:Number(x.xp)||0,coins:Number(x.coins)||0,stars:(x.stars||[]).concat([0,0,0,0,0,0,0,0]).slice(0,8),badges:Number(x.badges)||0,last:Number(x.last)||0,bonus:Number(x.bonus)||0,avatar:x.avatar||null,hasPin:!!x.hasPin});
@@ -996,7 +996,9 @@ const FB_API={
   createRoom:async(b,a)=>{
     await fbEnsureTeacher(a,b.pw);
     const classes=(b.classes||[]).map(String).filter(String);if(!classes.length)throw new Error('반을 하나 이상 골라 주세요.');
-    let code,n=0;do{code=fbCode();n++;}while((await a.get('rooms/'+code))&&n<20);
+    let code=String(b.code||'').toUpperCase().replace(/[^A-Z0-9]/g,'');
+    if(code){if(code.length<3||code.length>8)throw new Error('방 코드는 영어·숫자 3~8글자로 써 주세요.');if(await a.get('rooms/'+code))throw new Error('이미 있는 방 코드예요. 다른 코드를 써 주세요.');}
+    else{let n=0;do{code=fbCode();n++;}while((await a.get('rooms/'+code))&&n<30);}
     await a.set('rooms/'+code,{name:String(b.name||'우리 학년').slice(0,30),classes,open:true,created:Date.now()});
     await a.set('rooms/'+code+'/board/main',{m:{}});
     return{ok:true,code};
@@ -2441,10 +2443,10 @@ function accountModal(purpose){
   const reg=purpose==='register';const last=JSON.parse(LS.get('dodam-v2-last')||'null')||{};
   const box=modal(`<h2 style="margin-top:0">${reg?'🏆 랭킹 등록':'🔑 학번으로 이어 하기'}</h2>
     <p class="hint">${reg?`지금까지 모은 <b>⭐ ${xpOf(S)} XP · 🪙 ${S.coins||0}</b>이 선생님 기록 저장소에 올라가고, 예전 기록이 있으면 <b>합쳐져요</b>. 등록 후에는 자동으로 저장돼요.`:'선생님 시트에 있는 내 기록을 불러와요. 처음이면 새로 만들어져요.'}</p>
-    <div class="acc"><label>🔑 방 코드</label><div class="row-in"><input id="ac-code" maxlength="6" placeholder="예) K7P2QX" value="${esc(last.room||'')}" autocomplete="off"><button class="btn" id="ac-join">확인</button></div><div id="ac-2"></div></div>
+    <div class="acc"><label>🔑 방 코드</label><div class="row-in"><input id="ac-code" maxlength="8" placeholder="예) 4821" value="${esc(last.room||'')}" autocomplete="off"><button class="btn" id="ac-join">확인</button></div><div id="ac-2"></div></div>
     <div class="lg-msg" id="ac-m"></div>`);
   const m=t=>{$('#ac-m').innerHTML=t;};const codeIn=$('#ac-code');codeIn.oninput=()=>{codeIn.value=codeIn.value.toUpperCase().replace(/[^A-Z0-9]/g,'');};
-  const join=async()=>{const code=codeIn.value.trim();if(code.length!==6){m('방 코드 6글자를 써 주세요.');return;}m('⏳ 방을 찾는 중…');
+  const join=async()=>{const code=codeIn.value.trim();if(code.length<3){m('방 코드를 써 주세요. (3~8글자)');return;}m('⏳ 방을 찾는 중…');
     try{const r=await api({action:'join',code});if(!r.ok){m('❌ '+r.err);return;}m('');step2(r.room);}catch(e){m('❌ '+e.message);}};
   $('#ac-join').onclick=join;codeIn.onkeydown=e=>{if(e.key==='Enter')join();};
   const step2=room=>{

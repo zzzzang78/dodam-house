@@ -607,7 +607,7 @@ function fbXp(state){
   FB_STAGES.forEach(id=>{stars+=Math.max(0,Math.min(3,Number((state.stars||{})[id])||0));});
   return stars*100+Math.min(FB_STAGES.length,(state.badges||[]).length)*50;
 }
-function fbCode(){const A='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';let s='';for(let i=0;i<6;i++)s+=A.charAt(Math.floor(Math.random()*A.length));return s;}
+function fbCode(){let s='';for(let i=0;i<4;i++)s+=Math.floor(Math.random()*10);return s;}
 const fbSort=(a,b)=>String(a.cls).localeCompare(String(b.cls),undefined,{numeric:true})||String(a.sid).localeCompare(String(b.sid),undefined,{numeric:true});
 
 async function fbEnsureTeacher(a,pw){
@@ -615,7 +615,7 @@ async function fbEnsureTeacher(a,pw){
   throw new Error('이 화면에서는 할 수 없어요. 교사용 화면을 이용해 주세요.');
 }
 async function fbRoom(a,code){
-  code=String(code||'').toUpperCase().trim();if(!/^[A-Z0-9]{6}$/.test(code))return null;
+  code=String(code||'').toUpperCase().trim();if(!/^[A-Z0-9]{3,8}$/.test(code))return null;
   const r=await a.get('rooms/'+code);return r?{code,name:r.name,classes:r.classes||[],open:r.open!==false}:null;
 }
 const fbPub=(sid,x)=>({sid:String(sid),cls:String(x.cls||''),nick:String(x.nick||''),xp:Number(x.xp)||0,coins:Number(x.coins)||0,stars:(x.stars||[]).concat([0,0,0,0,0,0,0,0]).slice(0,8),badges:Number(x.badges)||0,last:Number(x.last)||0,bonus:Number(x.bonus)||0,avatar:x.avatar||null,hasPin:!!x.hasPin});
@@ -630,7 +630,9 @@ const FB_API={
   createRoom:async(b,a)=>{
     await fbEnsureTeacher(a,b.pw);
     const classes=(b.classes||[]).map(String).filter(String);if(!classes.length)throw new Error('반을 하나 이상 골라 주세요.');
-    let code,n=0;do{code=fbCode();n++;}while((await a.get('rooms/'+code))&&n<20);
+    let code=String(b.code||'').toUpperCase().replace(/[^A-Z0-9]/g,'');
+    if(code){if(code.length<3||code.length>8)throw new Error('방 코드는 영어·숫자 3~8글자로 써 주세요.');if(await a.get('rooms/'+code))throw new Error('이미 있는 방 코드예요. 다른 코드를 써 주세요.');}
+    else{let n=0;do{code=fbCode();n++;}while((await a.get('rooms/'+code))&&n<30);}
     await a.set('rooms/'+code,{name:String(b.name||'우리 학년').slice(0,30),classes,open:true,created:Date.now()});
     await a.set('rooms/'+code+'/board/main',{m:{}});
     return{ok:true,code};
@@ -845,13 +847,13 @@ function download(name,text,type){const b=new Blob([text],{type:type+';charset=u
 /* ② 방 관리 */
 async function rooms(){
   const el=$('#main');
-  el.innerHTML=`<div class="card"><h2>② 방 만들기</h2><div class="row"><input type="text" id="r-name" placeholder="방 이름 예) 2학년 주거 공간 구성" style="width:320px"></div>
+  el.innerHTML=`<div class="card"><h2>② 방 만들기</h2><div class="row"><input type="text" id="r-name" placeholder="방 이름 예) 2학년 주거 공간 구성" style="width:320px"><input type="text" id="r-code" maxlength="8" placeholder="방 코드 (비우면 숫자 4자리 자동)" style="width:260px"></div><p class="hint" style="margin:6px 0 0">방 코드는 학생이 직접 입력해요. 예) <b>1234</b>, <b>HOUSE</b> — 영어·숫자 3~8글자. 쉬울수록 좋지만 다른 반 학생이 짐작해 들어오지 않게 너무 뻔한 건 피하세요.</p>
    <p class="hint" style="margin:10px 0 4px">참여할 반을 골라요 (반 대항전 대상)</p><div class="cls-pick" id="r-cls">${Array.from({length:15},(_,i)=>i+1).map(n=>`<label class="${n<=6?'on':''}"><input type="checkbox" value="${n}" ${n<=6?'checked':''}>${n}반</label>`).join('')}</div>
    <div class="row" style="margin-top:12px"><button class="btn big" id="r-make">🏠 방 만들기</button></div></div>
    <div class="card"><h2>내 방 목록</h2><div id="r-list" class="rooms"><p class="hint">⏳ 불러오는 중…</p></div></div>`;
   $$('#r-cls label').forEach(l=>l.onclick=e=>{e.preventDefault();const i=$('input',l);i.checked=!i.checked;l.classList.toggle('on',i.checked);});
-  $('#r-make').onclick=async()=>{const classes=$$('#r-cls input:checked').map(i=>i.value);const name=$('#r-name').value.trim()||'우리 학년';
-    try{const r=await adminApi({action:'createRoom',name,classes});T.rooms=[];T.room=r.code;LS.set('dodam-t-room',r.code);
+  $('#r-make').onclick=async()=>{const classes=$$('#r-cls input:checked').map(i=>i.value);const name=$('#r-name').value.trim()||'우리 학년';const wantCode=$('#r-code').value.trim();
+    try{const r=await adminApi({action:'createRoom',name,classes,code:wantCode});T.rooms=[];T.room=r.code;LS.set('dodam-t-room',r.code);
       modal(`<div style="text-align:center"><h2>🎉 방을 만들었어요!</h2><p>학생들에게 이 <b>방 코드</b>를 알려 주세요.</p><div style="font-size:64px;font-weight:900;letter-spacing:10px;color:var(--accent)">${r.code}</div><p class="hint">${esc(name)} · ${classes.map(c=>c+'반').join(', ')}</p><p class="hint">학생 접속 주소: ${esc(location.href.replace(/teacher\.html.*$/,'').replace(/[#?].*$/,''))}</p></div>`);list();}
     catch(e){toast('❌ '+e.message,'bad');}};
   const list=async()=>{try{const r=await adminApi({action:'listRooms'});T.rooms=r.rooms;setConn(true);
