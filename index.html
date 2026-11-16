@@ -583,7 +583,6 @@ textarea,input,code,pre,kbd{word-break:normal}
   <button class="btn ghost small slot" id="btn-board">🏆<small>대항전</small></button>
   <button class="btn ghost small slot" id="btn-peers">👀<small>친구들</small></button>
   <button class="btn ghost small slot" id="btn-keys" title="단축키">⌨<small>단축키</small></button>
-  <button class="btn ghost small slot" id="btn-demo" title="체험하기 (저장 안 됨)">🧪<small>체험</small></button>
   <button class="btn ghost small slot" id="btn-teacher" title="선생님 모드">👩‍🏫<small>교사</small></button>
   <button class="btn ghost small slot" id="btn-reset" title="연습 기록 지우기">↺<small>초기화</small></button>
   <button class="btn ghost small slot" id="btn-logout">⏏<small>나가기</small></button></div>
@@ -2909,13 +2908,12 @@ function renderLogin(msg){
     ${known.length?`<div class="sec-title">📌 이 노트북에서 했던 친구 — 내 이름을 누르고 비밀번호를 넣어요</div><div class="known">${known.map((k,i)=>`<button class="kn" data-k="${i}">${dodamSVG(40,k.avatar)}<b>${esc(k.nick)}</b><small>${esc(k.cls)}반 ${esc(k.sid)}</small></button>`).join('')}</div>`:''}
     <div class="start-opts">
       ${url?'':`<button class="opt main" id="lg-quick"><span>▶</span><b>바로 시작하기</b><small>이 노트북에만 저장돼요.</small></button>`}
-      <button class="opt" id="lg-demo"><span>👀</span><b>체험하기</b><small>저장 없이 둘러봐요. 별과 코인이 넉넉해요.</small></button>
       ${url?`<button class="opt main" id="lg-resume"><span>🔑</span><b>학번으로 시작하기</b><small>방 코드와 학번, 비밀번호 4자리를 넣고 들어가요. 처음이면 새로 만들어져요.</small></button>`:''}
     </div>
     ${guests.length&&!url?`<div class="hint" style="margin-top:8px">💾 이 노트북에 <b>등록하지 않은 기록</b>이 있어요: ${guests.map(g=>`<button class="linkbtn" data-g="${g.gid}">⭐${g.stars} 💰${g.coins} (${new Date(g.ts).toLocaleString().slice(0,-3)}) 이어서 하기</button>`).join(' ')}</div>`:''}
     ${url?'':`<div class="hint" style="margin-top:8px">ℹ️ 서버가 연결되지 않은 화면이라 이 노트북에만 저장돼요.</div>`}
     <div class="lg-msg" id="lg-msg">${msg||''}</div>
-    <div class="lg-foot"><span class="hint">${url?'☁️ 선생님 기록 저장소와 연결됨':''}</span><span><a class="linkbtn" href="teacher.html" style="text-decoration:none;opacity:.7">👩‍🏫 교사</a>${url?'':'<button class="linkbtn" id="lg-url">⚙ 연결 설정</button>'}</span></div></div></div>`;
+    <div class="lg-foot"><span class="hint">${url?'☁️ 선생님 기록 저장소와 연결됨':''}</span><span><button class="linkbtn" id="lg-demo" title="저장 없이 둘러보기" style="opacity:.7;text-decoration:none">👀 체험하기</button> <a class="linkbtn" href="teacher.html" style="text-decoration:none;opacity:.7">👩‍🏫 교사</a>${url?'':'<button class="linkbtn" id="lg-url">⚙ 연결 설정</button>'}</span></div></div></div>`;
   if($('#lg-quick'))$('#lg-quick').onclick=()=>startGuest(null);
   $('#lg-demo').onclick=startDemo;
   $$('[data-g]').forEach(b=>b.onclick=()=>startGuest(b.dataset.g));
@@ -3184,7 +3182,7 @@ function init(){
   $('#logo').onclick=()=>SESSION&&go('map');$('#btn-map').onclick=()=>SESSION&&go('map');
   $('#btn-shop').onclick=()=>SESSION&&go('shop');$('#btn-board').onclick=()=>SESSION&&go('board');$('#btn-peers').onclick=()=>SESSION&&go('peers');
   $('#btn-register').onclick=()=>accountModal('register');
-  $('#btn-logout').onclick=logout;$('#btn-demo').onclick=()=>{if(isDemo())return toast('이미 체험 중이에요.');const go2=()=>modal(`<h2 style="margin-top:0">👀 체험하기</h2><p>저장 없이 둘러보는 모드예요. 지금 내 기록은 그대로 두고, <b>나가기</b>를 누르면 로그인 화면으로 돌아가요.</p><div class="m-actions"><button class="btn ghost" id="dm-no">취소</button><button class="btn purple" id="dm-ok">체험 시작</button></div>`);go2();$('#dm-no').onclick=closeModal;$('#dm-ok').onclick=async()=>{try{if(isOnline()&&dirty)await syncNow();}catch(e){}closeModal();startDemo();};};$('#btn-teacher').onclick=toggleTeacher;
+  $('#btn-logout').onclick=logout;$('#btn-teacher').onclick=toggleTeacher;
   $('#btn-keys').onclick=()=>modal(`<h2 style="margin-top:0">⌨ 단축키 안내</h2><div class="kbd">
     <span><kbd>R</kbd> 또는 더블클릭</span><span>선택한 가구 90° 회전</span><span><kbd>Delete</kbd> / <kbd>Backspace</kbd></span><span>선택한 가구 삭제</span>
     <span><kbd>Ctrl</kbd>+<kbd>Z</kbd></span><span>실행 취소</span><span><kbd>Ctrl</kbd>+<kbd>Y</kbd></span><span>다시 실행</span><span><kbd>Ctrl</kbd>+<kbd>D</kbd></span><span>복제</span>
