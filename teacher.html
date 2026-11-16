@@ -76,7 +76,7 @@ table.tb{width:100%;border-collapse:collapse;background:#fff;font-size:13.5px}
 <body>
 <header><div class="logo"><span id="logo-svg"></span>도담이네 집 짓기 <small>교사용</small></div>
 <nav id="nav"><button data-tab="rooms">방 관리</button><button data-tab="status">진행 현황</button><button data-tab="board">반 대항전</button><button data-tab="works">결과물</button><button data-tab="mail">우체통</button><button data-tab="coins">칭찬 코인</button></nav>
-<span id="conn"></span><button id="logout" class="linkbtn" style="margin-left:auto;display:none">로그아웃</button></header>
+<span id="conn"></span><button id="chpw" class="linkbtn" style="margin-left:auto;display:none">🔑 비밀번호 변경</button><button id="logout" class="linkbtn" style="margin-left:10px;display:none">로그아웃</button></header>
 <main id="main"></main>
 <div id="toasts"></div>
 <script src="firebase-config.js"></script>
@@ -646,6 +646,13 @@ async function makeFirebaseAdapter(cfg){
     async anon(){if(auth.currentUser)return;await Au.signInAnonymously(auth);},
     isTeacher(){return !!(auth.currentUser&&auth.currentUser.email);},
     async teacherLogin(pw){if(!cfg.teacherEmail)throw new Error('firebase-config.js에 teacherEmail이 없어요.');await Au.signInWithEmailAndPassword(auth,cfg.teacherEmail,pw);},
+    async changePw(cur,nw){ // 로그인한 교사 계정의 비밀번호를 바꿔요 (현재 비밀번호로 다시 확인)
+      if(!cfg.teacherEmail)throw new Error('firebase-config.js에 teacherEmail이 없어요.');
+      if(!auth.currentUser||!auth.currentUser.email)await Au.signInWithEmailAndPassword(auth,cfg.teacherEmail,cur);
+      const cr=Au.EmailAuthProvider.credential(cfg.teacherEmail,cur);
+      try{await Au.reauthenticateWithCredential(auth.currentUser,cr);}catch(e){throw new Error('현재 비밀번호가 맞지 않아요.');}
+      try{await Au.updatePassword(auth.currentUser,nw);}catch(e){throw new Error(/weak/i.test(e.message||e.code||'')?'새 비밀번호는 6글자 이상이어야 해요.':'비밀번호를 바꾸지 못했어요. 잠시 뒤 다시 해 주세요.');}
+    },
     async teacherCheck(pw){ // 학생 화면에서는 본인 로그인 상태를 바꾸지 않고 비밀번호만 확인해요
       if(!cfg.teacherEmail)throw new Error('firebase-config.js에 teacherEmail이 없어요.');
       const a2=A.initializeApp(fbc,'chk'+Date.now());try{const au2=Au.getAuth(a2);await Au.signInWithEmailAndPassword(au2,cfg.teacherEmail,pw);await Au.signOut(au2);}finally{try{await A.deleteApp(a2);}catch(e){}}
@@ -708,6 +715,12 @@ async function fbBoardMap(a,code){const b=await a.get('rooms/'+code+'/board/main
 
 const FB_API={
   ping:async()=>({ok:true,v:2}),
+  changePw:async(b,a)=>{
+    if(FB_ROLE!=='teacher')throw new Error('교사 화면에서만 바꿀 수 있어요.');
+    if(!b.cur)throw new Error('현재 비밀번호를 넣어 주세요.');
+    if(!b.nw||String(b.nw).length<6)throw new Error('새 비밀번호는 6글자 이상이어야 해요.');
+    await a.changePw(b.cur,String(b.nw));return{ok:true};
+  },
   adminCheck:async(b,a)=>{
     if(FB_ROLE==='teacher'){await fbEnsureTeacher(a,b.pw);return{ok:true};}
     if(!b.pw)throw new Error('교사 비밀번호를 넣어 주세요.');await a.teacherCheck(b.pw);return{ok:true};
@@ -870,7 +883,7 @@ async function needRooms(el,cb){
 }
 
 /* 로그인 */
-function showApp(on){$('#nav').style.display=on?'':'none';$('#conn').style.display=on?'':'none';$('#logout').style.display=on?'':'none';}
+function showApp(on){$('#nav').style.display=on?'':'none';$('#conn').style.display=on?'':'none';$('#logout').style.display=on?'':'none';$('#chpw').style.display=on?'':'none';}
 function lock(msg){
   clearInterval(T.timer);showApp(false);
   if(!fbCfg()){$('#main').innerHTML='<div class="card" style="max-width:420px;margin:60px auto;text-align:center"><p class="bad">연결 설정 파일(firebase-config.js)을 찾지 못했어요.</p></div>';return;}
@@ -1034,6 +1047,7 @@ async function coins(){
 /* 시작 */
 $('#logo-svg').innerHTML=dodamSVG(30,{roof:'#7e57c2'});
 $$('#nav button').forEach(b=>b.onclick=()=>tab(b.dataset.tab));
+$('#chpw').onclick=()=>{modal(`<h2 style="margin-top:0">🔑 교사 비밀번호 바꾸기</h2><p class="hint">새 비밀번호는 6글자 이상이에요. 바꾸면 다음 로그인부터 새 비밀번호를 써요.</p><input type="password" id="pw-cur" placeholder="현재 비밀번호" style="width:100%;margin:6px 0" autocomplete="current-password"><input type="password" id="pw-new" placeholder="새 비밀번호 (6글자 이상)" style="width:100%;margin:6px 0" autocomplete="new-password"><input type="password" id="pw-new2" placeholder="새 비밀번호 한 번 더" style="width:100%;margin:6px 0" autocomplete="new-password"><div id="pw-msg" class="hint" style="color:#d9534f;min-height:18px"></div><div class="m-actions"><button class="btn ghost" id="pw-no">취소</button><button class="btn purple" id="pw-ok">바꾸기</button></div>`);$('#pw-no').onclick=closeModal;$('#pw-ok').onclick=async()=>{const m=$('#pw-msg'),c=$('#pw-cur').value,n=$('#pw-new').value;if(!c||!n){m.textContent='모두 입력해 주세요.';return;}if(n!==$('#pw-new2').value){m.textContent='새 비밀번호가 서로 달라요.';return;}if(n.length<6){m.textContent='6글자 이상으로 해 주세요.';return;}try{$('#pw-ok').disabled=true;await api({action:'changePw',cur:c,nw:n});T.pw=n;if(LS.get('dodam-t-pw'))LS.set('dodam-t-pw',n);closeModal();toast('비밀번호를 바꿨어요. 다음부터 새 비밀번호를 써요.');}catch(e){m.textContent=e.message||'바꾸지 못했어요.';$('#pw-ok').disabled=false;}};};
 $('#logout').onclick=()=>{LS.del('dodam-t-pw');T.pw='';T.rooms=[];lock();};
 if(fbCfg()&&T.pw){showApp(false);adminApi({action:'adminCheck'}).then(enter).catch(()=>{T.pw='';LS.del('dodam-t-pw');lock();});}else lock();
 

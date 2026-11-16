@@ -1272,6 +1272,13 @@ async function makeFirebaseAdapter(cfg){
     async anon(){if(auth.currentUser)return;await Au.signInAnonymously(auth);},
     isTeacher(){return !!(auth.currentUser&&auth.currentUser.email);},
     async teacherLogin(pw){if(!cfg.teacherEmail)throw new Error('firebase-config.js에 teacherEmail이 없어요.');await Au.signInWithEmailAndPassword(auth,cfg.teacherEmail,pw);},
+    async changePw(cur,nw){ // 로그인한 교사 계정의 비밀번호를 바꿔요 (현재 비밀번호로 다시 확인)
+      if(!cfg.teacherEmail)throw new Error('firebase-config.js에 teacherEmail이 없어요.');
+      if(!auth.currentUser||!auth.currentUser.email)await Au.signInWithEmailAndPassword(auth,cfg.teacherEmail,cur);
+      const cr=Au.EmailAuthProvider.credential(cfg.teacherEmail,cur);
+      try{await Au.reauthenticateWithCredential(auth.currentUser,cr);}catch(e){throw new Error('현재 비밀번호가 맞지 않아요.');}
+      try{await Au.updatePassword(auth.currentUser,nw);}catch(e){throw new Error(/weak/i.test(e.message||e.code||'')?'새 비밀번호는 6글자 이상이어야 해요.':'비밀번호를 바꾸지 못했어요. 잠시 뒤 다시 해 주세요.');}
+    },
     async teacherCheck(pw){ // 학생 화면에서는 본인 로그인 상태를 바꾸지 않고 비밀번호만 확인해요
       if(!cfg.teacherEmail)throw new Error('firebase-config.js에 teacherEmail이 없어요.');
       const a2=A.initializeApp(fbc,'chk'+Date.now());try{const au2=Au.getAuth(a2);await Au.signInWithEmailAndPassword(au2,cfg.teacherEmail,pw);await Au.signOut(au2);}finally{try{await A.deleteApp(a2);}catch(e){}}
@@ -1334,6 +1341,12 @@ async function fbBoardMap(a,code){const b=await a.get('rooms/'+code+'/board/main
 
 const FB_API={
   ping:async()=>({ok:true,v:2}),
+  changePw:async(b,a)=>{
+    if(FB_ROLE!=='teacher')throw new Error('교사 화면에서만 바꿀 수 있어요.');
+    if(!b.cur)throw new Error('현재 비밀번호를 넣어 주세요.');
+    if(!b.nw||String(b.nw).length<6)throw new Error('새 비밀번호는 6글자 이상이어야 해요.');
+    await a.changePw(b.cur,String(b.nw));return{ok:true};
+  },
   adminCheck:async(b,a)=>{
     if(FB_ROLE==='teacher'){await fbEnsureTeacher(a,b.pw);return{ok:true};}
     if(!b.pw)throw new Error('교사 비밀번호를 넣어 주세요.');await a.teacherCheck(b.pw);return{ok:true};
