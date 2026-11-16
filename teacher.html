@@ -475,8 +475,8 @@ if(typeof module!=='undefined'&&module.exports)module.exports={xpOf,FURN,zoningR
 
 /* ===================== 코인 상점 ===================== */
 const ACCS={crown:{e:'👑',n:'왕관',p:120,pos:'top'},tophat:{e:'🎩',n:'신사 모자',p:60,pos:'top'},cap:{e:'🧢',n:'캡 모자',p:40,pos:'top'},ribbon:{e:'🎀',n:'리본',p:40,pos:'top'},flower:{e:'🌸',n:'꽃핀',p:30,pos:'top'},star:{e:'⭐',n:'반짝 별',p:80,pos:'top'},glasses:{e:'🕶️',n:'선글라스',p:50,pos:'face'},grad:{e:'🎓',n:'학사모',p:100,pos:'top'}};
-const ROOFS={'#ff8a65':['기본 주황',0],'#5c9ded':['파랑',30],'#66bb6a':['초록',30],'#9b8cf2':['보라',30],'#f48fb1':['분홍',30],'#26a69a':['청록',30],'#f5b82e':['황금',80]};
-const BODIES={'#ffd27a':['기본 노랑',0],'#b2dfdb':['민트',30],'#bbdefb':['하늘',30],'#e1bee7':['라벤더',30],'#ffccbc':['복숭아',30],'#fafafa':['하양',30]};
+const ROOFS={'#ffa88a':['기본 코랄',0],'#ff8a65':['주황',0],'#5c9ded':['파랑',30],'#66bb6a':['초록',30],'#9b8cf2':['보라',30],'#f48fb1':['분홍',30],'#26a69a':['청록',30],'#f5b82e':['황금',80]};
+const BODIES={'#fff0c4':['기본 크림',0],'#ffd27a':['노랑',0],'#b2dfdb':['민트',30],'#bbdefb':['하늘',30],'#e1bee7':['라벤더',30],'#ffccbc':['복숭아',30],'#fafafa':['하양',30]};
 const PREM_WALLS=[['#2c3566','밤하늘',80],['#ffcfe3','솜사탕',50],['#c5f2d9','민트 크림',50]];
 const PREM_FLOORS=['marble','check'];
 function xpOf(st){let s=0;['s0','s1','s2','s3','s4','s5','s6','bonus'].forEach(id=>s+=Math.max(0,Math.min(3,(st.stars||{})[id]||0)));return s*100+Math.min(8,(st.badges||[]).length)*50;}
@@ -522,16 +522,100 @@ function drawPlanCanvas(ctx,room,items,x,y,w,h){
 
 /* ---------- 배치 점검 패널 ---------- */
 
-function dodamSVG(size=52,av){av=av||{};const roof=av.roof||'#ff8a65',body=av.body||'#ffd27a',acc=ACCS[av.acc];
+
+/* ===== 도담이 꾸미기 요소 ===== */
+const EYE='#3b3433';
+const AV_DEF={face:'smile',shape:'tri',chim:'one',bg:'none',deco:'none',pet:'none',fx:'none'};
+const FACES={smile:['방긋',0],happy:['눈웃음',30],wink:['윙크',30],sleepy:['졸려요',30],cat:['고양이 입',40],surprised:['깜짝',30],sparkle:['반짝눈',50],love:['하트눈',60]};
+const SHAPES={tri:['기본 지붕',0],dome:['둥근 지붕',40],tall:['뾰족 지붕',40],bow:['리본 지붕',60]};
+const CHIMS={one:['굴뚝',0],none:['굴뚝 없음',0],smoke:['뭉게 연기',30],heart:['하트 연기',50]};
+const BGS={none:['없음',0],sky:['맑은 하늘',50],forest:['초록 숲',50],sea:['푸른 바다',50],sunset:['노을',60],night:['별밤',80]};
+const DECOS={none:['없음',0],flower:['꽃',30],mush:['버섯',30],tree:['나무',40],cloud:['구름',30]};
+const PETS={none:['없음',0],chick:['병아리',60],cat:['아기 고양이',80],bunny:['토끼',80],bear:['곰돌이',100]};
+const FXS={none:['없음',0],sparkle:['반짝반짝',60],hearts:['두근두근',60],bubbles:['방울방울',50],notes:['음표',50]};
+const AV_TABLES={face:FACES,shape:SHAPES,chim:CHIMS,bg:BGS,deco:DECOS,pet:PETS,fx:FXS};
+const cheek='<ellipse cx="18.5" cy="48" rx="3.5" ry="2.2" fill="#ff9e9e" opacity=".7"/><ellipse cx="45.5" cy="48" rx="3.5" ry="2.2" fill="#ff9e9e" opacity=".7"/>';
+const dots=`<circle cx="24" cy="41" r="3.4" fill="${EYE}"/><circle cx="40" cy="41" r="3.4" fill="${EYE}"/><circle cx="25" cy="40" r="1.1" fill="#fff"/><circle cx="41" cy="40" r="1.1" fill="#fff"/>`;
+const ln=(p,w=2.4)=>`<path d="${p}" fill="none" stroke="${EYE}" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round"/>`;
+const heart=(x,y,s,c)=>`<path transform="translate(${x} ${y}) scale(${s})" d="M0 4 C-5 0 -4 -4 0 -2 C4 -4 5 0 0 4Z" fill="${c}"/>`;
+function faceSVG(k){
+  switch(k){
+    case 'happy':return ln('M20 43 Q24 37 28 43')+ln('M36 43 Q40 37 44 43')+`<path d="M26 48 Q32 58 38 48 Z" fill="#8a3b3b" stroke="#8a3b3b" stroke-width="2" stroke-linejoin="round"/>`+cheek;
+    case 'wink':return `<circle cx="24" cy="41" r="3.4" fill="${EYE}"/><circle cx="25" cy="40" r="1.1" fill="#fff"/>`+ln('M36 42 Q40 37 44 42')+ln('M27 49 Q32 54 37 49',2.4)+cheek;
+    case 'sleepy':return ln('M20 41 Q24 45 28 41')+ln('M36 41 Q40 45 44 41')+ln('M29 50 Q32 52 35 50')+`<text x="48" y="34" font-size="9" fill="#9a8fa8" font-family="sans-serif">z</text><text x="53" y="28" font-size="7" fill="#9a8fa8" font-family="sans-serif">z</text>`+cheek;
+    case 'cat':return dots+ln('M26 49 Q29 53 32 49 Q35 53 38 49',2.2)+cheek;
+    case 'surprised':return `<circle cx="24" cy="40" r="4" fill="${EYE}"/><circle cx="40" cy="40" r="4" fill="${EYE}"/><circle cx="25.2" cy="38.8" r="1.4" fill="#fff"/><circle cx="41.2" cy="38.8" r="1.4" fill="#fff"/><ellipse cx="32" cy="51" rx="3" ry="4" fill="#8a3b3b"/>`+cheek;
+    case 'sparkle':return `<circle cx="24" cy="41" r="5" fill="${EYE}"/><circle cx="40" cy="41" r="5" fill="${EYE}"/><circle cx="25.8" cy="39" r="1.9" fill="#fff"/><circle cx="41.8" cy="39" r="1.9" fill="#fff"/><circle cx="22.6" cy="43.2" r="1" fill="#fff"/><circle cx="38.6" cy="43.2" r="1" fill="#fff"/>`+ln('M28 50 Q32 54 36 50')+cheek;
+    case 'love':return heart(24,41,1.5,'#ff6b81')+heart(40,41,1.5,'#ff6b81')+ln('M27 49 Q32 55 37 49')+cheek;
+    default:return dots+ln('M27 49 Q32 54 37 49')+cheek;
+  }
+}
+function roofSVG(k,roof){
+  const sw='stroke-linejoin="round" stroke-linecap="round"';
+  switch(k){
+    case 'dome':return `<path d="M11 28 C11 7 53 7 53 28 Z" fill="${roof}" stroke="${roof}" stroke-width="8" ${sw}/>`;
+    case 'tall':return `<path d="M32 -1 L52 28 L12 28 Z" fill="${roof}" stroke="${roof}" stroke-width="8" ${sw}/>`;
+    case 'bow':return `<path d="M32 9 L55 28 L9 28 Z" fill="${roof}" stroke="${roof}" stroke-width="9" ${sw}/><g transform="translate(32 6) scale(1.35)"><path d="M0 0 L-9 -6 Q-11 0 -9 6 Z M0 0 L9 -6 Q11 0 9 6 Z" fill="#fff" stroke="#fff" stroke-width="1.5" ${sw}/><circle r="2.6" fill="#ffd166"/></g>`;
+    default:return `<path d="M32 9 L55 28 L9 28 Z" fill="${roof}" stroke="${roof}" stroke-width="9" ${sw}/>`;
+  }
+}
+function chimSVG(k,roof){
+  if(k==='none')return '';
+  let s=`<rect x="41" y="6" width="9" height="18" rx="4.5" fill="${shade(roof,0.18)}"/>`;
+  if(k==='smoke')s+=`<circle cx="46" cy="2" r="3" fill="#fff" stroke="#dfe6ee" stroke-width="1"><animate attributeName="cy" values="3;-4;3" dur="3s" repeatCount="indefinite"/></circle><circle cx="50" cy="-2" r="2.2" fill="#fff" stroke="#dfe6ee" stroke-width="1"/>`;
+  if(k==='heart')s+=`<g><animateTransform attributeName="transform" type="translate" values="0 0;0 -3;0 0" dur="2.4s" repeatCount="indefinite"/>${heart(46,0,1.3,'#ff8aa5')}</g>`;
+  return s;
+}
+const tw=(d)=>`<animate attributeName="opacity" values="1;.2;1" dur="${d}s" repeatCount="indefinite"/>`;
+function bgSVG(k){
+  const R=(c)=>`<rect x="0" y="-6" width="64" height="70" rx="18" fill="${c}"/>`;
+  switch(k){
+    case 'sky':return R('#d8eefc')+`<g fill="#fff"><ellipse cx="14" cy="4" rx="9" ry="4"/><ellipse cx="20" cy="2" rx="6" ry="4"/><ellipse cx="50" cy="12" rx="8" ry="3.5"/></g>`;
+    case 'forest':return R('#e1f3dc')+`<circle cx="6" cy="44" r="12" fill="#c3e6bb"/><circle cx="58" cy="40" r="14" fill="#cdeac6"/><circle cx="32" cy="62" r="16" fill="#cdeac6"/>`;
+    case 'sea':return R('#d6eef3')+`<path d="M0 54 Q8 50 16 54 T32 54 T48 54 T64 54 V64 H0Z" fill="#bfe3ea"/><path d="M0 60 Q8 56 16 60 T32 60 T48 60 T64 60 V64 H0Z" fill="#a9d8e2"/>`;
+    case 'sunset':return R('#ffe6cf')+`<circle cx="50" cy="8" r="9" fill="#ffc98a"/><path d="M0 58 Q16 52 32 58 T64 58 V64 H0Z" fill="#ffd2ae"/>`;
+    case 'night':return R('#4e5489')+`<g fill="#fff"><circle cx="10" cy="6" r="1.4">${tw(2.2)}</circle><circle cx="54" cy="4" r="1.2">${tw(1.6)}</circle><circle cx="58" cy="22" r="1">${tw(2.8)}</circle><circle cx="6" cy="26" r="1.1">${tw(1.9)}</circle></g><circle cx="50" cy="12" r="5" fill="#ffeaa0"/>`;
+    default:return '';
+  }
+}
+function decoSVG(k){
+  switch(k){
+    case 'flower':return `<path d="M8 62 V52" stroke="#6bbf88" stroke-width="2" stroke-linecap="round"/><g fill="#ffd166"><circle cx="8" cy="48" r="3"/><circle cx="12" cy="52" r="3"/><circle cx="4" cy="52" r="3"/><circle cx="8" cy="56" r="0"/></g><g fill="#ffb3a7"><circle cx="8" cy="46" r="3.2"/><circle cx="11.5" cy="49" r="3.2"/><circle cx="4.5" cy="49" r="3.2"/></g><circle cx="8" cy="49" r="2.4" fill="#fff3b0"/>`;
+    case 'mush':return `<rect x="4" y="54" width="6" height="8" rx="3" fill="#fff4e0"/><path d="M0 55 C0 44 14 44 14 55 Z" fill="#ff8f7a"/><circle cx="5" cy="51" r="1.6" fill="#fff"/><circle cx="10" cy="50" r="1.2" fill="#fff"/>`;
+    case 'tree':return `<rect x="5" y="52" width="5" height="10" rx="2" fill="#c99a6b"/><circle cx="7.5" cy="46" r="9" fill="#8fd19e"/><circle cx="4" cy="50" r="5" fill="#9bdba9"/>`;
+    case 'cloud':return `<g fill="#fff" stroke="#dfeaf3" stroke-width="1.2"><ellipse cx="9" cy="6" rx="8" ry="4.5"/><ellipse cx="14" cy="3" rx="5" ry="4"/></g>`;
+    default:return '';
+  }
+}
+function petSVG(k){
+  const eye=(x,y)=>`<circle cx="${x}" cy="${y}" r="1" fill="${EYE}"/>`;
+  let b='';
+  switch(k){
+    case 'chick':b=`<circle cx="55" cy="54" r="7" fill="#ffe066"/>${eye(52.5,53)}${eye(57.5,53)}<path d="M54 56 L56 56 L55 58 Z" fill="#ff9f43"/><path d="M52 61 v2 M58 61 v2" stroke="#ff9f43" stroke-width="1.4" stroke-linecap="round"/>`;break;
+    case 'cat':b=`<path d="M48.5 50 L49.5 43 L54 47 Z M61.5 50 L60.5 43 L56 47 Z" fill="#b9b3c9"/><circle cx="55" cy="54" r="7.5" fill="#cfc9dc"/>${eye(52.3,53.5)}${eye(57.7,53.5)}<path d="M54 56 Q55 57.2 56 56" stroke="${EYE}" stroke-width=".9" fill="none"/>`;break;
+    case 'bunny':b=`<ellipse cx="51.5" cy="44" rx="2.3" ry="6" fill="#fff" stroke="#e6e0ec" stroke-width="1"/><ellipse cx="58.5" cy="44" rx="2.3" ry="6" fill="#fff" stroke="#e6e0ec" stroke-width="1"/><circle cx="55" cy="54" r="7.2" fill="#fff" stroke="#e6e0ec" stroke-width="1"/>${eye(52.3,53.5)}${eye(57.7,53.5)}<circle cx="55" cy="56.2" r=".9" fill="#ffb3a7"/>`;break;
+    case 'bear':b=`<circle cx="49.6" cy="47.6" r="3" fill="#b98657"/><circle cx="60.4" cy="47.6" r="3" fill="#b98657"/><circle cx="55" cy="54" r="7.4" fill="#cf9d6c"/><ellipse cx="55" cy="56.4" rx="3" ry="2.2" fill="#f1d3b3"/>${eye(52.3,52.8)}${eye(57.7,52.8)}<circle cx="55" cy="55.6" r=".9" fill="${EYE}"/>`;break;
+    default:return '';
+  }
+  return `<g>${b}<animateTransform attributeName="transform" type="translate" values="0 0;0 -2;0 0" dur="1.7s" repeatCount="indefinite"/></g>`;
+}
+function fxSVG(k){
+  const star=(x,y,s,d)=>`<path transform="translate(${x} ${y}) scale(${s})" d="M0 -4 L1.2 -1.2 L4 0 L1.2 1.2 L0 4 L-1.2 1.2 L-4 0 L-1.2 -1.2Z" fill="#ffd34d">${tw(d)}</path>`;
+  switch(k){
+    case 'sparkle':return star(6,16,1.2,1.8)+star(58,24,1,2.4)+star(52,2,1.3,2.1)+star(12,56,.9,2.7);
+    case 'hearts':return `<g>${heart(8,20,1,'#ff8aa5')}<animateTransform attributeName="transform" type="translate" values="0 6;0 -8" dur="2.6s" repeatCount="indefinite"/><animate attributeName="opacity" values="0;1;0" dur="2.6s" repeatCount="indefinite"/></g><g>${heart(58,30,1.1,'#ff8aa5')}<animateTransform attributeName="transform" type="translate" values="0 6;0 -8" dur="3.1s" repeatCount="indefinite"/><animate attributeName="opacity" values="0;1;0" dur="3.1s" repeatCount="indefinite"/></g>`;
+    case 'bubbles':return `<g fill="#fff" fill-opacity=".7" stroke="#8fcff5" stroke-width="1"><circle cx="7" cy="40" r="3"><animate attributeName="cy" values="50;8" dur="3.2s" repeatCount="indefinite"/></circle><circle cx="58" cy="44" r="2.4"><animate attributeName="cy" values="52;12" dur="2.7s" repeatCount="indefinite"/></circle><circle cx="12" cy="30" r="1.8"><animate attributeName="cy" values="46;4" dur="2.2s" repeatCount="indefinite"/></circle></g>`;
+    case 'notes':return `<g font-family="sans-serif" fill="#7aa7e6" font-size="10"><text x="5" y="20">♪<animate attributeName="opacity" values="0;1;0" dur="2.4s" repeatCount="indefinite"/><animateTransform attributeName="transform" type="translate" values="0 6;0 -6" dur="2.4s" repeatCount="indefinite"/></text><text x="55" y="26">♫<animate attributeName="opacity" values="0;1;0" dur="3s" repeatCount="indefinite"/><animateTransform attributeName="transform" type="translate" values="0 6;0 -6" dur="3s" repeatCount="indefinite"/></text></g>`;
+    default:return '';
+  }
+}
+function dodamSVG(size=52,av){av=av||{};const roof=av.roof||'#ffa88a',body=av.body||'#fff0c4',acc=ACCS[av.acc];
+const g=k=>av[k]||AV_DEF[k];
 return `<svg class="dodam" width="${size}" height="${size}" viewBox="0 -6 64 70" aria-hidden="true" style="flex:0 0 auto">
-<rect x="44" y="9" width="7" height="14" rx="1.5" fill="${roof}" stroke="${shade(roof,-0.18)}" stroke-width="2"/>
-<path d="M12 28 L52 28 L52 56 Q52 60 48 60 L16 60 Q12 60 12 56 Z" fill="${body}" stroke="${shade(body,-0.25)}" stroke-width="2.5" stroke-linejoin="round"/>
-<path d="M32 5 L59 29 L5 29 Z" fill="${roof}" stroke="${shade(roof,-0.18)}" stroke-width="2.5" stroke-linejoin="round"/>
-<circle cx="24" cy="41" r="3.4" fill="#3b3433"/><circle cx="40" cy="41" r="3.4" fill="#3b3433"/>
-<circle cx="25" cy="40" r="1.1" fill="#fff"/><circle cx="41" cy="40" r="1.1" fill="#fff"/>
-<ellipse cx="18.5" cy="48" rx="3.5" ry="2.2" fill="#ff9e9e" opacity=".75"/><ellipse cx="45.5" cy="48" rx="3.5" ry="2.2" fill="#ff9e9e" opacity=".75"/>
-<path d="M27 49 Q32 54 37 49" fill="none" stroke="#3b3433" stroke-width="2.4" stroke-linecap="round"/>
-${acc?(acc.pos==='face'?`<text x="32" y="45" font-size="22" text-anchor="middle">${acc.e}</text>`:`<text x="32" y="9" font-size="19" text-anchor="middle">${acc.e}</text>`):''}</svg>`;}
+${bgSVG(g('bg'))}${chimSVG(g('chim'),roof)}
+<rect x="10" y="26" width="44" height="35" rx="15" fill="${body}" stroke="${shade(body,-0.12)}" stroke-width="2"/>
+${decoSVG(g('deco'))}${roofSVG(g('shape'),roof)}${faceSVG(g('face'))}${petSVG(g('pet'))}
+${acc?(acc.pos==='face'?`<text x="32" y="45" font-size="22" text-anchor="middle">${acc.e}</text>`:`<text x="32" y="9" font-size="19" text-anchor="middle">${acc.e}</text>`):''}${fxSVG(g('fx'))}</svg>`;}
 
 /* ===================== Firebase(Firestore) 저장소 + API (학생·교사 공용) =====================
    데이터 구조
@@ -693,6 +777,15 @@ const FB_API={
     const now=Date.now();
     return{ok:true,room:{code:r.code,name:r.name},classes,top,online:list.filter(s=>now-s.last<5*60*1000).length,total:list.length};
   },
+  peers:async(b,a)=>{ // 학생끼리 보기: 학번·비밀번호 없이 별명/별/방 이름만
+    const r=await fbRoom(a,b.code);if(!r)throw new Error('방 코드를 찾을 수 없어요.');
+    const m=await fbBoardMap(a,r.code);const out=Object.keys(m).map(k=>{const p=fbPub(k,m[k]);return{k:p.sid,cls:p.cls,nick:p.nick,stars:p.stars,avatar:p.avatar,last:p.last};});
+    if(b.works){const jobs=out.filter(s=>s.stars[6]>0||true);
+      for(let i=0;i<jobs.length;i+=10)await Promise.all(jobs.slice(i,i+10).map(async s=>{const d=await a.get('rooms/'+r.code+'/students/'+s.k);const st=d&&fbParse(d.state)||{};const w=st.s6;
+        if(w&&(w.items||[]).length)s.s6={room:w.room,items:w.items,roomName:String(w.roomName||'').slice(0,30),roomMeaning:String(w.roomMeaning||'').slice(0,60),space:String(w.space||'').slice(0,30)};}));}
+    out.forEach(s=>delete s.k);out.sort((x,y)=>x.cls.localeCompare(y.cls,undefined,{numeric:true})||x.nick.localeCompare(y.nick));
+    return{ok:true,classes:r.classes,students:out,me:b.cls};
+  },
   teacher:async(b,a)=>{
     await fbEnsureTeacher(a,b.pw);
     const r=await fbRoom(a,b.code);if(!r)throw new Error('방이 없어요.');
@@ -823,9 +916,9 @@ async function status(){
     $('#st-body').innerHTML=`<div class="stats"><div class="stat"><b>${d.students.length}</b><span>참여 학생</span></div><div class="stat"><b>${online}</b><span>🟢 지금 접속 중 (5분 이내)</span></div><div class="stat"><b>${avg}</b><span>평균 경험치</span></div><div class="stat"><b>${s6done}</b><span>「내 방에게 묻다」 완료</span></div></div>
     <div class="card"><div class="row"><div class="filters"><button data-c="all" class="${T.cls==='all'?'on':''}">전체</button>${d.room.classes.map(c=>`<button data-c="${c}" class="${T.cls===c?'on':''}">${c}반 (${d.students.filter(s=>s.cls===c).length})</button>`).join('')}</div>
       <span style="margin-left:auto"></span><button class="btn small ghost" id="cp-tsv">📋 표 복사 (엑셀 붙여넣기)</button><button class="btn small ghost" id="dl-csv">⬇ CSV 저장</button></div>
-    <div style="overflow:auto"><table class="tb"><tr><th></th><th>반</th><th>학번</th><th>닉네임</th>${STAGE_COLS.map(c=>`<th>${c[1]}</th>`).join('')}<th>⭐XP</th><th>🪙코인</th><th>배지</th><th>칭찬</th><th>마지막 접속</th><th>관리</th></tr>
+    <div style="overflow:auto"><table class="tb"><tr><th></th><th>반</th><th>학번</th><th>닉네임</th>${STAGE_COLS.map(c=>`<th>${c[1]}</th>`).join('')}<th>⭐XP</th><th>💰코인</th><th>배지</th><th>칭찬</th><th>마지막 접속</th><th>관리</th></tr>
     ${list.map(s=>`<tr><td><span class="dot ${now-s.last<5*60000?'on':''}"></span></td><td>${esc(s.cls)}</td><td>${esc(s.sid)}</td><td class="l">${esc(s.nick)}</td>${s.stars.map(v=>`<td class="st${v}">${v?'★'.repeat(v):'·'}</td>`).join('')}<td><b>${s.xp}</b></td><td>${s.coins}</td><td>${s.badges}</td><td>${s.bonus||''}</td><td>${fmtAgo(s.last)}</td>
-      <td><button class="iconbtn" title="칭찬 코인" data-coin="${esc(s.sid)}" data-n="${esc(s.nick)}">🪙</button><button class="iconbtn" title="비밀번호 초기화" data-pin="${esc(s.sid)}" data-n="${esc(s.nick)}">🔑</button><button class="iconbtn" title="삭제" data-del="${esc(s.sid)}" data-n="${esc(s.nick)}">🗑</button></td></tr>`).join('')||`<tr><td colspan="20" class="empty">아직 들어온 학생이 없어요. 방 코드 <b>${d.room.code}</b>를 알려 주세요.</td></tr>`}</table></div>
+      <td><button class="iconbtn" title="칭찬 코인" data-coin="${esc(s.sid)}" data-n="${esc(s.nick)}">💰</button><button class="iconbtn" title="비밀번호 초기화" data-pin="${esc(s.sid)}" data-n="${esc(s.nick)}">🔑</button><button class="iconbtn" title="삭제" data-del="${esc(s.sid)}" data-n="${esc(s.nick)}">🗑</button></td></tr>`).join('')||`<tr><td colspan="20" class="empty">아직 들어온 학생이 없어요. 방 코드 <b>${d.room.code}</b>를 알려 주세요.</td></tr>`}</table></div>
     <p class="hint">★ = 받은 별 · 🟢 = 5분 안에 저장한 학생 · 🔑 비밀번호를 잊은 학생은 초기화하면 다음 로그인 때 새 비밀번호를 정해요.</p></div>`;
     $$('.filters button').forEach(b=>b.onclick=()=>{T.cls=b.dataset.c;draw();});
     const rowsOf=L=>[['반','학번','닉네임',...STAGE_COLS.map(c=>c[1]),'경험치','코인','배지','칭찬코인','방이름','중요한 조건','좋은 점','보완할 점','자기평가1','자기평가2']].concat(L.map(s=>[s.cls,s.sid,s.nick,...s.stars,s.xp,s.coins,s.badges,s.bonus,s.s6&&s.s6.roomName||'',s.s6&&s.s6.cond||'',s.s6&&s.s6.good||'',s.s6&&s.s6.bad||'',s.s6&&s.s6.ev1||'',s.s6&&s.s6.ev2||'']));
@@ -843,7 +936,7 @@ async function status(){
 }
 const confirm2=true;
 function coinModal(target,label,after){
-  modal(`<h3>🪙 칭찬 코인 주기 — ${esc(label)}</h3><div class="row"><input type="number" id="cn" value="20" style="width:110px"> 개 <span class="hint">(빼려면 음수, 예: -10)</span></div><p class="hint">학생이 다음에 저장하거나 로그인할 때 코인이 들어가고 알림이 떠요.</p><div class="m-actions"><button class="btn ghost" onclick="closeModal()">취소</button><button class="btn" id="cn-ok">보내기</button></div>`);
+  modal(`<h3>💰 칭찬 코인 주기 — ${esc(label)}</h3><div class="row"><input type="number" id="cn" value="20" style="width:110px"> 개 <span class="hint">(빼려면 음수, 예: -10)</span></div><p class="hint">학생이 다음에 저장하거나 로그인할 때 코인이 들어가고 알림이 떠요.</p><div class="m-actions"><button class="btn ghost" onclick="closeModal()">취소</button><button class="btn" id="cn-ok">보내기</button></div>`);
   $('#cn-ok').onclick=async()=>{try{const r=await adminApi({action:'bonus',code:T.room,amount:+$('#cn').value,...target});closeModal();toast(`${r.count}명에게 보냈어요!`,'good');after&&after();}catch(e){toast('❌ '+e.message,'bad');}};
 }
 
@@ -903,7 +996,7 @@ async function coins(){
   el.innerHTML=`<div class="card">${roomPicker()}</div><div class="card"><h2>칭찬 코인 보내기</h2>
    <p class="hint">발표를 잘했거나, 친구를 도와줬거나, 모둠 활동을 열심히 한 학생에게 코인을 보내 주세요. 칭찬 코인은 <b>코인</b>만 늘고 <b>경험치(반 순위)</b>에는 영향이 없어요.</p>
    <div class="row" style="margin:8px 0"><b>누구에게?</b><select id="cw"><option value="all">이 방 전체</option>${room.classes.map(c=>`<option value="cls:${c}">${c}반 전체</option>`).join('')}<option value="sids">학번 직접 입력</option></select><input type="text" id="cs" placeholder="학번을 쉼표로 (예: 20301,20315)" style="width:300px;display:none"></div>
-   <div class="row"><b>몇 개?</b><input type="number" id="ca" value="20" style="width:110px">개 <button class="btn big" id="cgo">🪙 보내기</button></div></div>`;
+   <div class="row"><b>몇 개?</b><input type="number" id="ca" value="20" style="width:110px">개 <button class="btn big" id="cgo">💰 보내기</button></div></div>`;
   bindRoomPicker(coins);
   $('#cw').onchange=()=>{$('#cs').style.display=$('#cw').value==='sids'?'':'none';};
   $('#cgo').onclick=async()=>{const w=$('#cw').value;const t=w==='all'?{all:true}:w==='sids'?{sids:$('#cs').value.split(/[,\s]+/).filter(Boolean)}:{cls:w.slice(4)};
