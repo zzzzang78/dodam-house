@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap" rel="stylesheet">
 <title>도담이네 집 짓기 · 주거 공간 구성 시뮬레이터</title>
 <style>
 :root{--bg:#fdf8f1;--panel:#fff;--ink:#3b3433;--sub:#7a6f6b;--line:#eadfd3;--accent:#ff8a65;--accent2:#5c9ded;--ok:#3fae7a;--warn:#e8554e;--gold:#f5b82e;--r:14px}
@@ -428,7 +428,7 @@ kbd{background:#f3ece4;border:1px solid #d9cbbb;border-bottom-width:3px;border-r
 
 /* ===== 깔끔 파스텔 테마 (단색) ===== */
 :root{--bg:#fffaf2;--panel:#fff;--ink:#5a4a5e;--sub:#9a8a9f;--line:#e0ecf6;--accent:#6fb8f0;--accent2:#8ec5ff;--ok:#62d0a1;--warn:#ff7a8a;--gold:#ffd166;--r:20px}
-html,body{font-family:"Jua","Pretendard","Apple SD Gothic Neo","Malgun Gothic",sans-serif;background:var(--bg);font-weight:400}
+html,body{font-family:"Gowun Dodum","Pretendard","Apple SD Gothic Neo","Malgun Gothic",sans-serif;background:var(--bg);font-weight:400}
 b,strong,h1,h2,h3,h4,th,.btn,.logo{font-weight:400}
 header{background:#fff;border-bottom:3px solid #e3f0fa;border-radius:0 0 22px 22px}
 .logo{font-size:20px;color:#3f8ccb}
@@ -549,6 +549,9 @@ body.on-map header{display:none}body.login-mode #hud{display:none}
 .dodam-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
 .dodam-card{background:#fff;border:3px solid #e0ecf6;border-radius:22px;padding:10px 6px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:2px}
 .dodam-card.me{border-color:#ffd98a;background:#fff9e8}.dodam-card small{color:#7a8a99}
+html,body,*{word-break:keep-all;overflow-wrap:break-word;line-break:strict}
+h1,h2,h3,h4,.win h4,.rcard b,.stage-title,.bubble,.hint,p,b,small{text-wrap:balance}
+textarea,input,code,pre,kbd{word-break:normal}
 </style>
 </head>
 <body>
