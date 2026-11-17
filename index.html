@@ -630,6 +630,18 @@ html,body{background:#fbf6e6}
 .dk-zones{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px}
 .dk-z{border:3px dashed #8f6a3e;background:#fbf6e6;border-radius:14px;padding:6px;cursor:pointer;font-family:inherit;display:flex;flex-direction:column;align-items:center;min-height:96px}
 .dk-z:hover{background:#f1e7c8}.dk-z small{font-size:11px;color:#6b5a45}.dk-in{display:flex;flex-wrap:wrap;gap:2px;justify-content:center;margin-top:4px}.dk-in i{font-style:normal;font-size:24px}
+
+.ci{display:inline}.cl{display:inline}
+.shelfbox .sort-pool{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;background:#e8d4ae;border:3px dashed #b88658;border-radius:14px;padding:10px}
+.shelfbox .chip{display:flex;flex-direction:column;align-items:center;min-width:84px;padding:6px 8px;background:#fffaf0;border-color:#b88658}
+.shelfbox .chip .ci{font-size:44px;line-height:1.1}.shelfbox .chip .cl{font-size:12px;text-align:center}
+.shelfbox .chip.done{background:transparent;border:0;padding:0 4px;min-width:0}
+.shelfbox .chip.done .ci{font-size:46px}.shelfbox .chip.done .cl{font-size:11px;font-weight:700}
+.shelf-bins{background:#c9a06b;border:6px solid #8f6a3e;border-radius:10px;padding:6px 8px;gap:0!important}
+.shelf-bins .bin{background:#f4e4c1;border:0;border-bottom:12px solid #8f6a3e;border-radius:0;border-left:0;min-height:128px;display:flex;flex-direction:column;justify-content:space-between}
+.shelf-bins .bin:last-child{border-bottom-width:6px}
+.shelf-bins .bin-items{align-items:flex-end;min-height:62px}
+.shelf-bins .bin-head{font-size:15px}
 </style>
 </head>
 <body>
@@ -1638,7 +1650,7 @@ function makeDrag(el,{onDrop,onClick}){
 function sortGame(host,{items,bins,title,onDone,binsClass=''}){
   let errors=0,placed=0,selected=null;
   host.innerHTML=`<div class="sort">${title?`<div class="sec-title">${title}</div>`:''}
-  <div class="sort-pool">${shuffle(items).map(it=>`<div class="chip" data-item="${it.id}">${it.icon||''} ${esc(it.label)}</div>`).join('')}</div>
+  <div class="sort-pool">${shuffle(items).map(it=>`<div class="chip" data-item="${it.id}"><span class="ci">${it.icon||''}</span> <span class="cl">${esc(it.label)}</span></div>`).join('')}</div>
   <div class="sort-bins ${binsClass}" style="--n:${bins.length}">${bins.map(b=>`<div class="bin" data-drop="1" data-bin="${b.id}"><div class="bin-head">${b.label}</div>${b.desc?`<div class="bin-desc">${b.desc}</div>`:''}<div class="bin-items"></div></div>`).join('')}</div></div>`;
   const place=(chip,binEl)=>{
     if(!chip||chip.classList.contains('done'))return;
