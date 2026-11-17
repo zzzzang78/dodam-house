@@ -681,6 +681,11 @@ html,body{background:#fbf6e6}
 .sh2-shoe.in{position:static;cursor:default;animation:uppop .45s cubic-bezier(.3,1.8,.5,1)}
 .sh2-cnt{text-align:center;font-weight:800;color:#8f6a3e;margin-top:6px}
 .sh2.done .sh2-cab{box-shadow:0 0 0 4px #ffe58a,0 0 22px #ffe58a}
+
+.rtabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px}
+.rtabs button{border:3px solid #e2c9a0;background:#fffaf0;border-radius:14px 14px 4px 4px;padding:4px 14px;font-weight:800;font-family:inherit;cursor:pointer;color:#7a5c3a}
+.rtabs button.on{background:#6cc08b;border-color:#4fa070;color:#fff}.rtabs small{background:rgba(0,0,0,.15);border-radius:99px;padding:0 6px}
+.presets.homes{grid-template-columns:1fr 1fr}.presets.homes button{font-size:13px}.presets.homes small{font-weight:600;opacity:.8}
 </style>
 </head>
 <body>
@@ -2740,7 +2745,7 @@ function render3D(cv,room,items,view,size){
     room.switches.filter(o=>o.wall===wl.w).forEach(o=>on(o.pos-5,115,127,10,'#fff','#666'));
   });
   // 가구
-  const pastel=rgb=>rgb.map((v,i)=>Math.round(v+([255,246,228][i]-v)*0.34));
+  const pastel=rgb=>rgb.map((v,i)=>Math.round(v+([255,246,228][i]-v)*0.24));
   const boxes=[];
   items.forEach(it=>{const f=FURN[it.type];partsOf(it).forEach(pt=>{const r=localToWorld(it,pt.a,pt.b,pt.c,pt.d);boxes.push({...r,z0:pt.z0,z1:pt.z1,rgb:pastel(hexRgb(pt.col||f.color)),sh:pt.sh,rug:!!f.rug,it});});});
   items.forEach(it=>{const f=FURN[it.type];if(f.rug||f.float)return;const r=rectOf(it);const e=5;const q=[[r.x-e,r.y-e],[r.x+r.w+e,r.y-e],[r.x+r.w+e,r.y+r.h+e],[r.x-e,r.y+r.h+e]].map(([x,y])=>P(clamp(x,0,W),clamp(y,0,H),0));poly(q,'rgba(95,60,40,.20)');});
@@ -2752,11 +2757,11 @@ function render3D(cv,room,items,view,size){
       {n:[0,-1,0],p:[[x0,y0,z0],[x1,y0,z0],[x1,y0,z1],[x0,y0,z1]]},{n:[0,1,0],p:[[x1,y1,z0],[x0,y1,z0],[x0,y1,z1],[x1,y1,z1]]},
       {n:[-1,0,0],p:[[x0,y1,z0],[x0,y0,z0],[x0,y0,z1],[x0,y1,z1]]},{n:[1,0,0],p:[[x1,y0,z0],[x1,y1,z0],[x1,y1,z1],[x1,y0,z1]]},
       {n:[0,0,1],p:[[x0,y0,z1],[x1,y0,z1],[x1,y1,z1],[x0,y1,z1]]}];
-    faces.forEach(f=>{if(nd(...f.n)<=0.001)return;const lf=f.n[2]?0.2:(-0.02-0.08*(f.n[0]*0.6+f.n[1]*0.8));const pp=f.p.map(q=>P(...q));poly(pp,rgbStr(b.rgb,b.sh*0.45+lf),rgbStr(b.rgb,-0.55),b.rug?1:2.4);
+    faces.forEach(f=>{if(nd(...f.n)<=0.001)return;const lf=f.n[2]?0.2:(-0.02-0.08*(f.n[0]*0.6+f.n[1]*0.8));const pp=f.p.map(q=>P(...q));const fc=rgbStr(b.rgb,b.sh*0.45+lf);
+      if(b.rug)poly(pp,fc,rgbStr(b.rgb,-0.55),1);else{const rw=clamp(sc*5,3,10);const path=()=>{ctx.beginPath();pp.forEach((p,i)=>i?ctx.lineTo(p[0],p[1]):ctx.moveTo(p[0],p[1]));ctx.closePath();};
+        ctx.lineJoin='round';path();ctx.strokeStyle=rgbStr(b.rgb,-0.55);ctx.lineWidth=rw+3;ctx.stroke();path();ctx.fillStyle=fc;ctx.fill();ctx.strokeStyle=fc;ctx.lineWidth=rw;ctx.stroke();}
       if(f.n[2]&&!b.rug&&Math.min(x1-x0,y1-y0)>10){const cx=pp.reduce((s,p)=>s+p[0],0)/4,cy2=pp.reduce((s,p)=>s+p[1],0)/4;poly(pp.map(p=>[cx+(p[0]-cx)*.78,cy2+(p[1]-cy2)*.78]),'rgba(255,255,255,.26)');}});
   });
-  // 아이콘
-  items.forEach(it=>{const f=FURN[it.type];if(!f.icon)return;const r=rectOf(it);const p=P(r.x+r.w/2,r.y+r.h/2,f.z+4);const fsz=clamp(Math.min(r.w,r.h)*sc*0.5,13,38);ctx.fillStyle='rgba(255,255,255,.6)';ctx.beginPath();ctx.ellipse(p[0],p[1],fsz*0.72,fsz*0.6,0,0,7);ctx.fill();ctx.strokeStyle='rgba(120,80,60,.35)';ctx.lineWidth=1.5;ctx.stroke();ctx.font=`${fsz}px "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(f.icon,p[0],p[1]);});
   ctx.fillStyle=room.light==='warm'?'rgba(255,170,60,0.07)':'rgba(140,200,255,0.06)';ctx.fillRect(0,0,cw,ch);
 }
 
@@ -2872,13 +2877,23 @@ const MOODS=[
   {id:'free',i:'✨',n:'나만의 스타일',d:'자유롭게 꾸미기',rec:[]}
 ];
 const COND_CHIPS=['공부에 집중할 수 있어야 해요','친구와 놀 공간이 필요해요','수납공간이 많아야 해요','피규어를 장식할 공간이 필요해요','햇빛이 잘 들었으면 좋겠어요','침대 옆에 아늑한 공간이 있었으면 해요','운동할 공간이 필요해요','반려동물이 쉴 곳이 필요해요'];
+const HOMES={
+  my:{n:'🏠 내 방',d:'부모님과 함께 살아요',rooms:[['내 방',330,360,'bottom','top']]},
+  one:{n:'🏢 원룸',d:'어른이 된 나 · 방 1개',rooms:[['원룸',400,500,'bottom','top']]},
+  two:{n:'🏘 투룸',d:'침실 + 거실',rooms:[['침실',300,360,'bottom','top'],['거실',400,400,'left','right']]},
+  apt:{n:'🏙 아파트',d:'안방·서재·거실·주방',rooms:[['안방',360,400,'bottom','top'],['서재(작은방)',300,330,'right','left'],['거실',500,450,'bottom','top'],['주방·식당',350,300,'left','top']]}
+};
 function defaultS6(){return{step:1,name:'',space:'내 방',room:makeRoom(330,360,'bottom','top'),items:[],mood:null,cond:'',good:'',bad:'',ev1:'',ev2:'',roomName:'',roomMeaning:'',before:null,cat:'store',seen:false};}
 RENDER.s6=(body)=>{
-  if(!S.s6||!S.s6.room)S.s6=defaultS6();const d=S.s6;let ed=null;if(!d.name&&isOnline())d.name=`${SESSION.cls}반 ${SESSION.sid} ${S.nick||''}`.trim();d.items=(d.items||[]).filter(i=>FURN[i.type]);if(!FCAT[d.cat])d.cat='store';
+  if(!S.s6||!S.s6.room)S.s6=defaultS6();const d=S.s6;let ed=null;
+  if(!d.rooms||!d.rooms.length){d.rooms=[{name:d.space||'내 방',room:d.room,items:d.items||[],before:d.before||null}];d.cur=0;d.home=d.home||'my';}
+  if(d.cur==null||!d.rooms[d.cur])d.cur=0;
+  ['room','items','before'].forEach(k=>Object.defineProperty(d,k,{get(){return d.rooms[d.cur][k];},set(v){d.rooms[d.cur][k]=v;},enumerable:true,configurable:true}));
+  if(!d.name&&isOnline())d.name=`${SESSION.cls}반 ${SESSION.sid} ${S.nick||''}`.trim();d.items=(d.items||[]).filter(i=>FURN[i.type]);if(!FCAT[d.cat])d.cat='store';
   cleanup=()=>{if(ed)ed.destroy();save();};
   body.innerHTML=`<div class="studio"><div class="panel steps">${isGuest()&&serverURL()?'<div class="guest-note">💡 예전 시간에 꾸민 방을 이어서 하려면 먼저 위쪽 <b>🏆 랭킹 등록</b>(학번 입력)을 해 주세요.</div>':''}<div class="step-tabs">${[1,2,3,4,5].map(n=>`<button class="stab" data-step="${n}">${n}단계</button>`).join('')}</div><div class="step-body" id="sb"></div>
     <div class="step-nav"><button class="btn ghost small" id="st-prev">◀ 이전</button><button class="btn small" id="st-next">다음 ▶</button></div></div>
-    <div class="center" id="ed-host" style="display:flex;flex-direction:column;min-height:0"></div><div class="panel" id="s6r"></div></div>`;
+    <div class="center" style="display:flex;flex-direction:column;min-height:0"><div id="rtabs"></div><div id="ed-host" style="display:flex;flex-direction:column;min-height:0;flex:1"></div></div><div class="panel" id="s6r"></div></div>`;
   ed=createEditor($('#ed-host'),{room:d.room,items:d.items,onCommit:it=>{d.items=it;save();const eh=$('#ed-host');if(eh){eh.classList.remove('popd');void eh.offsetWidth;eh.classList.add('popd');}},onChange:an=>{const box=$('#s6r');if(!box)return;box.innerHTML=warnPanelHTML(an,d.room,d.items)+`<div class="tips" style="margin-top:10px"><b>🌟 나의 주거 공간 구성 꿀팁</b><br>· 비워요: 쓸모없는 물건 비우기<br>· 조명을 활용해요: 분위기 만들기<br>· 공간을 구분해요: 커튼·가구로 구분<br>· 위치를 바꿔요: 나만의 공간 만들기<br>· 소품을 활용해요: 좋아하는 물건으로</div>`;if(ed)bindWarnClicks(box,an,ed);}});
   d.items=ed.items;
   const setStep=n=>{d.step=n;save();$$('.stab').forEach(b=>{b.classList.toggle('on',+b.dataset.step===n);});$('#st-prev').disabled=n===1;$('#st-next').textContent=n===5?'🎴 결과 카드':'다음 ▶';STEP[n]();};
@@ -2888,15 +2903,23 @@ RENDER.s6=(body)=>{
   const sb=()=>$('#sb');
   const bindText=(id,key)=>{const el=$('#'+id);if(!el)return;el.value=d[key]||'';el.oninput=()=>{d[key]=el.value;save();};};
   const applyRoom=(W,H,dw,ww)=>{W=clamp(Math.round(W/10)*10,200,600);H=clamp(Math.round(H/10)*10,200,600);const old=d.room;d.room=makeRoom(W,H,dw,ww);d.room.floor=old.floor;d.room.wall=old.wall;d.room.wpat=old.wpat;d.room.wdeco=old.wdeco;d.room.light=old.light;ed.setRoom(d.room);save();};
+  const rtabs=()=>{const el=$('#rtabs');if(!el)return;el.innerHTML=d.rooms.length>1?`<div class="rtabs">${d.rooms.map((r,i)=>`<button class="${i===d.cur?'on':''}" data-r="${i}">${r.name}${r.items.length?` <small>${r.items.length}</small>`:''}</button>`).join('')}</div>`:'';
+    $$('[data-r]',el).forEach(b=>b.onclick=()=>{const i=+b.dataset.r;if(i===d.cur)return;d.cur=i;save();if(cleanup){cleanup();cleanup=null;}RENDER.s6(body);});};
+  rtabs();
+  const setHome=k=>{const H=HOMES[k];const hasItems=d.rooms.some(r=>r.items.length);
+    if(k===d.home)return;if(hasItems&&!confirm('집 유형을 바꾸면 지금 배치한 가구가 모두 사라져요. 바꿀까요?'))return;
+    const old=d.rooms[0];d.home=k;d.rooms=H.rooms.map(([n,W,Hh,dw,ww],i)=>{const r=makeRoom(W,Hh,dw,ww);if(i===0&&old){r.floor=old.room.floor;r.wall=old.room.wall;}return{name:n,room:r,items:[],before:null};});d.cur=0;d.space=d.rooms[0].name;save();if(cleanup){cleanup();cleanup=null;}RENDER.s6(body);};
   const STEP={
     1(){sb().innerHTML=`<h3>① 꾸미고 싶은 공간 정하기</h3>
       <label>이름 (학번)</label><input type="text" id="f-name" placeholder="예) 20315 김도담">
       <label>꾸미고 싶은 공간</label><select id="f-space">${['내 방','공부방','취미 공간','형제와 같이 쓰는 방','거실 한쪽','기타'].map(o=>`<option ${d.space===o?'selected':''}>${o}</option>`).join('')}</select>
-      <label>방 크기</label><div class="presets">${[[300,300,'작은 방'],[330,360,'보통 방'],[400,400,'넓은 방']].map(p=>`<button data-ps="${p[0]}x${p[1]}" class="${d.room.W===p[0]&&d.room.H===p[1]?'on':''}">${p[2]}<br>${p[0]/100}×${p[1]/100}m</button>`).join('')}</div>
+      <label>집 유형</label><div class="presets homes">${Object.entries(HOMES).map(([k,v])=>`<button data-home="${k}" class="${d.home===k?'on':''}">${v.n}<br><small>${v.d}</small></button>`).join('')}</div>
+      <label>${d.rooms.length>1?'지금 꾸미는 방: '+d.rooms[d.cur].name+' — ':''}방 크기</label><div class="presets">${[[300,300,'작은 방'],[330,360,'보통 방'],[400,400,'넓은 방']].map(p=>`<button data-ps="${p[0]}x${p[1]}" class="${d.room.W===p[0]&&d.room.H===p[1]?'on':''}">${p[2]}<br>${p[0]/100}×${p[1]/100}m</button>`).join('')}</div>
       <div class="row2"><div><label>가로 (cm)</label><input type="number" id="f-w" min="200" max="600" step="10" value="${d.room.W}"></div><div><label>세로 (cm)</label><input type="number" id="f-h" min="200" max="600" step="10" value="${d.room.H}"></div></div>
       <div class="row2"><div><label>문 위치</label><select id="f-door">${wallOpts(d.room.door.wall)}</select></div><div><label>창문 위치</label><select id="f-win">${wallOpts(d.room.windows[0].wall)}</select></div></div>
       <p class="hint">💡 실제 내 방 크기를 줄자로 재어 오면 더 좋아요! 먼저 <b>지금 내 방 모습</b>을 배치해 두면 나중에 전·후를 비교할 수 있어요.</p>`;
       bindText('f-name','name');$('#f-space').onchange=e=>{d.space=e.target.value;save();};
+      $$('[data-home]').forEach(b=>b.onclick=()=>setHome(b.dataset.home));
       $$('[data-ps]').forEach(b=>b.onclick=()=>{const[w,h]=b.dataset.ps.split('x').map(Number);applyRoom(w,h,d.room.door.wall,d.room.windows[0].wall);STEP[1]();});
       const ch=()=>applyRoom(+$('#f-w').value||330,+$('#f-h').value||360,$('#f-door').value,$('#f-win').value);
       ['f-w','f-h'].forEach(id=>$('#'+id).onchange=()=>{ch();STEP[1]();});['f-door','f-win'].forEach(id=>$('#'+id).onchange=ch);
