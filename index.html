@@ -686,6 +686,12 @@ html,body{background:#fbf6e6}
 .rtabs button{border:3px solid #e2c9a0;background:#fffaf0;border-radius:14px 14px 4px 4px;padding:4px 14px;font-weight:800;font-family:inherit;cursor:pointer;color:#7a5c3a}
 .rtabs button.on{background:#6cc08b;border-color:#4fa070;color:#fff}.rtabs small{background:rgba(0,0,0,.15);border-radius:99px;padding:0 6px}
 .presets.homes{grid-template-columns:1fr 1fr}.presets.homes button{font-size:13px}.presets.homes small{font-weight:600;opacity:.8}
+
+.rtabs button.all{border-color:#e68a62;color:#c2603a}.rtabs button.all.on{background:#e68a62;border-color:#c2603a;color:#fff}
+.ov-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:10px;overflow:auto}
+.ov-card{background:#fffaf0;border:3px solid #e2c9a0;border-radius:16px;padding:6px;cursor:pointer;transition:.15s}.ov-card:hover{transform:translateY(-3px);border-color:#6cc08b}
+.ov-h{display:flex;justify-content:space-between;align-items:baseline;padding:0 6px}.ov-h small{color:#8a6a40}
+.ov-cv{width:100%;height:210px;display:block;border-radius:10px}
 </style>
 </head>
 <body>
@@ -941,9 +947,27 @@ const FURN={
   starlamp:{name:'별빛 무드등',g:'✨ 특별 가구',cat:'deco',w:30,h:30,z:40,icon:'✨',color:'#b39ddb',shape:'lamp',p:4,prem:40,d:'천장에 별이 반짝반짝'},
   neon:{name:'네온사인',g:'✨ 특별 가구',cat:'deco',w:80,h:10,z:170,zb:140,icon:'💜',color:'#ea80fc',float:true,shape:'box',p:6,prem:50,d:'벽에 거는 반짝이는 글씨'},
   ballpit:{name:'볼풀',g:'✨ 특별 가구',cat:'rest',w:120,h:120,z:40,icon:'🔴',color:'#ff8a80',shape:'box',p:15,prem:100,d:'알록달록 공이 가득'},
-  curtain:{name:'공간 분리 커튼',g:'기타',cat:'deco',w:150,h:10,z:220,icon:'🎐',color:'#f8bbd0',float:true,shape:'box',p:4,d:'공간을 구분해요 (지나갈 수 있어요)'}
+  curtain:{name:'공간 분리 커튼',g:'기타',cat:'deco',w:150,h:10,z:220,icon:'🎐',color:'#f8bbd0',float:true,shape:'box',p:4,d:'공간을 구분해요 (지나갈 수 있어요)'},
+  /* ---- 거실·주방·욕실 ---- */
+  sofa3:{name:'소파(3인)',g:'거실',cat:'living',w:220,h:90,z:80,icon:'🛋️',color:'#e9a9a9',big:true,clr:{front:60},shape:'sofa',p:60,d:'가족이 함께 앉는 큰 소파'},
+  ctable:{name:'거실 테이블',g:'거실',cat:'living',w:100,h:55,z:42,icon:'☕',color:'#dcb98a',clr:{front:40},shape:'desk',p:10,d:'소파 앞에 두는 낮은 테이블'},
+  tvstand:{name:'거실 TV장',g:'거실',cat:'living',w:160,h:40,z:55,icon:'📺',color:'#90a4ae',clr:{front:80},shape:'tv',p:25,d:'TV를 놓는 낮은 장'},
+  shoebox:{name:'신발장',g:'거실',cat:'living',w:100,h:35,z:110,icon:'👟',color:'#d8c3a5',big:true,clr:{front:60},shape:'box',p:15,d:'현관 가까이 두는 신발 수납장'},
+  dtable:{name:'식탁(4인)',g:'식탁·주방',cat:'kit',w:120,h:75,z:72,icon:'🍽️',color:'#f2d4a8',clr:{front:60,allowChair:true},shape:'desk',p:12,d:'네 명이 앉는 식탁'},
+  dchair:{name:'식탁 의자',g:'식탁·주방',cat:'kit',w:40,h:40,z:85,icon:'🪑',color:'#e7a77b',shape:'chair',p:3,d:'식탁에 놓는 의자'},
+  kfridge:{name:'냉장고',g:'식탁·주방',cat:'kit',w:70,h:70,z:180,icon:'🧊',color:'#e8eef2',big:true,tall:true,clr:{front:70},shape:'box',p:80,d:'식재료를 보관하는 큰 냉장고'},
+  ksink:{name:'싱크대',g:'식탁·주방',cat:'kit',w:180,h:60,z:90,icon:'🚰',color:'#e6dccb',big:true,clr:{front:80},shape:'counter',p:60,d:'설거지하는 싱크대'},
+  cooktop:{name:'조리대(가스레인지)',g:'식탁·주방',cat:'kit',w:80,h:60,z:90,icon:'🔥',color:'#d6dde0',big:true,clr:{front:70},shape:'counter',p:30,d:'요리하는 조리대'},
+  dishcab:{name:'식기장',g:'식탁·주방',cat:'kit',w:100,h:45,z:180,icon:'🍶',color:'#e3cfae',big:true,tall:true,clr:{front:60},shape:'box',p:20,d:'그릇을 보관하는 장'},
+  toilet:{name:'변기',g:'욕실',cat:'bath',w:40,h:70,z:40,icon:'🚽',color:'#fbfbfb',clr:{front:60},shape:'toilet',p:15,d:'욕실의 변기'},
+  basin:{name:'세면대',g:'욕실',cat:'bath',w:60,h:45,z:85,icon:'🧼',color:'#f4f4f4',clr:{front:60},shape:'sink',p:12,d:'손과 얼굴을 씻는 세면대'},
+  tub:{name:'욕조',g:'욕실',cat:'bath',w:75,h:160,z:55,icon:'🛁',color:'#f4f9ff',big:true,shape:'tub',p:45,d:'몸을 담그는 욕조'},
+  shower:{name:'샤워부스',g:'욕실',cat:'bath',w:90,h:90,z:200,icon:'🚿',color:'#cfeaf5',big:true,clr:{front:50},shape:'shower',p:50,d:'서서 샤워하는 공간'},
+  washer:{name:'세탁기',g:'욕실',cat:'bath',w:60,h:60,z:90,icon:'🧺',color:'#e9ecef',clr:{front:70},shape:'washer',p:45,d:'빨래를 하는 세탁기'},
+  bcab:{name:'욕실 수납장',g:'욕실',cat:'bath',w:50,h:25,z:170,icon:'🧴',color:'#d6e4ea',clr:{front:40},shape:'box',p:8,d:'수건·세면용품 보관'},
+  bmat:{name:'욕실 발매트',g:'욕실',cat:'bath',w:50,h:80,z:1,icon:'',color:'#bde0fe',rug:true,shape:'rug',p:3,d:'물기를 닦는 발매트'}
 };
-const FCAT={store:{name:'수납용',icon:'📦'},work:{name:'작업용',icon:'✏️'},rest:{name:'휴식용',icon:'😴'},hobby:{name:'취미',icon:'🎮'},deco:{name:'소품',icon:'🌿'}};
+const FCAT={store:{name:'수납용',icon:'📦'},work:{name:'작업용',icon:'✏️'},rest:{name:'휴식용',icon:'😴'},hobby:{name:'취미',icon:'🎮'},deco:{name:'소품',icon:'🌿'},living:{name:'거실',icon:'🛋️'},kit:{name:'주방·식당',icon:'🍳'},bath:{name:'욕실',icon:'🛁'}};
 const shortName=t=>FURN[t].name.replace(/\(.*?\)/g,'').trim();
 
 /* ===================== 방 편집기 기하 ===================== */
@@ -2698,6 +2722,12 @@ function partsOf(it){
     case'tv':return[P(0,0,w,h,0,45,-0.1,'#bcaaa4'),P(10,h/2-3,w-10,h/2+3,45,110,-0.5,'#37474f')];
     case'bike':return[P(w/2-6,0,w/2+6,h,0,40,-0.2),P(w/2-10,h-30,w/2+10,h-5,40,95,-0.1),P(5,10,w-5,22,80,110,-0.3)];
     case'hanger':return[P(0,h/2-3,5,h/2+3,0,z,-0.3,'#78909c'),P(w-5,h/2-3,w,h/2+3,0,z,-0.3,'#78909c'),P(0,h/2-2,w,h/2+2,z-6,z,-0.3,'#78909c'),P(8,4,w-8,h-4,60,z-10,0.2,'#ce93d8'),P(0,0,w,h,0,8,-0.2)];
+    case'toilet':return[P(6,0,w-6,20,0,z+38,-0.05),P(3,20,w-3,h-3,0,z-14,0),P(5,22,w-5,h-5,z-14,z,0.25,'#ffffff')];
+    case'sink':return[P(w/2-9,h/2-9,w/2+9,h/2+9,0,z-26,-0.1),P(0,0,w,h,z-26,z,0.05),P(7,7,w-7,h-7,z-3,z+1,0.35,'#bfe6ff'),P(w/2-3,1,w/2+3,9,z,z+16,-0.3,'#b0bec5')];
+    case'tub':return[P(0,0,w,h,0,z-18,0),P(0,0,w,7,z-18,z,0.1),P(0,h-7,w,h,z-18,z,0.1),P(0,0,7,h,z-18,z,0.1),P(w-7,0,w,h,z-18,z,0.1),P(7,7,w-7,h-7,z-28,z-26,0.4,'#a8dcf5'),P(w/2-3,0,w/2+3,9,z,z+14,-0.3,'#b0bec5')];
+    case'shower':return[P(0,0,w,h,0,8,-0.1,'#e3e3e3'),P(0,0,w,3,8,z,0.45,'#dff3fa'),P(0,0,3,h,8,z,0.45,'#dff3fa'),P(w-3,0,w,h,8,z,0.45,'#dff3fa'),P(w/2-3,3,w/2+3,12,z-45,z-35,-0.3,'#b0bec5')];
+    case'washer':return[P(0,0,w,h,0,z,0),P(0,0,w,h*0.22,z,z+2,-0.15,'#90a4ae'),P(w*0.2,h-3,w*0.8,h,8,z-12,-0.45,'#78909c')];
+    case'counter':return[P(0,0,w,h,0,z-5,0),P(0,0,w,h,z-5,z,0.4,'#fafafa'),...(f.name.includes('싱크')?[P(w*0.55,h*0.18,w*0.92,h*0.82,z-8,z+1,-0.1,'#9fb6c3'),P(w*0.2,3,w*0.24,9,z,z+16,-0.3,'#b0bec5')]:[P(w*0.12,h*0.18,w*0.42,h*0.5,z,z+2,-0.6,'#455a64'),P(w*0.58,h*0.18,w*0.88,h*0.5,z,z+2,-0.6,'#455a64'),P(w*0.12,h*0.58,w*0.88,h*0.8,z,z+1,-0.2,'#b0bec5')])];
     default:return[P(0,0,w,h,zb,z,0)];
   }
 }
@@ -2877,12 +2907,14 @@ const MOODS=[
   {id:'free',i:'✨',n:'나만의 스타일',d:'자유롭게 꾸미기',rec:[]}
 ];
 const COND_CHIPS=['공부에 집중할 수 있어야 해요','친구와 놀 공간이 필요해요','수납공간이 많아야 해요','피규어를 장식할 공간이 필요해요','햇빛이 잘 들었으면 좋겠어요','침대 옆에 아늑한 공간이 있었으면 해요','운동할 공간이 필요해요','반려동물이 쉴 곳이 필요해요'];
+const BATH=['화장실',200,230,'bottom','top',[['toilet',155,0,0],['basin',90,0,0],['tub',0,0,0]],110];
 const HOMES={
   my:{n:'🏠 내 방',d:'부모님과 함께 살아요',rooms:[['내 방',330,360,'bottom','top']]},
-  one:{n:'🏢 원룸',d:'어른이 된 나 · 방 1개',rooms:[['원룸',400,500,'bottom','top']]},
-  two:{n:'🏘 투룸',d:'침실 + 거실',rooms:[['침실',300,360,'bottom','top'],['거실',400,400,'left','right']]},
-  apt:{n:'🏙 아파트',d:'안방·서재·거실·주방',rooms:[['안방',360,400,'bottom','top'],['서재(작은방)',300,330,'right','left'],['거실',500,450,'bottom','top'],['주방·식당',350,300,'left','top']]}
+  one:{n:'🏢 원룸',d:'어른이 된 나 · 방+화장실',rooms:[['원룸',400,500,'bottom','top'],BATH]},
+  two:{n:'🏘 투룸',d:'침실·거실·화장실',rooms:[['침실',300,360,'bottom','top'],['거실',400,400,'left','right'],BATH]},
+  apt:{n:'🏙 아파트',d:'안방·서재·거실·주방·화장실',rooms:[['안방',360,400,'bottom','top'],['서재(작은방)',300,330,'right','left'],['거실',500,450,'bottom','top'],['주방·식당',350,300,'left','right',[['ksink',90,0,0],['kfridge',275,0,0]],30],BATH]}
 };
+const roomCat=n=>/화장실/.test(n)?'bath':/주방/.test(n)?'kit':/거실/.test(n)?'living':'store';
 function defaultS6(){return{step:1,name:'',space:'내 방',room:makeRoom(330,360,'bottom','top'),items:[],mood:null,cond:'',good:'',bad:'',ev1:'',ev2:'',roomName:'',roomMeaning:'',before:null,cat:'store',seen:false};}
 RENDER.s6=(body)=>{
   if(!S.s6||!S.s6.room)S.s6=defaultS6();const d=S.s6;let ed=null;
@@ -2903,12 +2935,16 @@ RENDER.s6=(body)=>{
   const sb=()=>$('#sb');
   const bindText=(id,key)=>{const el=$('#'+id);if(!el)return;el.value=d[key]||'';el.oninput=()=>{d[key]=el.value;save();};};
   const applyRoom=(W,H,dw,ww)=>{W=clamp(Math.round(W/10)*10,200,600);H=clamp(Math.round(H/10)*10,200,600);const old=d.room;d.room=makeRoom(W,H,dw,ww);d.room.floor=old.floor;d.room.wall=old.wall;d.room.wpat=old.wpat;d.room.wdeco=old.wdeco;d.room.light=old.light;ed.setRoom(d.room);save();};
-  const rtabs=()=>{const el=$('#rtabs');if(!el)return;el.innerHTML=d.rooms.length>1?`<div class="rtabs">${d.rooms.map((r,i)=>`<button class="${i===d.cur?'on':''}" data-r="${i}">${r.name}${r.items.length?` <small>${r.items.length}</small>`:''}</button>`).join('')}</div>`:'';
-    $$('[data-r]',el).forEach(b=>b.onclick=()=>{const i=+b.dataset.r;if(i===d.cur)return;d.cur=i;save();if(cleanup){cleanup();cleanup=null;}RENDER.s6(body);});};
+  let ovOn=false;
+  const rtabs=()=>{const el=$('#rtabs');if(!el)return;el.innerHTML=d.rooms.length>1?`<div class="rtabs"><button class="all ${ovOn?'on':''}" data-all="1">🏠 전체 보기</button>${d.rooms.map((r,i)=>`<button class="${!ovOn&&i===d.cur?'on':''}" data-r="${i}">${r.name}${r.items.length?` <small>${r.items.length}</small>`:''}</button>`).join('')}</div>`:'';
+    const ab=$('[data-all]',el);if(ab)ab.onclick=()=>{if(cleanup){cleanup();cleanup=null;}ovOn=true;rtabs();overview();};
+    $$('[data-r]',el).forEach(b=>b.onclick=()=>{const i=+b.dataset.r;if(i===d.cur&&!ovOn)return;d.cur=i;d.cat=roomCat(d.rooms[i].name);save();if(cleanup){cleanup();cleanup=null;}RENDER.s6(body);});};
+  const overview=()=>{const h=$('#ed-host');h.innerHTML=`<div class="ov-grid">${d.rooms.map((r,i)=>`<div class="ov-card" data-o="${i}"><div class="ov-h"><b>${r.name}</b><small>${r.room.W/100}×${r.room.H/100}m · 가구 ${r.items.length}개</small></div><canvas class="ov-cv"></canvas></div>`).join('')}</div><p class="hint" style="margin:6px 2px">방을 누르면 그 방을 꾸밀 수 있어요.</p>`;
+    $$('.ov-card',h).forEach((c,i)=>{c.onclick=()=>{ovOn=false;d.cur=i;d.cat=roomCat(d.rooms[i].name);save();RENDER.s6(body);};render3D($('canvas',c),d.rooms[i].room,d.rooms[i].items.filter(x=>FURN[x.type]),{yaw:-0.6,pitch:0.85,zoom:1});});};
   rtabs();
   const setHome=k=>{const H=HOMES[k];const hasItems=d.rooms.some(r=>r.items.length);
     if(k===d.home)return;if(hasItems&&!confirm('집 유형을 바꾸면 지금 배치한 가구가 모두 사라져요. 바꿀까요?'))return;
-    const old=d.rooms[0];d.home=k;d.rooms=H.rooms.map(([n,W,Hh,dw,ww],i)=>{const r=makeRoom(W,Hh,dw,ww);if(i===0&&old){r.floor=old.room.floor;r.wall=old.room.wall;}return{name:n,room:r,items:[],before:null};});d.cur=0;d.space=d.rooms[0].name;save();if(cleanup){cleanup();cleanup=null;}RENDER.s6(body);};
+    const old=d.rooms[0];d.home=k;d.rooms=H.rooms.map(([n,W,Hh,dw,ww,fx,dp],i)=>{const r=makeRoom(W,Hh,dw,ww);if(dp!=null)r.door.pos=dp;if(/화장실/.test(n)){r.floor='tile';r.wall='#e3eef8';}if(i===0&&old){r.floor=old.room.floor;r.wall=old.room.wall;}return{name:n,room:r,items:(fx||[]).map(([t,x,y,rot])=>({id:uid(),type:t,x,y,rot})),before:null};});d.cur=0;d.cat=roomCat(d.rooms[0].name);d.space=d.rooms[0].name;save();if(cleanup){cleanup();cleanup=null;}RENDER.s6(body);};
   const STEP={
     1(){sb().innerHTML=`<h3>① 꾸미고 싶은 공간 정하기</h3>
       <label>이름 (학번)</label><input type="text" id="f-name" placeholder="예) 20315 김도담">
