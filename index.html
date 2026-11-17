@@ -564,6 +564,48 @@ textarea,input,code,pre,kbd{word-break:normal}
 .mailbox .bd2{background:#fff;border:3px solid #ffb3b3;border-radius:14px;padding:2px 10px;margin-top:-6px;position:relative;display:block;box-shadow:0 3px 0 #ffb3b3}.mailbox:hover{transform:translateY(-3px)}
 .mail-cats{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}.mailbox-m textarea{width:100%;padding:10px;border:2px solid var(--line);border-radius:14px;font-family:inherit;font-size:16px;resize:vertical}
 .mail-list{display:flex;flex-direction:column;gap:6px;max-height:160px;overflow:auto}.mail-it{background:#fff8ec;border-radius:12px;padding:8px 12px;font-size:15px}.mail-it small{color:#9a8aa8}
+
+/* 미니게임 */
+.al-board{position:relative;height:210px;background:#fff7e0;border:3px dashed #e3c99a;border-radius:20px;overflow:hidden}
+.al-line{position:absolute;left:3%;right:3%;top:50%;margin-top:34px;border-top:3px dashed #a8d8a0;opacity:0;transition:.5s}.al-board.done .al-line{opacity:1}
+.al-it{position:absolute;top:50%;font-size:58px;line-height:1;cursor:pointer;user-select:none;transition:transform .5s cubic-bezier(.3,1.7,.5,1),left .5s,margin-top .5s}
+.al-it:not(.fixed):hover{filter:brightness(1.1)}.al-it.fixed{cursor:default}
+.al-it.wob{animation:wob .4s}@keyframes wob{0%,100%{translate:0}25%{translate:-6px}75%{translate:6px}}
+.up-wrap{display:flex;gap:14px;align-items:stretch}
+.up-box{flex:0 0 200px;display:flex;align-items:center;justify-content:center;background:#e9cf9c;border:4px solid #c49a5a;border-radius:18px;min-height:190px}
+.up-card{text-align:center;display:flex;flex-direction:column;gap:2px;padding:10px}.up-card .ri{font-size:64px;line-height:1.1}.up-card b{font-size:22px}.up-card small{color:#8a6a40}
+.up-room{flex:1;display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.up-zone{border:3px solid #cfe2c4;background:#f4fbef;border-radius:16px;padding:8px;min-height:88px;display:flex;flex-direction:column;align-items:center;gap:4px;font-family:inherit;color:var(--ink);cursor:pointer;font-size:16px}
+.up-zone:hover{background:#e6f6dc;transform:translateY(-2px)}.up-in{font-size:30px;min-height:36px}
+.up-pop{font-style:normal;animation:uppop .5s cubic-bezier(.3,1.8,.5,1)}@keyframes uppop{from{transform:scale(.2) translateY(-20px);opacity:0}to{transform:none;opacity:1}}
+@media (max-width:900px){.up-wrap{flex-direction:column}.up-box{flex-basis:auto;min-height:130px}.up-room{grid-template-columns:repeat(2,1fr)}}
+/* 포근한 숲속 마을 색감 */
+:root{--bg:#fbf6e6;--ink:#6b5440;--sub:#9a8570;--line:#eadfc0;--accent:#6cc08b;--accent2:#7fcfc4;--ok:#6cc08b;--warn:#ef8a7a;--gold:#f6c85f}
+html,body{background:#fbf6e6}
+.town{background:linear-gradient(#bfece4 0,#e7f7ee 70%)}
+.town .cl{background:#fffdf3}
+.town .hill{background:#bfe8a8}
+.town .grass{background:#a3dd8e;border-top:6px solid #86cc75}
+.win{background:#fffbe9;border-color:#ebcf92;box-shadow:0 5px 0 #dcb870}
+.win h4{background:#6cc08b}
+.town .roof svg *{fill:#e68a62!important;stroke:#e68a62!important}
+.town .roof-title{color:#fff8e6;text-shadow:0 2px 0 #b8603e}
+.town .floors{background:#b88658;border-color:#946a42}
+.town .room-card{background:#c99d6f;color:#fff3dc}
+.town .room-card .rc-stars span{color:#e0bd90}
+.town .room-card.lit{color:#6b5440;box-shadow:0 0 0 4px #ffe48a}
+.town .floors>*:nth-child(5n+1).lit{background:#ffe6d2}.town .floors>*:nth-child(5n+2).lit{background:#dcf1e6}.town .floors>*:nth-child(5n+3).lit{background:#e6f3c9}.town .floors>*:nth-child(5n+4).lit{background:#fdeec6}.town .floors>*:nth-child(5n+5).lit{background:#f9dfe4}
+.town .door-cell{background:#f6b98a;color:#8a4b22}
+.sp2{border-color:#ebcf92}.sign .bd2{border-color:#8dcf9a;box-shadow:0 3px 0 #6fb67e}
+#hud{border-top:4px solid #cfe8a8;background:#fffdf3}
+.btn.slot{background:#eaf6d8;border-color:#bfe0a0}
+.bar{background:#efe8cf}.bar>i{background:#7fcfa0!important}
+.btn{background:var(--accent)}.btn.ghost{background:#fffdf3}
+.shop-it,.card,.panel{border-color:#eadfc0}
+
+.popd{animation:edpop .3s ease-out}@keyframes edpop{0%{transform:scale(1)}40%{transform:scale(1.012)}100%{transform:scale(1)}}
+.phase-tabs span.on{background:#6cc08b}.phase-tabs span.done{background:#d7efc2;color:#4a7a35}
+.up-card .ri{filter:drop-shadow(0 3px 0 rgba(0,0,0,.08))}
 </style>
 </head>
 <body>
@@ -2102,7 +2144,7 @@ const RACE_ITEMS=[
 ];
 RENDER.s5=(body)=>{
   let err=0;
-  const T=['① 비우기 레이스','② 서랍 정리','③ 수납 높이','④ 정리왕 퀴즈','⑤ 나의 진단'];
+  const T=['① 비우기 레이스','② 서랍 정리','③ 가지런히 정리','④ 수납 높이','⑤ 이삿짐 풀기','⑥ 정리왕 퀴즈','⑦ 나의 진단'];
   const tabs=n=>`<div class="phase-tabs">${T.map((t,i)=>`<span class="${i<n?'done':i===n?'on':''}">${t}${i<n?' ✔':''}</span>`).join('')}</div>`;
   const solveBtn=`<div style="text-align:right"><button class="btn purple small t-only" id="s5-solve">👩‍🏫 정답 보기</button></div>`;
   /* ① 비우기 레이스 */
@@ -2134,23 +2176,27 @@ RENDER.s5=(body)=>{
     const g=sortGame($('#sd'),{title:'🗄️ 용도가 같은 물건은 <b>종류별</b>로! 서랍 칸막이에 나눠 정리하세요.',
       bins:[{id:'st',label:'✏️ 학용품 칸',desc:'공부할 때 쓰는 물건'},{id:'cl',label:'🧦 양말·손수건 칸',desc:'몸에 걸치는 작은 천 소품'},{id:'el',label:'🔌 전자기기 칸',desc:'충전·전자 관련 물건'}],
       items:[{id:'d1',label:'지우개',icon:'🧽',answer:'st'},{id:'d2',label:'색연필',icon:'🖍️',answer:'st'},{id:'d3',label:'자',icon:'📏',answer:'st'},{id:'d4',label:'양말',icon:'🧦',answer:'cl'},{id:'d5',label:'손수건',icon:'🧣',answer:'cl'},{id:'d6',label:'머리끈',icon:'🎀',answer:'cl'},{id:'d7',label:'이어폰',icon:'🎧',answer:'el'},{id:'d8',label:'충전 케이블',icon:'🔌',answer:'el'},{id:'d9',label:'보조 배터리',icon:'🔋',answer:'el'}],
-      onDone:e=>{err+=e;$('#sd').insertAdjacentHTML('beforeend',`<div class="nb key" style="margin-top:10px">💡 작은 물건은 <b>칸막이</b>를 활용하고, <b>작은 물건은 앞쪽, 큰 물건은 뒤쪽</b>에 두면 찾는 시간과 노력을 아낄 수 있어요. <button class="btn small" id="d-next" style="margin-left:8px">다음 ▶</button></div>`);$('#d-next').onclick=p3;}});
+      onDone:e=>{err+=e;$('#sd').insertAdjacentHTML('beforeend',`<div class="nb key" style="margin-top:10px">💡 작은 물건은 <b>칸막이</b>를 활용하고, <b>작은 물건은 앞쪽, 큰 물건은 뒤쪽</b>에 두면 찾는 시간과 노력을 아낄 수 있어요. <button class="btn small" id="d-next" style="margin-left:8px">다음 ▶</button></div>`);$('#d-next').onclick=pA;}});
     $('#s5-solve').onclick=()=>g.solve();
     say('양말 접기처럼 서랍도 칸을 나누면 깔끔해져요! 물건을 알맞은 칸에 넣어 보세요.');
   };
-  /* ③ 수납 높이 */
+  /* ③ 가지런히 정리하기 (미니게임) */
+  const pA=()=>{if(cleanup){cleanup();cleanup=null;}mgAlign(body,tabs(2),solveBtn,()=>p3());};
+  /* ④ 수납 높이 */
   const p3=()=>{
-    body.innerHTML=`<div class="s-wrap">${tabs(2)}<div class="shelfbox"><div id="sa"></div><div class="ruler"><span>220cm</span><span>150cm<br>↑ 손이 닿기 어려워요</span><span>눈높이·손 높이</span><span>50cm</span><span>0cm<br>바닥</span></div></div>${solveBtn}</div>`;
+    body.innerHTML=`<div class="s-wrap">${tabs(3)}<div class="shelfbox"><div id="sa"></div><div class="ruler"><span>220cm</span><span>150cm<br>↑ 손이 닿기 어려워요</span><span>눈높이·손 높이</span><span>50cm</span><span>0cm<br>바닥</span></div></div>${solveBtn}</div>`;
     const g=sortGame($('#sa'),{title:'📚 인체 치수를 고려해 물건을 알맞은 높이의 칸에 수납하세요!',binsClass:'shelf-bins',
       bins:[{id:'top',label:'⬆ 위쪽 칸 (150~220cm)',desc:'가볍고 가끔 사용하는 물건'},{id:'mid',label:'✋ 가운데 칸 (50~150cm)',desc:'자주 사용하는 물건 (손이 쉽게 닿는 높이)'},{id:'bot',label:'⬇ 아래쪽 칸 (0~50cm)',desc:'무겁고 가끔 사용하는 물건'}],
       items:[{id:'a1',label:'여행용 크로스백',icon:'👜',answer:'top',hint:'가볍고 가끔 쓰는 물건이에요.'},{id:'a2',label:'계절 모자 상자',icon:'🎩',answer:'top',hint:'가볍고 가끔 쓰는 물건이에요.'},{id:'a3',label:'휴지 여분 묶음',icon:'🧻',answer:'top',hint:'가볍고 자주 꺼내지 않아요.'},{id:'a4',label:'매일 보는 교과서',icon:'📘',answer:'mid',hint:'매일 꺼내 쓰는 물건이에요.'},{id:'a5',label:'필통·학용품',icon:'✏️',answer:'mid',hint:'자주 쓰는 물건은 손이 닿는 곳에!'},{id:'a6',label:'매일 쓰는 컵',icon:'☕',answer:'mid',hint:'자주 쓰는 물건이에요.'},{id:'a7',label:'유리그릇',icon:'🥣',answer:'bot',hint:'무거운 물건이 위에서 떨어지면 위험해요.'},{id:'a8',label:'도자기',icon:'🏺',answer:'bot',hint:'무겁고 깨지기 쉬워요.'},{id:'a9',label:'공구 상자',icon:'🧰',answer:'bot',hint:'무겁고 가끔 쓰는 물건이에요.'}],
-      onDone:e=>{err+=e;p4();}});
+      onDone:e=>{err+=e;pU();}});
     $('#s5-solve').onclick=()=>g.solve();
     say('자주 쓰는 물건은 손이 닿기 쉬운 곳에! 물건을 칸으로 끌어다 놓아요.');
   };
-  /* ④ 정리왕 퀴즈 */
+  /* ⑤ 이삿짐 풀기 (미니게임) */
+  const pU=()=>{mgUnpack(body,tabs(4),solveBtn,()=>p4());};
+  /* ⑥ 정리왕 퀴즈 */
   const p4=()=>{
-    body.innerHTML=`<div class="s-wrap">${tabs(3)}<div id="sq"></div></div>`;
+    body.innerHTML=`<div class="s-wrap">${tabs(5)}<div id="sq"></div></div>`;
     quiz($('#sq'),{title:'👑 정리왕 퀴즈 — 이럴 땐 어떻게?',questions:[
       {q:'가족이 함께 쓰는 <b>손톱깎이와 구급상자</b>는 어디에 두면 좋을까요?',opts:['내 방 서랍 깊숙이','누구나 알 수 있는 거실 수납장','부모님 옷장 맨 위','현관 신발장 안쪽'],a:1,exp:'<b>가족 공용 물품</b>은 누구나 알 수 있는 곳에 보관해요.'},
       {q:'가위를 쓰고 난 뒤에는?',opts:['쓴 자리에 그대로 둔다','원래 있던 제자리에 둔다','가방에 넣어 둔다','아무 서랍에나 넣는다'],a:1,exp:'사용한 후에는 <b>제자리</b>에 보관해야 다음에 쉽게 찾아요.'},
@@ -2161,9 +2207,9 @@ RENDER.s5=(body)=>{
     ],onDone:e=>{err+=e;p5();}});
     say('생활 속 정리 상황! 가장 알맞은 방법을 골라 보세요.');
   };
-  /* ⑤ 진단 */
+  /* ⑦ 진단 */
   const p5=()=>{
-    body.innerHTML=`<div class="s-wrap">${tabs(4)}<div class="panel"><div class="sec-title">🔎 나에게 부족한 것은 정리력? 수납력? — 해당하는 것에 모두 체크해 보세요.</div>
+    body.innerHTML=`<div class="s-wrap">${tabs(6)}<div class="panel"><div class="sec-title">🔎 나에게 부족한 것은 정리력? 수납력? — 해당하는 것에 모두 체크해 보세요.</div>
     <div class="chk-grid"><div class="chk-list"><b>🧹 정리력 체크리스트</b>${CHECK_O.map((t,i)=>`<label><input type="checkbox" data-o="${i}">${i+1}. ${t}</label>`).join('')}</div>
     <div class="chk-list"><b>📦 수납력 체크리스트</b>${CHECK_S.map((t,i)=>`<label><input type="checkbox" data-s="${i}">${i+1}. ${t}</label>`).join('')}</div></div>
     <div class="result-box" id="s5-res" style="margin-top:10px"></div>
@@ -2251,6 +2297,67 @@ RENDER.bonus=(body)=>{
   $('#ws-solve').onclick=()=>WORDS.forEach(w=>{if(!found.has(w.w)){const p=G.pos[w.w];mark(w.w,p.x,p.y,p.dir);}});
   list();say('글자판 속에 숨은 공간 이름 4개, 가구 이름 7개를 찾아보세요!');
 };
+
+/* 미니게임 (Stage 5 안): 가지런히 정리하기 / 이삿짐 풀기 */
+const AL_SCENES=[
+  {t:'📚 책상 위',hint:'삐뚤게 놓인 물건을 눌러서 줄을 맞춰 보세요.',items:['📘','📗','✏️','🥤','💻'],ok:[1,3]},
+  {t:'🚪 현관',hint:'신발과 우산도 같은 방향, 같은 줄이면 찾기 쉬워요.',items:['👟','👟','☂️','🥾'],ok:[2]},
+  {t:'🗄️ 책장',hint:'책이 기울어져 있어요. 삐뚤어진 것만 눌러요!',items:['📕','📗','📘','📙','📔','📒'],ok:[0,4]}
+];
+function mgAlign(body,tabsHtml,solveBtn,done){
+  let si=0,miss=0;
+  const scene=()=>{
+    const sc=AL_SCENES[si],n=sc.items.length;
+    const sgn=()=>Math.random()<.5?-1:1;
+    const pos=sc.items.map((e,i)=>{const ok=sc.ok.includes(i);return{e,ok,r:ok?0:sgn()*(14+Math.random()*20),dy:ok?0:sgn()*(8+Math.random()*16),dx:ok?0:(Math.random()-.5)*3,x:(i+.5)/n*100};});
+    let left=pos.filter(p=>!p.ok).length;
+    body.innerHTML=`<div class="s-wrap">${tabsHtml}<div class="panel"><div class="sec-title">📐 가지런히 정리하기 ${si+1} / ${AL_SCENES.length} — ${sc.t}</div><p class="hint" style="margin:2px 0 6px">${sc.hint}</p>
+      <div class="al-board" id="al-b"><div class="al-line"></div>${pos.map((p,i)=>`<div class="al-it ${p.ok?'fixed':''}" data-i="${i}" style="left:${p.x+p.dx}%;margin-top:${p.dy}px;transform:translate(-50%,-50%) rotate(${p.r}deg)">${p.e}</div>`).join('')}</div>
+      <div class="race-fb" id="al-fb" style="min-height:26px"></div><div id="al-nx" style="text-align:center"></div></div>${solveBtn}</div>`;
+    const board=$('#al-b');
+    const finish=()=>{board.classList.add('done');$('#al-fb').innerHTML='✨ 줄이 딱 맞았어요! <b>같은 방향·같은 줄</b>로 놓으면 한눈에 찾기 쉬워요.';say('가지런히! 보기에도 좋고 찾기도 쉬워졌어요.','good');earn(2,board);
+      const last=si===AL_SCENES.length-1;$('#al-nx').innerHTML=`<button class="btn big" id="al-next">${last?'다음: 수납 높이 ▶':'다음 장면 ▶'}</button>`;
+      $('#al-next').onclick=()=>{if(last)done(miss);else{si++;scene();}};};
+    const fix=el=>{const p=pos[+el.dataset.i];if(el.classList.contains('fixed'))return;el.classList.add('fixed');el.style.left=p.x+'%';el.style.marginTop='0px';el.style.transform='translate(-50%,-50%) rotate(0deg)';if(--left===0)setTimeout(finish,450);};
+    $$('.al-it',board).forEach(el=>el.onclick=()=>{
+      if(el.classList.contains('fixed')){if(left>0){miss++;el.classList.remove('wob');void el.offsetWidth;el.classList.add('wob');$('#al-fb').innerHTML='이건 이미 가지런해요! 삐뚤어진 것만 눌러 봐요.';}return;}
+      fix(el);});
+    $('#s5-solve').onclick=()=>$$('.al-it:not(.fixed)',board).forEach(fix);
+    say('삐뚤삐뚤한 물건을 눌러서 줄을 맞춰 보세요. 정리는 가지런함에서 시작해요!');
+  };
+  scene();
+}
+const UP_ZONES=[{id:'bed',n:'🛏️ 침대 옆'},{id:'desk',n:'🖥️ 책상'},{id:'shelf',n:'📚 책장'},{id:'closet',n:'👔 옷장'},{id:'door',n:'🚪 현관'}];
+const UP_ITEMS=[
+  {i:'🛏️',n:'이불',z:'bed',w:'잠자는 곳 가까이에 두면 편해요.'},
+  {i:'☁️',n:'베개',z:'bed',w:'베개는 잠자는 곳 가까이!'},
+  {i:'💻',n:'노트북',z:'desk',w:'공부할 때 쓰니까 책상 위가 좋아요.'},
+  {i:'💡',n:'스탠드',z:'desk',w:'책상을 밝히는 물건이에요.'},
+  {i:'📘',n:'교과서',z:'shelf',w:'책은 책장에 꽂아 두면 찾기 쉬워요.'},
+  {i:'📕',n:'만화책',z:'shelf',w:'책은 책장에!'},
+  {i:'👔',n:'교복',z:'closet',w:'옷은 옷장에 걸어요.'},
+  {i:'🧦',n:'양말',z:'closet',w:'입는 것들은 옷장(서랍)에 모아요.'},
+  {i:'👟',n:'운동화',z:'door',w:'밖에서 신는 물건은 문 가까이에 두어요.'},
+  {i:'☂️',n:'우산',z:'door',w:'나갈 때 바로 집을 수 있게 현관에!'}
+];
+function mgUnpack(body,tabsHtml,solveBtn,done){
+  const q=shuffle(UP_ITEMS);let k=0,miss=0;const put={};
+  body.innerHTML=`<div class="s-wrap">${tabsHtml}<div class="panel"><div class="sec-title">📦 이삿짐 풀기 — 새 방에 이사 온 첫날!</div>
+    <p class="hint" style="margin:2px 0 8px">상자에서 물건이 하나씩 나와요. <b>쓰는 곳 가까이</b> 알맞은 자리를 눌러 놓아 보세요.</p>
+    <div class="up-wrap"><div class="up-box" id="up-box"></div><div class="up-room" id="up-room">${UP_ZONES.map(z=>`<button class="up-zone" data-z="${z.id}"><b>${z.n}</b><span class="up-in" id="up-${z.id}"></span></button>`).join('')}</div></div>
+    <div class="race-fb" id="up-fb" style="min-height:26px"></div><div id="up-end"></div></div>${solveBtn}</div>`;
+  const show=()=>{const it=q[k];$('#up-box').innerHTML=`<div class="up-card pop"><span class="ri">${it.i}</span><b>${it.n}</b><small>${k+1} / ${q.length}번째 상자</small></div>`;};
+  const end=()=>{$('#up-box').innerHTML='<div class="up-card"><span class="ri">🏠</span><b>짐을 다 풀었어요!</b></div>';
+    $('#up-fb').innerHTML='🎉 방이 정돈됐어요! <b>쓰는 곳 가까이</b> 두면 동선도 짧아져요.';
+    $('#up-end').innerHTML=`<div class="nb key" style="margin-top:8px">✍️ 이 방에 사는 사람은 어떤 사람일까요? 물건을 보고 한 줄로 써 보세요. (점수는 없어요)<textarea id="up-txt" rows="2" style="width:100%;margin-top:6px" placeholder="예) 학교에 다니고 책을 좋아하는 사람"></textarea></div><div style="text-align:center;margin-top:8px"><button class="btn big" id="up-next">다음: 정리왕 퀴즈 ▶</button></div>`;
+    say('이삿짐 정리 끝! 물건을 보면 사는 사람이 보여요.','good');$('#up-next').onclick=()=>done(0);};
+  const place=zid=>{if(k>=q.length)return;const it=q[k];
+    if(it.z===zid){put[it.n]=zid;$('#up-'+zid).insertAdjacentHTML('beforeend',`<i class="up-pop">${it.i}</i>`);$('#up-fb').innerHTML='✅ '+it.w;earn(1,$('#up-'+zid));k++;if(k<q.length)show();else end();}
+    else{miss++;const c=$('.up-card');if(c){c.classList.remove('shake');void c.offsetWidth;c.classList.add('shake');}$('#up-fb').innerHTML='❌ 앗, 그곳은 아니에요. '+it.w;say('다시 생각해 봐요. '+it.w,'bad');}};
+  $$('.up-zone').forEach(b=>b.onclick=()=>place(b.dataset.z));
+  $('#s5-solve').onclick=()=>{while(k<q.length)place(q[k].z);};
+  show();say('상자를 열어 볼까요? 물건마다 어울리는 자리가 있어요.');
+}
 
 /* ===================== 방 편집기 (2D + 3D) ===================== */
 let uidN=0;const uid=()=>'f'+Date.now().toString(36)+(uidN++);
@@ -2633,7 +2740,7 @@ RENDER.s6=(body)=>{
   body.innerHTML=`<div class="studio"><div class="panel steps">${isGuest()&&serverURL()?'<div class="guest-note">💡 예전 시간에 꾸민 방을 이어서 하려면 먼저 위쪽 <b>🏆 랭킹 등록</b>(학번 입력)을 해 주세요.</div>':''}<div class="step-tabs">${[1,2,3,4,5].map(n=>`<button class="stab" data-step="${n}">${n}단계</button>`).join('')}</div><div class="step-body" id="sb"></div>
     <div class="step-nav"><button class="btn ghost small" id="st-prev">◀ 이전</button><button class="btn small" id="st-next">다음 ▶</button></div></div>
     <div class="center" id="ed-host" style="display:flex;flex-direction:column;min-height:0"></div><div class="panel" id="s6r"></div></div>`;
-  ed=createEditor($('#ed-host'),{room:d.room,items:d.items,onCommit:it=>{d.items=it;save();},onChange:an=>{const box=$('#s6r');if(!box)return;box.innerHTML=warnPanelHTML(an,d.room,d.items)+`<div class="tips" style="margin-top:10px"><b>🌟 나의 주거 공간 구성 꿀팁</b><br>· 비워요: 쓸모없는 물건 비우기<br>· 조명을 활용해요: 분위기 만들기<br>· 공간을 구분해요: 커튼·가구로 구분<br>· 위치를 바꿔요: 나만의 공간 만들기<br>· 소품을 활용해요: 좋아하는 물건으로</div>`;if(ed)bindWarnClicks(box,an,ed);}});
+  ed=createEditor($('#ed-host'),{room:d.room,items:d.items,onCommit:it=>{d.items=it;save();const eh=$('#ed-host');if(eh){eh.classList.remove('popd');void eh.offsetWidth;eh.classList.add('popd');}},onChange:an=>{const box=$('#s6r');if(!box)return;box.innerHTML=warnPanelHTML(an,d.room,d.items)+`<div class="tips" style="margin-top:10px"><b>🌟 나의 주거 공간 구성 꿀팁</b><br>· 비워요: 쓸모없는 물건 비우기<br>· 조명을 활용해요: 분위기 만들기<br>· 공간을 구분해요: 커튼·가구로 구분<br>· 위치를 바꿔요: 나만의 공간 만들기<br>· 소품을 활용해요: 좋아하는 물건으로</div>`;if(ed)bindWarnClicks(box,an,ed);}});
   d.items=ed.items;
   const setStep=n=>{d.step=n;save();$$('.stab').forEach(b=>{b.classList.toggle('on',+b.dataset.step===n);});$('#st-prev').disabled=n===1;$('#st-next').textContent=n===5?'🎴 결과 카드':'다음 ▶';STEP[n]();};
   $$('.stab').forEach(b=>b.onclick=()=>setStep(+b.dataset.step));
