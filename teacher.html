@@ -244,6 +244,8 @@ const FURN={
   bunk:{name:'벙커침대(간이 2층)',g:'침대',cat:'rest',w:100,h:200,z:170,icon:'🪜',color:'#c9b2e8',big:true,tall:true,clr:{front:60},shape:'bunk',p:48,d:'아래는 책상·수납, 위는 잠자는 곳'},
   sofabed:{name:'소파베드',g:'침대',cat:'rest',w:180,h:90,z:80,icon:'🛋️',color:'#a5d6a7',big:true,clr:{front:60},shape:'sofa',p:38,d:'낮엔 소파, 밤엔 침대 (다기능)'},
   fmat:{name:'접이식 매트리스',g:'침대',cat:'rest',w:90,h:190,z:15,icon:'🛌',color:'#cfd8dc',clr:{sides:40},shape:'box',p:12,d:'접어서 보관 (접이식)'},
+  murphy:{name:'머피 침대(벽 수납)',g:'침대',cat:'rest',w:100,h:40,z:120,icon:'🛏️',color:'#b0bec5',big:true,clr:{front:200},shape:'box',p:60,d:'벽에 접어 넣는 침대. 접으면 방이 넓어져요'},
+  glasscab:{name:'유리 장식장',g:'서랍·수납장',cat:'store',w:80,h:35,z:150,icon:'🏺',color:'#cfd8dc',clr:{front:50},shape:'box',p:20,d:'예쁘지만 깨지기 쉽고 먼지 청소가 힘들어요'},
   daybed:{name:'데이베드 침대',g:'침대',cat:'rest',w:100,h:200,z:60,icon:'🛏️',color:'#b5d8c8',big:true,clr:{sides:50},shape:'bed',p:30,d:'낮엔 소파처럼, 밤엔 침대처럼 쓰는 침대'},
   sofa:{name:'소파(2인)',g:'소파·의자',cat:'rest',w:160,h:80,z:80,icon:'🛋️',color:'#9ccc9c',big:true,clr:{front:50},shape:'sofa',p:40,d:'친구와 함께 앉는 소파'},
   armchair:{name:'안락의자',g:'소파·의자',cat:'rest',w:80,h:80,z:85,icon:'💺',color:'#b6d7a8',shape:'arm',p:20,d:'혼자 푹 쉬는 1인 의자'},
@@ -404,6 +406,20 @@ const RUGPAT={plain:'무늬 없음',stripe:'줄무늬',check:'체크',dot:'물�
 const szOf=it=>it.sz&&it.sz!==1?it.sz:1;
 function effDims(it){const f=FURN[it.type],s=szOf(it),w=s===1?f.w:Math.max(10,Math.round(f.w*s/5)*5),h=s===1?f.h:Math.max(10,Math.round(f.h*s/5)*5);return it.rot%2?[h,w]:[w,h];}
 const itColor=it=>it.col||FURN[it.type].color;
+const VAXES={
+  mat:{n:'소재',o:{wood:['🪵 원목','튼튼하고 오래 써요','비싸고 무거워요',1.5],ply:['📦 합판','값이 싸고 가벼워요','습기에 약해요',.7]}},
+  edge:{n:'모서리',o:{round:['⚪ 둥근 모서리','부딪쳐도 덜 다쳐요','자리를 조금 더 차지해요',1.05],sharp:['◼ 각진 모서리','깔끔하고 공간을 알뜰히 써요','어린 동생·반려동물은 다칠 수 있어요',1]}},
+  asm:{n:'구입 방식',o:{full:['🏠 완제품','바로 쓸 수 있어요','비싸고 옮기기 어려워요',1.2],diy:['🔧 조립식','값이 싸고 이사 때 분해해 옮겨요','직접 조립해야 해요(시간·힘)',.75]}}
+};
+const VCATS=['rest','work','store','living'];
+function varOK(f,ax){if(f.rug||f.float||!VCATS.includes(f.cat))return false;if(ax==='edge')return ['bed','bunk','desk','box','tv','sofa','arm','rtable'].includes(f.shape);return ['bed','bunk','desk','box','tv'].includes(f.shape);}
+function priceOf(it){const f=FURN[it.type];let p=f.p||0;const v=it.v||{};for(const ax in v){const o=VAXES[ax]&&VAXES[ax].o[v[ax]];if(o)p*=o[3];}const s=szOf(it);p*=s*s;return Math.max(1,Math.round(p));}
+const SWAPG=[['bed','murphy','lowbed','stbed','sofabed','bunk'],['desk','wfdesk','ftable','standdesk','lowdesk'],['tvstand','projector'],['dtable','island','bartable'],['sofa','sofabed']];
+const PC={murphy:['접으면 방이 넓어져요','매일 접고 펴야 해서 귀찮아요(펼 자리 200cm 필요)'],bed:['어디든 놓기 쉬워요','항상 자리를 차지해요'],lowbed:['낮아서 방이 넓어 보여요','일어나고 눕기 힘들 수 있어요'],stbed:['침대 밑에 물건을 넣어요','서랍 앞 공간이 필요해요'],sofabed:['낮엔 소파, 밤엔 침대로 써요','매번 바꿔야 해서 번거로워요'],bunk:['아래 공간을 알뜰히 써요','오르내리기 불편하고 천장이 낮아요'],
+ desk:['기본이라 튼튼하고 넓어요','늘 자리를 차지해요'],wfdesk:['안 쓸 땐 접어서 공간이 넓어져요','매번 접고 펴야 하고 올려둘 물건이 적어요'],ftable:['접어서 보관해요','조금 흔들릴 수 있어요'],standdesk:['서서 쓰면 건강에 좋아요','오래 서 있기 힘들고 비싸요'],lowdesk:['방이 넓어 보여요','바닥에 앉아 허리가 아플 수 있어요'],
+ tvstand:['TV와 수납을 한 번에 해결해요','TV 크기가 작고 자리를 차지해요'],projector:['큰 화면을 공간 없이 쓸 수 있어요','밝은 방에선 잘 안 보이고 스크린 자리가 필요해요'],dtable:['4명이 함께 먹기 좋아요','요리 동선과 떨어져 있어요'],island:['요리와 식사를 한 곳에서 해요','넓은 공간이 필요하고 비싸요'],bartable:['좁은 공간에 잘 맞아요','오래 앉아 있기 불편해요'],sofa:['여럿이 편하게 앉아요','공간을 많이 차지해요']};
+const ELEC=['tvstand','projector','kfridge','washer','dryer','purifier','purifier2','arcade','speaker','microcart','standdesk'];
+function outletPt(room,o){const p=o.pos+5;return o.wall==='left'?[0,p]:o.wall==='right'?[room.W,p]:o.wall==='top'?[p,0]:[p,room.H];}
 function rectOf(it){const[w,h]=effDims(it);return{x:it.x,y:it.y,w,h};}
 function inter(a,b){return a.x<b.x+b.w-0.5&&b.x<a.x+a.w-0.5&&a.y<b.y+b.h-0.5&&b.y<a.y+a.h-0.5;}
 function inside(a,room){return a.x>=-0.5&&a.y>=-0.5&&a.x+a.w<=room.W+0.5&&a.y+a.h<=room.H+0.5;}
@@ -442,7 +458,10 @@ const RULE_KINDS={
   outlet:{t:'스위치·콘센트를 가리지 않게',icon:'🔌'},
   wall:{t:'큰 가구는 벽면에 붙여서',icon:'📐'},
   space:{t:'가구 사용 공간을 충분히',icon:'↔️'},
-  path:{t:'동선을 고려해서 (길이 막히지 않게)',icon:'👣'}
+  path:{t:'동선을 고려해서 (길이 막히지 않게)',icon:'👣'},
+  humid:{t:'습기에 약한 가구는 욕실에 두지 않게',icon:'💧'},
+  sharp:{t:'어린 가족·반려동물이 있다면 둥근 모서리로',icon:'⚪'},
+  plug:{t:'전기 가구는 콘센트 가까이',icon:'🔋'}
 };
 function analyze(room,items){
   const W=[];const solid=items.filter(i=>!FURN[i.type].rug&&!FURN[i.type].float);
@@ -452,6 +471,10 @@ function analyze(room,items){
     if(inter(R.get(solid[a].id),R.get(solid[b].id)))W.push({k:'overlap',ids:[solid[a].id,solid[b].id],msg:`${josa(nm(solid[a]),'과/와')} ${josa(nm(solid[b]),'이/가')} 겹쳐 있어요.`});
   }
   const dz=wallStrip(room,room.door.wall,room.door.pos,room.door.width,room.door.width);
+  items.forEach(i=>{const v=i.v||{};
+    if(room.floor==='tile'&&v.mat==='ply')W.push({k:'humid',ids:[i.id],msg:`합판 ${nm(i)}은(는) 습기가 많은 곳에서 상하기 쉬워요.`});
+    if(room.kids&&v.edge==='sharp')W.push({k:'sharp',ids:[i.id],msg:`각진 ${nm(i)} 모서리에 어린 동생·반려동물이 다칠 수 있어요.`});
+    if(ELEC.includes(i.type)&&room.outlets.length){const r=R.get(i.id),cx=r.x+r.w/2,cy=r.y+r.h/2;const dmin=Math.min(...room.outlets.map(o=>{const q=outletPt(room,o);return Math.hypot(q[0]-cx,q[1]-cy);}));if(dmin>260)W.push({k:'plug',ids:[i.id],msg:`${josa(nm(i),'은/는')} 콘센트와 멀어요. 연장선이 길어지면 위험할 수 있어요.`});}});
   solid.forEach(i=>{if(inter(R.get(i.id),dz))W.push({k:'door',ids:[i.id],msg:`${josa(nm(i),'이/가')} 문이 열리는 자리를 막고 있어요.`,zone:dz});});
   room.windows.forEach(w=>{const z=wallStrip(room,w.wall,w.pos,w.width,25);solid.forEach(i=>{if(FURN[i.type].tall&&inter(R.get(i.id),z))W.push({k:'window',ids:[i.id],msg:`키 큰 ${josa(nm(i),'이/가')} 창을 가려 햇빛과 바람을 막아요.`,zone:z});});});
   [...room.outlets.map(o=>({...o,label:'콘센트'})),...room.switches.map(o=>({...o,label:'스위치'}))].forEach(o=>{
@@ -505,8 +528,8 @@ function simplify(p){if(p.length<3)return p;const o=[p[0]];for(let i=1;i<p.lengt
 
 function makeRoom(W,H,doorWall,winWall){
   const room={W,H,door:{wall:doorWall,pos:30,width:90},windows:[],outlets:[],switches:[],floor:'wood',wall:'#f6efe6',light:'warm'};
-  const wl=wallLen(room,winWall);
-  room.windows.push({wall:winWall,pos:winWall===doorWall?Math.max(140,wl-160):Math.round((wl-120)/2/10)*10,width:120});
+  const wl=winWall?wallLen(room,winWall):0;
+  if(winWall)room.windows.push({wall:winWall,pos:winWall===doorWall?Math.max(140,wl-160):Math.round((wl-120)/2/10)*10,width:120});
   const others=['left','right','top','bottom'].filter(w=>w!==doorWall&&w!==winWall);
   const ow=others[0]||'left';room.outlets.push({wall:ow,pos:Math.round(wallLen(room,ow)*0.6/10)*10});
   room.switches.push({wall:doorWall,pos:135});
@@ -568,6 +591,7 @@ const ROOFS={'#ffa88a':['기본 코랄',0],'#ff8a65':['주황',0],'#5c9ded':['�
 const BODIES={'#fff0c4':['기본 크림',0],'#ffd27a':['노랑',0],'#b2dfdb':['민트',30],'#bbdefb':['하늘',30],'#e1bee7':['라벤더',30],'#ffccbc':['복숭아',30],'#fafafa':['하양',30]};
 const PREM_WALLS=[['#2c3566','밤하늘',80],['#ffcfe3','솜사탕',50],['#c5f2d9','민트 크림',50]];
 const PREM_FLOORS=['marble','check'];
+const MAX_XP=8*3*100+8*50,MAX_LV=1+Math.floor(MAX_XP/300);
 function xpOf(st){let s=0;['s0','s1','s2','s3','s4','s5','s6','bonus'].forEach(id=>s+=Math.max(0,Math.min(3,(st.stars||{})[id]||0)));return s*100+Math.min(8,(st.badges||[]).length)*50;}
 
 </script>
@@ -601,6 +625,18 @@ function patShapes(pat,w,h,col){
   else if(pat==='border'){const b=Math.min(w,h)*.12;o.push({t:'r',x:b*.5,y:b*.5,w:w-b,h:b*.5,f:L},{t:'r',x:b*.5,y:h-b,w:w-b,h:b*.5,f:L},{t:'r',x:b*.5,y:b*.5,w:b*.5,h:h-b,f:L},{t:'r',x:w-b,y:b*.5,w:b*.5,h:h-b,f:L},{t:'r',x:b*1.6,y:b*1.6,w:w-b*3.2,h:h-b*3.2,f:D,a:.35});}
   else if(pat==='rainbow'){const C=['#ef5350','#ffa726','#ffee58','#66bb6a','#42a5f5','#ab47bc'],n=C.length;for(let i=0;i<n;i++)o.push({t:'r',x:0,y:h/n*i,w:w,h:h/n+.5,f:C[i]});}
   return o;
+}
+/* 여러 방 집 평면도 (교사·친구 화면 공용) */
+function housePlanCanvas(c,s6,w,h,mode){
+  const R=s6.rooms;
+  if(!R||R.length<2){const src=mode==='before'?s6.before:s6;if(src&&src.room)drawPlanCanvas(c,src.room,(src.items||[]).filter(i=>FURN[i.type]),0,0,w,h);return;}
+  let pos=s6.plan&&s6.plan.length===R.length?s6.plan:null;if(!pos){let x=0;pos=R.map(r=>{const q=[x,0];x+=r.room.W+30;return q;});}
+  let x0=1e9,y0=1e9,x1=-1e9,y1=-1e9;R.forEach((r,i)=>{x0=Math.min(x0,pos[i][0]);y0=Math.min(y0,pos[i][1]);x1=Math.max(x1,pos[i][0]+r.room.W);y1=Math.max(y1,pos[i][1]+r.room.H);});
+  const pad=14,sc=Math.min((w-pad*2)/(x1-x0),(h-pad*2)/(y1-y0)),ox=(w-(x1-x0)*sc)/2-x0*sc,oy=(h-(y1-y0)*sc)/2-y0*sc;
+  R.forEach((r,i)=>{const[px,py]=pos[i],W=r.room.W,H=r.room.H,src=mode==='before'&&r.before?r.before:r;
+    c.save();c.translate(ox,oy);c.scale(sc,sc);c.fillStyle='#8a6a40';c.fillRect(px-8,py-8,W+16,H+16);c.beginPath();c.rect(px-8,py-8,W+16,H+16);c.clip();
+    drawPlanCanvas(c,src.room,(src.items||[]).filter(it=>FURN[it.type]),px-30,py-30,W+60,H+60);c.restore();
+    c.fillStyle='rgba(255,255,255,.88)';c.font='bold 11px sans-serif';const tw=c.measureText(r.name).width;c.fillRect(ox+px*sc+4,oy+py*sc+4,tw+10,16);c.fillStyle='#5b4636';c.textBaseline='middle';c.textAlign='left';c.fillText(r.name,ox+px*sc+9,oy+py*sc+12);});
 }
 function drawPlanCanvas(ctx,room,items,x,y,w,h){
   const{W,H}=room;const sc=Math.min(w/(W+60),h/(H+60));const ox=x+(w-W*sc)/2,oy=y+(h-H*sc)/2;
@@ -1101,14 +1137,16 @@ async function board(){
 }
 
 /* ⑤ 결과물 */
-function planThumb(s6,w=600,h=380){const cv=document.createElement('canvas');cv.width=w;cv.height=h;const c=cv.getContext('2d');c.fillStyle='#fdf8f1';c.fillRect(0,0,w,h);try{drawPlanCanvas(c,s6.room,(s6.items||[]).filter(i=>FURN[i.type]),0,0,w,h);}catch(e){}return cv;}
+function planThumb(s6,w=600,h=380){const cv=document.createElement('canvas');cv.width=w;cv.height=h;const c=cv.getContext('2d');c.fillStyle='#fdf8f1';c.fillRect(0,0,w,h);try{housePlanCanvas(c,s6,w,h);}catch(e){}return cv;}
+function planThumbBefore(s6,w,h){const cv=document.createElement('canvas');cv.width=w;cv.height=h;const c=cv.getContext('2d');c.fillStyle='#fdf8f1';c.fillRect(0,0,w,h);try{housePlanCanvas(c,s6,w,h,'before');}catch(e){}return cv;}
+const hasBefore=d=>d.rooms&&d.rooms.length>1?d.rooms.some(r=>r.before):!!d.before;
 function showWork(s){
   if(!s||!s.s6)return;const d=s.s6;
   const m=modal(`<h2>🏠 「${esc(d.roomName||'이름 없는 방')}」 <span class="hint">${esc(s.cls)}반 ${esc(s.sid)} ${esc(s.nick)}</span></h2>
-   <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px"><div><div class="hint">바꾼 후</div><div id="w-after"></div>${d.before?'<div class="hint" style="margin-top:6px">바꾸기 전</div><div id="w-before"></div>':''}</div>
-   <div style="line-height:1.6"><div class="q">이름의 뜻</div>${esc(d.roomMeaning||'-')}<div class="q">꾸미고 싶은 공간 · 크기</div>${esc(d.space||'')} · ${d.room.W}×${d.room.H}cm · 가구 ${(d.items||[]).length}개 · 배치 경고 ${analyze(d.room,(d.items||[]).filter(i=>FURN[i.type])).warnings.length}개
-   <div class="q">가장 중요한 조건</div>${esc(d.cond||'-')}<div class="q">좋은 점</div>${esc(d.good||'-')}<div class="q">보완할 점</div>${esc(d.bad||'-')}<div class="q">스스로 평가</div>동선 고려: ${esc(d.ev1||'-')} · 형태·조건 표현: ${esc(d.ev2||'-')}</div></div>`,true);
-  $('#w-after',m).appendChild(planThumb(d,520,380));if(d.before)$('#w-before',m).appendChild(planThumb(d.before,520,300));
+   <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px"><div><div class="hint">바꾼 후</div><div id="w-after"></div>${hasBefore(d)?'<div class="hint" style="margin-top:6px">바꾸기 전</div><div id="w-before"></div>':''}</div>
+   <div style="line-height:1.6"><div class="q">이름의 뜻</div>${esc(d.roomMeaning||'-')}<div class="q">꾸미고 싶은 공간 · 크기</div>${esc(d.space||'')} · ${d.room.W}×${d.room.H}cm · 가구 ${d.rooms&&d.rooms.length>1?d.rooms.reduce((a,r)=>a+r.items.length,0)+'개 (방 '+d.rooms.length+'개)':(d.items||[]).length+'개'} · 배치 경고 ${analyze(d.room,(d.items||[]).filter(i=>FURN[i.type])).warnings.length}개
+   <div class="q">가장 중요한 조건</div>${esc(d.cond||'-')}${d.why?`<div class="q">🤔 고민한 가구와 이유</div>${esc(d.why)}`:''}<div class="q">좋은 점</div>${esc(d.good||'-')}<div class="q">보완할 점</div>${esc(d.bad||'-')}<div class="q">스스로 평가</div>동선 고려: ${esc(d.ev1||'-')} · 형태·조건 표현: ${esc(d.ev2||'-')}</div></div>`,true);
+  $('#w-after',m).appendChild(planThumb(d,520,380));if(hasBefore(d))$('#w-before',m).appendChild(planThumbBefore(d,520,300));
   $$('canvas',m).forEach(c=>{c.style.width='100%';c.style.border='1px solid #e3dff0';c.style.borderRadius='10px';});
 }
 async function works(){
