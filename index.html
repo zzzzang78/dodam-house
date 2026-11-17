@@ -642,6 +642,31 @@ html,body{background:#fbf6e6}
 .shelf-bins .bin:last-child{border-bottom-width:6px}
 .shelf-bins .bin-items{align-items:flex-end;min-height:62px}
 .shelf-bins .bin-head{font-size:15px}
+
+.rm{position:relative;height:350px;border-radius:18px;border:5px solid #b88658;overflow:hidden;background:repeating-linear-gradient(90deg,#e9c995 0 46px,#e2bf89 46px 48px)}
+.rm:before{content:'';position:absolute;left:0;right:0;top:0;height:22%;background:#cfe8d5;border-bottom:6px solid #b88658}
+.rm-win{position:absolute;left:46%;top:1%;font-size:44px;z-index:1}
+.rm-z{position:absolute;border:3px dashed rgba(143,106,62,.6);background:rgba(255,250,235,.55);border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding:4px;cursor:pointer;transition:.15s;overflow:hidden}
+.rm-z:hover,.rm-z.drop-hover{background:rgba(255,246,200,.9);border-color:#e68a62;transform:scale(1.02)}
+.rm-bg{position:absolute;top:4px;right:6px;font-size:58px;opacity:.28;pointer-events:none}.rm-z b{position:relative;font-size:14px;background:#8f6a3e;color:#fff;border-radius:8px;padding:0 8px}
+.rm-z .up-in{position:relative;display:flex;flex-wrap:wrap;justify-content:center;gap:2px;font-size:34px;min-height:40px;margin-bottom:2px}
+.rm-bed{left:3%;top:25%;width:30%;height:36%}.rm-desk{left:37%;top:25%;width:26%;height:30%}.rm-shelf{left:67%;top:8%;width:30%;height:42%}
+.rm-closet{left:3%;top:66%;width:30%;height:30%}.rm-door{left:67%;top:56%;width:30%;height:40%}
+.rm-box{position:absolute;left:37%;top:58%;width:26%;height:38%;min-height:0!important;flex:none!important;z-index:2}
+.rm-box .up-card .ri{font-size:48px}.rm-box .up-card b{font-size:18px}
+@media (max-width:700px){.rm{height:420px}.rm-box{width:40%;left:30%}}
+/* 정리왕 퀴즈 귀엽게 */
+#sq .quiz{background:linear-gradient(#fffdf4,#fff6dc);border:4px solid #f0d49a;border-radius:22px;padding:14px;position:relative}
+#sq .q-prog{display:inline-block;background:#e68a62;color:#fff;border-radius:999px;padding:2px 14px;font-weight:800}
+#sq .q-pic{font-size:64px;text-align:center;filter:drop-shadow(0 4px 0 rgba(0,0,0,.08));animation:uppop .6s cubic-bezier(.3,1.8,.5,1)}
+#sq .q-text{background:#fff;border:3px solid #f0d49a;border-radius:18px;padding:12px 16px;position:relative;margin:6px 0 12px}
+#sq .q-opts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+#sq .q-opt{border-radius:18px;border:3px solid;padding:12px 12px 12px 48px;position:relative;text-align:left;font-weight:700;transition:.12s}
+#sq .q-opt:before{content:attr(data-n);position:absolute;left:10px;top:50%;transform:translateY(-50%);width:28px;height:28px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;font-weight:900}
+#sq .q-opt:nth-child(1){background:#ffe7e0;border-color:#f3b3a1}#sq .q-opt:nth-child(2){background:#e3f3ff;border-color:#a8d3f3}
+#sq .q-opt:nth-child(3){background:#e6f7df;border-color:#b3dca0}#sq .q-opt:nth-child(4){background:#fff3cf;border-color:#efd17a}
+#sq .q-opt:hover:not(:disabled){transform:translateY(-3px) rotate(-.6deg)}
+@media (max-width:700px){#sq .q-opts{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -1672,7 +1697,7 @@ function quiz(host,{questions,onDone,title}){
   let i=0,errors=0;
   const show=()=>{
     const q=questions[i];
-    host.innerHTML=`<div class="quiz">${title?`<div class="sec-title">${title}</div>`:''}<div class="q-prog">문제 ${i+1} / ${questions.length}</div>${q.html?`<div class="q-pic">${q.html}</div>`:''}<div class="q-text">${q.q}</div><div class="q-opts">${q.opts.map((o,k)=>`<button class="q-opt" data-k="${k}">${o}</button>`).join('')}</div><div class="q-exp"></div><div style="text-align:right;margin-top:6px"><button class="btn purple small t-only" id="q-solve">👩‍🏫 정답 보기</button></div></div>`;
+    host.innerHTML=`<div class="quiz">${title?`<div class="sec-title">${title}</div>`:''}<div class="q-prog">문제 ${i+1} / ${questions.length}</div>${q.html?`<div class="q-pic">${q.html}</div>`:''}<div class="q-text">${q.q}</div><div class="q-opts">${q.opts.map((o,k)=>`<button class="q-opt" data-k="${k}" data-n="${k+1}">${o}</button>`).join('')}</div><div class="q-exp"></div><div style="text-align:right;margin-top:6px"><button class="btn purple small t-only" id="q-solve">👩‍🏫 정답 보기</button></div></div>`;
     let tried=false;
     $$('.q-opt',host).forEach(b=>b.onclick=()=>{
       const k=+b.dataset.k;
@@ -2243,12 +2268,12 @@ RENDER.s5=(body)=>{
   const p4=()=>{
     body.innerHTML=`<div class="s-wrap">${tabs(5)}<div id="sq"></div></div>`;
     quiz($('#sq'),{title:'👑 정리왕 퀴즈 — 이럴 땐 어떻게?',questions:[
-      {q:'가족이 함께 쓰는 <b>손톱깎이와 구급상자</b>는 어디에 두면 좋을까요?',opts:['내 방 서랍 깊숙이','누구나 알 수 있는 거실 수납장','부모님 옷장 맨 위','현관 신발장 안쪽'],a:1,exp:'<b>가족 공용 물품</b>은 누구나 알 수 있는 곳에 보관해요.'},
-      {q:'가위를 쓰고 난 뒤에는?',opts:['쓴 자리에 그대로 둔다','원래 있던 제자리에 둔다','가방에 넣어 둔다','아무 서랍에나 넣는다'],a:1,exp:'사용한 후에는 <b>제자리</b>에 보관해야 다음에 쉽게 찾아요.'},
-      {q:'수납 상자 안에 무엇이 들었는지 몰라 자꾸 다 열어 봐요. 좋은 방법은?',opts:['상자를 더 사서 나눈다','수납 물품 목록을 써서 잘 보이는 곳에 붙인다','상자를 투명 비닐로 감싼다','그냥 기억한다'],a:1,exp:'<b>수납 물품 목록</b>을 작성해 붙여 두면 찾는 시간이 줄어요.'},
-      {q:'우산과 신발은 어디에 수납하면 가장 편리할까요?',opts:['욕실','부엌','현관','내 방 옷장'],a:2,exp:'물건은 <b>사용하는 장소</b>에! 우산·신발은 현관, 수건은 욕실, 조리 도구는 부엌.'},
-      {q:'수납장을 꽉꽉 채워 넣으면 어떤 문제가 있을까요?',opts:['문제없다, 많이 넣을수록 좋다','물건을 넣고 꺼내기 불편하다','먼지가 안 쌓인다','물건이 더 오래간다'],a:1,exp:'물건을 넣고 꺼내기 편하도록 <b>적절한 여유 공간</b>을 두고 수납해요.'},
-      {q:'정리와 수납을 잘하면 <b>지속 가능한 생활</b>에 도움이 되는 이유는?',opts:['물건을 더 많이 살 수 있어서','없다고 생각하거나 못 찾아서 또 사는 낭비를 막아서','집이 더 커져서','청소를 안 해도 돼서'],a:1,exp:'물건을 잘 찾으면 <b>같은 물건을 또 사는 낭비</b>를 막을 수 있어요.'}
+      {html:'🧰🩹✂️',q:'가족이 함께 쓰는 <b>손톱깎이와 구급상자</b>는 어디에 두면 좋을까요?',opts:['내 방 서랍 깊숙이','누구나 알 수 있는 거실 수납장','부모님 옷장 맨 위','현관 신발장 안쪽'],a:1,exp:'<b>가족 공용 물품</b>은 누구나 알 수 있는 곳에 보관해요.'},
+      {html:'✂️🏠',q:'가위를 쓰고 난 뒤에는?',opts:['쓴 자리에 그대로 둔다','원래 있던 제자리에 둔다','가방에 넣어 둔다','아무 서랍에나 넣는다'],a:1,exp:'사용한 후에는 <b>제자리</b>에 보관해야 다음에 쉽게 찾아요.'},
+      {html:'📦🏷️',q:'수납 상자 안에 무엇이 들었는지 몰라 자꾸 다 열어 봐요. 좋은 방법은?',opts:['상자를 더 사서 나눈다','수납 물품 목록을 써서 잘 보이는 곳에 붙인다','상자를 투명 비닐로 감싼다','그냥 기억한다'],a:1,exp:'<b>수납 물품 목록</b>을 작성해 붙여 두면 찾는 시간이 줄어요.'},
+      {html:'☂️👟🚪',q:'우산과 신발은 어디에 수납하면 가장 편리할까요?',opts:['욕실','부엌','현관','내 방 옷장'],a:2,exp:'물건은 <b>사용하는 장소</b>에! 우산·신발은 현관, 수건은 욕실, 조리 도구는 부엌.'},
+      {html:'🗄️😵',q:'수납장을 꽉꽉 채워 넣으면 어떤 문제가 있을까요?',opts:['문제없다, 많이 넣을수록 좋다','물건을 넣고 꺼내기 불편하다','먼지가 안 쌓인다','물건이 더 오래간다'],a:1,exp:'물건을 넣고 꺼내기 편하도록 <b>적절한 여유 공간</b>을 두고 수납해요.'},
+      {html:'🌱💰',q:'정리와 수납을 잘하면 <b>지속 가능한 생활</b>에 도움이 되는 이유는?',opts:['물건을 더 많이 살 수 있어서','없다고 생각하거나 못 찾아서 또 사는 낭비를 막아서','집이 더 커져서','청소를 안 해도 돼서'],a:1,exp:'물건을 잘 찾으면 <b>같은 물건을 또 사는 낭비</b>를 막을 수 있어요.'}
     ],onDone:e=>{err+=e;p5();}});
     say('생활 속 정리 상황! 가장 알맞은 방법을 골라 보세요.');
   };
@@ -2410,7 +2435,7 @@ function mgAlign(body,tabsHtml,solveBtn,done){
   };
   scene();
 }
-const UP_ZONES=[{id:'bed',n:'🛏️ 침대 옆'},{id:'desk',n:'🖥️ 책상'},{id:'shelf',n:'📚 책장'},{id:'closet',n:'👔 옷장'},{id:'door',n:'🚪 현관'}];
+const UP_ZONES=[{id:'bed',n:'침대 옆',bg:'🛏️'},{id:'desk',n:'책상',bg:'🪑'},{id:'shelf',n:'책장',bg:'📚'},{id:'closet',n:'옷장',bg:'🚪'},{id:'door',n:'현관',bg:'🧹'}];
 const UP_ITEMS=[
   {i:'🛏️',n:'이불',z:'bed',w:'잠자는 곳 가까이에 두면 편해요.'},
   {i:'☁️',n:'베개',z:'bed',w:'베개는 잠자는 곳 가까이!'},
@@ -2426,10 +2451,10 @@ const UP_ITEMS=[
 function mgUnpack(body,tabsHtml,solveBtn,done){
   const q=shuffle(UP_ITEMS);let k=0,miss=0;const put={};
   body.innerHTML=`<div class="s-wrap">${tabsHtml}<div class="panel"><div class="sec-title">📦 이삿짐 풀기 — 새 방에 이사 온 첫날!</div>
-    <p class="hint" style="margin:2px 0 8px">상자에서 물건이 하나씩 나와요. <b>쓰는 곳 가까이</b> 알맞은 자리를 눌러 놓아 보세요.</p>
-    <div class="up-wrap"><div class="up-box" id="up-box"></div><div class="up-room" id="up-room">${UP_ZONES.map(z=>`<button class="up-zone" data-z="${z.id}"><b>${z.n}</b><span class="up-in" id="up-${z.id}"></span></button>`).join('')}</div></div>
+    <p class="hint" style="margin:2px 0 8px">상자에서 물건이 하나씩 나와요. 물건을 <b>끌어서</b>(또는 눌러서) <b>쓰는 곳 가까이</b> 놓아 보세요.</p>
+    <div class="rm" id="up-room"><div class="rm-win">🪟</div>${UP_ZONES.map(z=>`<div class="rm-z rm-${z.id}" data-drop="1" data-z="${z.id}"><span class="rm-bg">${z.bg}</span><b>${z.n}</b><span class="up-in" id="up-${z.id}"></span></div>`).join('')}<div class="rm-box up-box" id="up-box"></div></div>
     <div class="race-fb" id="up-fb" style="min-height:26px"></div><div id="up-end"></div></div>${solveBtn}</div>`;
-  const show=()=>{const it=q[k];$('#up-box').innerHTML=`<div class="up-card pop"><span class="ri">${it.i}</span><b>${it.n}</b><small>${k+1} / ${q.length}번째 상자</small></div>`;};
+  const show=()=>{const it=q[k];$('#up-box').innerHTML=`<div class="up-card pop" style="cursor:grab;touch-action:none"><span class="ri">${it.i}</span><b>${it.n}</b><small>${k+1} / ${q.length}번째 상자</small></div>`;const c=$('.up-card');makeDrag(c,{onDrop:t=>{if(t&&t.dataset.z)place(t.dataset.z);},onClick:()=>{$('#up-fb').innerHTML='👉 방에서 놓고 싶은 곳을 눌러 보세요. (끌어다 놓아도 돼요!)';}});};
   const end=()=>{$('#up-box').innerHTML='<div class="up-card"><span class="ri">🏠</span><b>짐을 다 풀었어요!</b></div>';
     $('#up-fb').innerHTML='🎉 방이 정돈됐어요! <b>쓰는 곳 가까이</b> 두면 동선도 짧아져요.';
     $('#up-end').innerHTML=`<div class="nb key" style="margin-top:8px">✍️ 이 방에 사는 사람은 어떤 사람일까요? 물건을 보고 한 줄로 써 보세요. (점수는 없어요)<textarea id="up-txt" rows="2" style="width:100%;margin-top:6px" placeholder="예) 학교에 다니고 책을 좋아하는 사람"></textarea></div><div style="text-align:center;margin-top:8px"><button class="btn big" id="up-next">다음: 정리왕 퀴즈 ▶</button></div>`;
@@ -2437,7 +2462,7 @@ function mgUnpack(body,tabsHtml,solveBtn,done){
   const place=zid=>{if(k>=q.length)return;const it=q[k];
     if(it.z===zid){put[it.n]=zid;$('#up-'+zid).insertAdjacentHTML('beforeend',`<i class="up-pop">${it.i}</i>`);$('#up-fb').innerHTML='✅ '+it.w;earn(1,$('#up-'+zid));k++;if(k<q.length)show();else end();}
     else{miss++;const c=$('.up-card');if(c){c.classList.remove('shake');void c.offsetWidth;c.classList.add('shake');}$('#up-fb').innerHTML='❌ 앗, 그곳은 아니에요. '+it.w;say('다시 생각해 봐요. '+it.w,'bad');}};
-  $$('.up-zone').forEach(b=>b.onclick=()=>place(b.dataset.z));
+  $$('.rm-z').forEach(b=>b.onclick=()=>place(b.dataset.z));
   $('#s5-solve').onclick=()=>{while(k<q.length)place(q[k].z);};
   show();say('상자를 열어 볼까요? 물건마다 어울리는 자리가 있어요.');
 }
