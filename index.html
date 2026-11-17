@@ -965,6 +965,24 @@ const FURN={
   shower:{name:'샤워부스',g:'욕실',cat:'bath',w:90,h:90,z:200,icon:'🚿',color:'#cfeaf5',big:true,clr:{front:50},shape:'shower',p:50,d:'서서 샤워하는 공간'},
   washer:{name:'세탁기',g:'욕실',cat:'bath',w:60,h:60,z:90,icon:'🧺',color:'#e9ecef',clr:{front:70},shape:'washer',p:45,d:'빨래를 하는 세탁기'},
   bcab:{name:'욕실 수납장',g:'욕실',cat:'bath',w:50,h:25,z:170,icon:'🧴',color:'#d6e4ea',clr:{front:40},shape:'box',p:8,d:'수건·세면용품 보관'},
+  /* ---- 더 많은 가구 (오늘의집 느낌) ---- */
+  pouf:{name:'푸프 의자',g:'소파·의자',cat:'rest',w:45,h:45,z:40,icon:'🍥',color:'#f6c3a8',shape:'pouf',p:8,d:'동글동글 푹신한 좌식 의자'},
+  rattan:{name:'라탄 의자',g:'소파·의자',cat:'rest',w:60,h:60,z:85,icon:'🪑',color:'#e6c28a',shape:'arm',p:14,d:'따뜻한 느낌의 라탄 의자'},
+  fcushion:{name:'바닥 쿠션',g:'소파·의자',cat:'rest',w:50,h:50,z:12,icon:'💗',color:'#f4b6c2',shape:'pouf',p:3,d:'바닥에 앉는 둥근 쿠션'},
+  barstool:{name:'바 스툴',g:'의자',cat:'work',w:35,h:35,z:75,icon:'🪑',color:'#e8b08a',shape:'rstool',p:5,d:'높은 동그란 의자'},
+  rtable:{name:'원형 사이드 테이블',g:'테이블',cat:'living',w:50,h:50,z:50,icon:'☕',color:'#e8c79a',shape:'rtable',p:8,d:'소파·침대 옆에 두는 동그란 테이블'},
+  console:{name:'콘솔 테이블',g:'테이블',cat:'living',w:100,h:30,z:80,icon:'🖼️',color:'#e2c29a',clr:{front:40},shape:'desk',p:10,d:'벽에 붙이는 좁은 테이블'},
+  rdtable:{name:'원형 식탁',g:'식탁·주방',cat:'kit',w:90,h:90,z:72,icon:'🍽️',color:'#f3d7aa',clr:{front:60,allowChair:true},shape:'rtable',p:20,d:'둘러앉는 동그란 식탁'},
+  opshelf:{name:'오픈 선반(4단)',g:'책장·선반',cat:'store',w:70,h:30,z:150,icon:'🧺',color:'#e9d3a7',clr:{front:50},shape:'box',p:9,d:'물건이 보이는 열린 선반'},
+  shoebench:{name:'신발 벤치',g:'서랍·수납장',cat:'store',w:90,h:35,z:45,icon:'👟',color:'#d9c3a0',clr:{front:40},shape:'box',p:10,d:'앉으면서 신발을 보관해요'},
+  drawer6:{name:'서랍장(6칸)',g:'서랍·수납장',cat:'store',w:60,h:40,z:110,icon:'🗃️',color:'#f0d9b5',clr:{front:50},shape:'box',p:14,d:'칸이 많은 작은 서랍장'},
+  cactus:{name:'선인장',g:'식물',cat:'deco',w:30,h:30,z:60,icon:'🌵',color:'#7bc67e',shape:'plant',p:2,d:'키우기 쉬운 작은 선인장'},
+  monstera:{name:'몬스테라',g:'식물',cat:'deco',w:50,h:50,z:120,icon:'🌿',color:'#4caf72',shape:'plant',p:5,d:'잎이 큰 인기 식물'},
+  olive:{name:'올리브 나무',g:'식물',cat:'deco',w:55,h:55,z:170,icon:'🌳',color:'#9ccc65',shape:'plant',p:9,d:'키가 큰 나무 화분'},
+  laundry:{name:'빨래 바구니',g:'욕실',cat:'bath',w:40,h:40,z:50,icon:'🧺',color:'#e3c9a0',shape:'pouf',p:3,d:'빨래를 모아두는 바구니'},
+  dryrack:{name:'빨래 건조대',g:'욕실',cat:'bath',w:90,h:50,z:100,icon:'👕',color:'#cfd8dc',shape:'hanger',p:4,d:'빨래를 너는 건조대'},
+  trashcan:{name:'쓰레기통',g:'식탁·주방',cat:'kit',w:30,h:30,z:45,icon:'🗑️',color:'#cfd8dc',shape:'pouf',p:3,d:'뚜껑 있는 쓰레기통'},
+  purifier2:{name:'정수기',g:'식탁·주방',cat:'kit',w:30,h:40,z:110,icon:'💧',color:'#dce6ec',shape:'box',p:25,d:'깨끗한 물을 마셔요'},
   bmat:{name:'욕실 발매트',g:'욕실',cat:'bath',w:50,h:80,z:1,icon:'',color:'#bde0fe',rug:true,shape:'rug',p:3,d:'물기를 닦는 발매트'}
 };
 const FCAT={store:{name:'수납용',icon:'📦'},work:{name:'작업용',icon:'✏️'},rest:{name:'휴식용',icon:'😴'},hobby:{name:'취미',icon:'🎮'},deco:{name:'소품',icon:'🌿'},living:{name:'거실',icon:'🛋️'},kit:{name:'주방·식당',icon:'🍳'},bath:{name:'욕실',icon:'🛁'}};
@@ -2707,7 +2725,8 @@ function createEditor(host,opts){
 
 /* ---------- 3D 렌더러 (외부 라이브러리 없이 캔버스로) ---------- */
 function partsOf(it){
-  const f=FURN[it.type],w=f.w,h=f.h,z=f.z,zb=f.zb||0;const P=(a,b,c,d,z0,z1,sh=0,col)=>({a,b,c,d,z0,z1,sh,col});
+  const f=FURN[it.type],w=f.w,h=f.h,z=f.z,zb=f.zb||0;const P=(a,b,c,d,z0,z1,sh=0,col,rd)=>({a,b,c,d,z0,z1,sh,col,rd});
+  if(f.round&&f.rug)return[P(0,0,w,h,zb,z,0,null,true)];
   switch(f.shape){
     case'bed':return[P(0,8,w,h,0,z-17,-0.18),P(3,10,w-3,h-3,z-17,z,0.3),P(0,0,w,8,0,z+50,-0.3),P(w*0.18,14,w*0.82,42,z,z+8,0.55,'#ffffff')];
     case'bunk':return[P(0,0,6,6,0,170,-0.3),P(w-6,0,w,6,0,170,-0.3),P(0,h-6,6,h,0,170,-0.3),P(w-6,h-6,w,h,0,170,-0.3),P(0,0,w,h,120,134,-0.15),P(3,3,w-3,h-3,134,148,0.3),P(0,0,w,4,148,168,-0.2),P(10,h-55,w-10,h-6,70,75,0.1,'#f2c48d')];
@@ -2715,8 +2734,11 @@ function partsOf(it){
     case'chair':{const s=Math.min(46,z*0.5);return[P(6,6,w-6,h-6,s-6,s,0),P(6,0,w-6,6,s,z,-0.15),P(w/2-3,h/2-3,w/2+3,h/2+3,0,s-6,-0.4)];}
     case'sofa':return[P(0,0,w,h,0,40,-0.12),P(15,18,w-15,h,40,48,0.15),P(0,0,w,18,40,z,-0.05),P(0,0,15,h,40,62,-0.1),P(w-15,0,w,h,40,62,-0.1)];
     case'arm':return[P(0,0,w,h,0,38,-0.12),P(12,16,w-12,h,38,46,0.15),P(0,0,w,16,38,z,-0.05),P(0,0,12,h,38,60,-0.1),P(w-12,0,w,h,38,60,-0.1)];
-    case'plant':return[P(w*0.22,h*0.22,w*0.78,h*0.78,0,z*0.33,0,'#a1887f'),P(3,3,w-3,h-3,z*0.33,z,0)];
-    case'lamp':return[P(w/2-2,h/2-2,w/2+2,h/2+2,0,z-27,-0.4,'#9e9e9e'),P(2,2,w-2,h-2,z-27,z,0.2)];
+    case'plant':return[P(w*0.2,h*0.2,w*0.8,h*0.8,0,z*0.3,0,'#e2a98b',1),P(w*0.1,h*0.1,w*0.9,h*0.9,z*0.3,z*0.72,0.05,null,1),P(w*0.2,h*0.2,w*0.8,h*0.8,z*0.72,z,0.25,null,1)];
+    case'pouf':return[P(0,0,w,h,0,z,0,null,1),P(w*0.12,h*0.12,w*0.88,h*0.88,z-2,z+3,0.25,null,1)];
+    case'rtable':return[P(0,0,w,h,z-6,z,0.15,null,1),P(w*0.4,h*0.4,w*0.6,h*0.6,5,z-6,-0.3,null,1),P(w*0.22,h*0.22,w*0.78,h*0.78,0,5,-0.2,null,1)];
+    case'rstool':return[P(0,0,w,h,z-7,z,0.2,null,1),P(w*0.42,h*0.42,w*0.58,h*0.58,4,z-7,-0.3,'#a1887f',1),P(w*0.1,h*0.1,w*0.9,h*0.9,0,4,-0.2,'#a1887f',1)];
+    case'lamp':return[P(w*0.3,h*0.3,w*0.7,h*0.7,0,5,-0.3,'#a1887f',1),P(w/2-2,h/2-2,w/2+2,h/2+2,5,z-27,-0.4,'#bca58f'),P(w*0.05,h*0.05,w*0.95,h*0.95,z-27,z,0.35,null,1)];
     case'canopy':return[P(0,8,w,h,0,28,-0.18),P(3,10,w-3,h-3,28,45,0.3),P(0,0,w,8,0,95,-0.3),P(0,0,5,5,0,190,-0.3),P(w-5,0,w,5,0,190,-0.3),P(0,h-5,5,h,0,190,-0.3),P(w-5,h-5,w,h,0,190,-0.3),P(0,0,w,h,186,192,0.2),P(0,0,3,h,120,186,0.45),P(w-3,0,w,h,120,186,0.45)];
     case'tent':return[P(0,0,w,h,0,10,-0.1),P(15,15,w-15,h-15,10,80,0),P(40,40,w-40,h-40,80,130,0.1)];
     case'tv':return[P(0,0,w,h,0,45,-0.1,'#bcaaa4'),P(10,h/2-3,w-10,h/2+3,45,110,-0.5,'#37474f')];
@@ -2777,18 +2799,25 @@ function render3D(cv,room,items,view,size){
   // 가구
   const pastel=rgb=>rgb.map((v,i)=>Math.round(v+([255,246,228][i]-v)*0.24));
   const boxes=[];
-  items.forEach(it=>{const f=FURN[it.type];partsOf(it).forEach(pt=>{const r=localToWorld(it,pt.a,pt.b,pt.c,pt.d);boxes.push({...r,z0:pt.z0,z1:pt.z1,rgb:pastel(hexRgb(pt.col||f.color)),sh:pt.sh,rug:!!f.rug,it});});});
+  items.forEach(it=>{const f=FURN[it.type];partsOf(it).forEach(pt=>{const r=localToWorld(it,pt.a,pt.b,pt.c,pt.d);boxes.push({...r,z0:pt.z0,z1:pt.z1,rgb:pastel(hexRgb(pt.col||f.color)),sh:pt.sh,rug:!!f.rug,rd:pt.rd,it});});});
   items.forEach(it=>{const f=FURN[it.type];if(f.rug||f.float)return;const r=rectOf(it);const e=5;const q=[[r.x-e,r.y-e],[r.x+r.w+e,r.y-e],[r.x+r.w+e,r.y+r.h+e],[r.x-e,r.y+r.h+e]].map(([x,y])=>P(clamp(x,0,W),clamp(y,0,H),0));poly(q,'rgba(95,60,40,.20)');});
   const depth=b=>proj((b.x0+b.x1)/2,(b.y0+b.y1)/2,(b.z0+b.z1)/2)[2];
   boxes.sort((a,b)=>(a.rug!==b.rug)?(a.rug?-1:1):depth(a)-depth(b));
   boxes.forEach(b=>{
     const{x0,y0,x1,y1,z0,z1}=b;
+    if(b.rd){const cx=(x0+x1)/2,cy2=(y0+y1)/2,rx=(x1-x0)/2,ry=(y1-y0)/2,N=28;const ring=z=>Array.from({length:N},(_,i)=>{const t=i/N*Math.PI*2;return P(cx+rx*Math.cos(t),cy2+ry*Math.sin(t),z);});
+      const r0=ring(z0),r1=ring(z1);const pts=r0.concat(r1).map(p=>[p[0],p[1]]).sort((p,q)=>p[0]-q[0]||p[1]-q[1]);const cr=(o,a2,b2)=>(a2[0]-o[0])*(b2[1]-o[1])-(a2[1]-o[1])*(b2[0]-o[0]);
+      const lo=[],up=[];for(const p of pts){while(lo.length>1&&cr(lo[lo.length-2],lo[lo.length-1],p)<=0)lo.pop();lo.push(p);}for(const p of pts.slice().reverse()){while(up.length>1&&cr(up[up.length-2],up[up.length-1],p)<=0)up.pop();up.push(p);}
+      const hull=lo.slice(0,-1).concat(up.slice(0,-1));const dk=rgbStr(b.rgb,-0.55),rw=clamp(sc*6,3,11);
+      ctx.lineJoin='round';ctx.beginPath();hull.forEach((p,i)=>i?ctx.lineTo(p[0],p[1]):ctx.moveTo(p[0],p[1]));ctx.closePath();ctx.fillStyle=rgbStr(b.rgb,-0.05);ctx.fill();ctx.strokeStyle=dk;ctx.lineWidth=2.6;ctx.stroke();
+      for(let i=0;i<N;i++){const tm=(i+.5)/N*Math.PI*2,nx=Math.cos(tm),ny=Math.sin(tm);if(nd(nx,ny,0)<=0.001)continue;const fc=rgbStr(b.rgb,b.sh*0.45-0.02-0.08*(nx*0.6+ny*0.8));poly([r0[i],r0[(i+1)%N],r1[(i+1)%N],r1[i]],fc,fc,1.2);}
+      const tc=rgbStr(b.rgb,b.sh*0.45+0.2);poly(r1,tc,rgbStr(b.rgb,-0.4),2);const cx2=r1.reduce((s,p)=>s+p[0],0)/N,cy3=r1.reduce((s,p)=>s+p[1],0)/N;if(!b.rug)poly(r1.map(p=>[cx2+(p[0]-cx2)*.7,cy3+(p[1]-cy3)*.7]),'rgba(255,255,255,.25)');return;}
     const faces=[
       {n:[0,-1,0],p:[[x0,y0,z0],[x1,y0,z0],[x1,y0,z1],[x0,y0,z1]]},{n:[0,1,0],p:[[x1,y1,z0],[x0,y1,z0],[x0,y1,z1],[x1,y1,z1]]},
       {n:[-1,0,0],p:[[x0,y1,z0],[x0,y0,z0],[x0,y0,z1],[x0,y1,z1]]},{n:[1,0,0],p:[[x1,y0,z0],[x1,y1,z0],[x1,y1,z1],[x1,y0,z1]]},
       {n:[0,0,1],p:[[x0,y0,z1],[x1,y0,z1],[x1,y1,z1],[x0,y1,z1]]}];
     faces.forEach(f=>{if(nd(...f.n)<=0.001)return;const lf=f.n[2]?0.2:(-0.02-0.08*(f.n[0]*0.6+f.n[1]*0.8));const pp=f.p.map(q=>P(...q));const fc=rgbStr(b.rgb,b.sh*0.45+lf);
-      if(b.rug)poly(pp,fc,rgbStr(b.rgb,-0.55),1);else{const rw=clamp(sc*5,3,10);const path=()=>{ctx.beginPath();pp.forEach((p,i)=>i?ctx.lineTo(p[0],p[1]):ctx.moveTo(p[0],p[1]));ctx.closePath();};
+      if(b.rug)poly(pp,fc,rgbStr(b.rgb,-0.55),1);else{const rw=clamp(sc*6,3,11);const path=()=>{ctx.beginPath();pp.forEach((p,i)=>i?ctx.lineTo(p[0],p[1]):ctx.moveTo(p[0],p[1]));ctx.closePath();};
         ctx.lineJoin='round';path();ctx.strokeStyle=rgbStr(b.rgb,-0.55);ctx.lineWidth=rw+3;ctx.stroke();path();ctx.fillStyle=fc;ctx.fill();ctx.strokeStyle=fc;ctx.lineWidth=rw;ctx.stroke();}
       if(f.n[2]&&!b.rug&&Math.min(x1-x0,y1-y0)>10){const cx=pp.reduce((s,p)=>s+p[0],0)/4,cy2=pp.reduce((s,p)=>s+p[1],0)/4;poly(pp.map(p=>[cx+(p[0]-cx)*.78,cy2+(p[1]-cy2)*.78]),'rgba(255,255,255,.26)');}});
   });
@@ -3014,8 +3043,8 @@ RENDER.s6=(body)=>{
   };
   function wallOpts(sel){return[['bottom','아래쪽 벽'],['top','위쪽 벽'],['left','왼쪽 벽'],['right','오른쪽 벽']].map(([v,n])=>`<option value="${v}" ${sel===v?'selected':''}>${n}</option>`).join('');}
   function makeCard(){
-    if(d.items.length<3){toast('가구를 3개 이상 배치해야 결과 카드를 만들 수 있어요.','bad');setStep(4);return;}
-    const an=analyze(d.room,d.items);
+    if(d.rooms.reduce((s,r)=>s+r.items.length,0)<3){toast('가구를 3개 이상 배치해야 결과 카드를 만들 수 있어요.','bad');setStep(4);return;}
+    const ans=d.rooms.map(r=>analyze(r.room,r.items.filter(i=>FURN[i.type])));const an={warnings:[].concat(...ans.map(x=>x.warnings))};
     const cv=resultCard(d,an);let url='';try{url=cv.toDataURL('image/png');}catch(e){}
     const filled=[d.cond,d.good,d.bad,d.roomName].every(x=>x&&x.trim());
     const stars=1+(an.warnings.length===0?1:0)+(filled?1:0);
@@ -3044,10 +3073,14 @@ function resultCard(d,an){
   c.fillStyle='#3b3433';c.font=`800 46px ${F}`;c.fillText(`「${d.roomName||'이름 없는 방'}」`,40,170);
   c.font=`500 24px ${F}`;c.fillStyle='#7a6f6b';c.fillText(d.roomMeaning?`뜻: ${d.roomMeaning}`:'',40+c.measureText('　').width,218);
   const box=(x,y,w,h,title)=>{c.fillStyle='#fff';c.strokeStyle='#eadfd3';c.lineWidth=3;c.beginPath();if(c.roundRect)c.roundRect(x,y,w,h,18);else c.rect(x,y,w,h);c.fill();c.stroke();c.fillStyle='#ff8a65';c.font=`800 22px ${F}`;c.fillText(title,x+18,y+28);};
-  box(40,250,750,500,'📐 2D 평면도');drawPlanCanvas(c,d.room,d.items,55,290,720,450);
-  box(810,250,750,500,'🧊 3D 모습');const v=document.createElement('canvas');render3D(v,d.room,d.items,{yaw:-0.6,pitch:0.85,zoom:1},[720,450]);c.drawImage(v,825,290);
+  if(d.rooms&&d.rooms.length>1){const N=d.rooms.length,cols=N<=3?N:(N===4?2:3),rows=Math.ceil(N/cols),cw=(1520-(cols-1)*10)/cols,chh=(500-(rows-1)*10)/rows;
+    d.rooms.forEach((r,i)=>{const x=40+(i%cols)*(cw+10),y=250+Math.floor(i/cols)*(chh+10);c.fillStyle='#fff';c.strokeStyle='#eadfd3';c.lineWidth=3;c.beginPath();if(c.roundRect)c.roundRect(x,y,cw,chh,16);else c.rect(x,y,cw,chh);c.fill();c.stroke();
+      c.fillStyle='#ff8a65';c.font=`800 22px ${F}`;c.fillText(`${r.name}`,x+16,y+26);c.fillStyle='#7a6f6b';c.font=`500 17px ${F}`;c.textAlign='right';c.fillText(`${r.room.W/100}×${r.room.H/100}m · 가구 ${r.items.length}개`,x+cw-16,y+26);c.textAlign='left';
+      const v=document.createElement('canvas');render3D(v,r.room,r.items.filter(it=>FURN[it.type]),{yaw:-0.6,pitch:0.85,zoom:1},[Math.round(cw-20),Math.round(chh-46)]);c.drawImage(v,x+10,y+38);});}
+  else{box(40,250,750,500,'📐 2D 평면도');drawPlanCanvas(c,d.room,d.items,55,290,720,450);
+  box(810,250,750,500,'🧊 3D 모습');const v=document.createElement('canvas');render3D(v,d.room,d.items,{yaw:-0.6,pitch:0.85,zoom:1},[720,450]);c.drawImage(v,825,290);}
   const mood=MOODS.find(m=>m.id===d.mood);
-  const txt=[['꾸미고 싶은 공간 · 형태',`${d.space||'내 방'} · ${mood?mood.n:'자유'} (${d.room.W}×${d.room.H}cm, 가구 ${d.items.length}개)`],['가장 중요한 조건',d.cond||'-'],['좋은 점',d.good||'-'],['보완할 점',d.bad||'-']];
+  const txt=[['꾸미고 싶은 공간 · 형태',(d.rooms&&d.rooms.length>1?`${(HOMES[d.home]||{n:'집'}).n.replace(/^\S+ /,'')} · ${mood?mood.n:'자유'} (방 ${d.rooms.length}개, 가구 ${d.rooms.reduce((s,r)=>s+r.items.length,0)}개)`:`${d.space||'내 방'} · ${mood?mood.n:'자유'} (${d.room.W}×${d.room.H}cm, 가구 ${d.items.length}개)`)],['가장 중요한 조건',d.cond||'-'],['좋은 점',d.good||'-'],['보완할 점',d.bad||'-']];
   txt.forEach((t,i)=>{const x=40+(i%2)*760,y=775+Math.floor(i/2)*150;c.fillStyle='#fff';c.strokeStyle='#eadfd3';c.beginPath();if(c.roundRect)c.roundRect(x,y,750,138,16);else c.rect(x,y,750,138);c.fill();c.stroke();
     c.fillStyle='#b7791f';c.font=`800 21px ${F}`;c.fillText(t[0],x+16,y+26);c.fillStyle='#3b3433';c.font=`500 21px ${F}`;wrapText(c,t[1],x+16,y+60,718,30,3);});
   c.fillStyle='#3b3433';c.font=`700 21px ${F}`;
