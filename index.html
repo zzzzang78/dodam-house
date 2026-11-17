@@ -606,6 +606,15 @@ html,body{background:#fbf6e6}
 .popd{animation:edpop .3s ease-out}@keyframes edpop{0%{transform:scale(1)}40%{transform:scale(1.012)}100%{transform:scale(1)}}
 .phase-tabs span.on{background:#6cc08b}.phase-tabs span.done{background:#d7efc2;color:#4a7a35}
 .up-card .ri{filter:drop-shadow(0 3px 0 rgba(0,0,0,.08))}
+
+.pathflow{animation:pflow .9s linear infinite}@keyframes pflow{to{stroke-dashoffset:-18}}
+.ldk-guide{background:#fffdf3;border:3px solid #ebcf92;border-radius:18px;padding:10px 14px;margin:8px 0}
+.ldk-abc{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.ldk-abc span{background:#fff;border:2px solid #cfe2c4;border-radius:12px;padding:4px 12px;text-align:center;line-height:1.3}.ldk-abc span b{font-size:20px;color:#e07b55}.ldk-abc em{font-style:normal;color:var(--sub);font-size:14px}
+.ldk-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:8px}
+.ldk-c{text-align:center;display:flex;flex-direction:column;gap:3px}.ldk-c b{font-size:16px}.ldk-c small{color:var(--sub);font-size:13px}
+.ldk-plan{border:3px solid #b88658;border-radius:8px;background:#fff;display:flex;flex-direction:column;gap:3px;padding:3px;height:62px}
+.ldk-plan s{text-decoration:none;display:flex;flex:1;gap:3px}.ldk-plan i{font-style:normal;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:15px;border-radius:5px;color:#7a5a38;text-align:center;line-height:1.1}
+@media (max-width:900px){.ldk-row{grid-template-columns:repeat(2,1fr)}}
 </style>
 </head>
 <body>
@@ -1996,6 +2005,7 @@ const NOTES={
   ],
   s3:[
     {t:'공간의 다목적 활용',h:`<p>하나의 공간을 <b>여러 가지 목적</b>으로 사용하면 주거 공간을 효율적으로 쓸 수 있어요.</p>
+      <p class="hint" style="margin:0 0 6px"><b>L</b>=Living(거실) · <b>D</b>=Dining(식당) · <b>K</b>=Kitchen(부엌) — 알파벳은 공간 이름의 첫 글자예요.</p>
       <table class="ntable"><tr><th>구성</th><th>특징</th></tr>
       <tr><td>🏠 원룸형</td><td>거실·침실·부엌·식사 공간을 한 공간에. 좁은 공간을 효율적으로 사용</td></tr>
       <tr><td>🛋️🍽️ 거실 겸 식당 (LD형)</td><td>가족이 안정된 분위기에서 식사·대화. 단, 음식을 부엌에서 날라야 해서 동선이 길어요</td></tr>
@@ -2078,6 +2088,14 @@ function houseSceneSVG(){
   <g id="sparks"></g>
   </svg>`;
 }
+const LDK_GUIDE=(()=>{const b=(t,c,w)=>`<i style="background:${c};flex:${w||1}">${t}</i>`;
+  const L=['L','#fde9a9'],D=['D','#ffd2b0'],K=['K','#f8c4d0'];
+  const card=(name,rooms,sub)=>`<div class="ldk-c"><div class="ldk-plan">${rooms}</div><b>${name}</b><small>${sub}</small></div>`;
+  return `<div class="ldk-guide"><div class="ldk-abc"><span><b>L</b> = Living<br>거실 🛋️</span><span><b>D</b> = Dining<br>식당 🍽️</span><span><b>K</b> = Kitchen<br>부엌 🍳</span><em>알파벳은 공간의 첫 글자예요! 합쳐진 공간은 붙여서 써요.</em></div>
+  <div class="ldk-row">${card('원룸형',`<s>${b('L·D·K·침실 모두 한 공간','#fff1c9')}</s>`,'모든 게 하나로')}
+  ${card('LD형',`<s>${b(L[0],L[1])}${b(D[0],D[1])}</s><s>${b(K[0],K[1],.7)}</s>`,'거실+식당, 부엌은 따로')}
+  ${card('DK형',`<s>${b(L[0],L[1],.7)}</s><s>${b(D[0],D[1])}${b(K[0],K[1])}</s>`,'식당+부엌, 거실은 따로')}
+  ${card('LDK형',`<s>${b(L[0],L[1])}${b(D[0],D[1])}${b(K[0],K[1])}</s>`,'세 공간이 하나로')}</div></div>`;})();
 RENDER.s3=(body)=>{
   let qErr=0,hints=0;const found=new Set();
   const O=['원룸형','거실 겸 식당 (LD형)','부엌 겸 식당 (DK형)','거실·식당 겸 부엌 (LDK형)'];
@@ -2088,7 +2106,7 @@ RENDER.s3=(body)=>{
     {q:'공간을 <b>최대로 절약</b>하지만, 손님이 방문할 때 불편하고 거실 분위기를 해칠 수 있어요.',a:3,exp:'LDK형은 거실·식당·부엌을 하나로 통합해 동선을 최대한 절약해요.'}
   ];
   const partA=()=>{
-    body.innerHTML=`<div class="s-wrap"><div class="phase-tabs"><span class="on">① 공간의 다목적 활용</span><span>② 숨은 공간 찾기 (입체적 활용)</span></div><div id="qa"></div></div>`;
+    body.innerHTML=`<div class="s-wrap"><div class="phase-tabs"><span class="on">① 공간의 다목적 활용</span><span>② 숨은 공간 찾기 (입체적 활용)</span></div>${LDK_GUIDE}<div id="qa"></div></div>`;
     quiz($('#qa'),{title:'🏠 설명에 알맞은 공간 구성은?',questions:shuffle(Q).map(q=>({...q,opts:O})),onDone:e=>{qErr=e;partB();}});
     say('하나의 공간을 여러 목적으로 쓰는 방법을 알아봐요!');
   };
@@ -2366,12 +2384,12 @@ document.addEventListener('pointerdown',e=>{if(ctxMenu&&!ctxMenu.contains(e.targ
 
 
 function createEditor(host,opts){
-  const E={room:opts.room,items:opts.items,sel:null,zoom:1,pan:[0,0],showPath:false,undo:[],redo:[],view:'2d',v3:{yaw:-0.6,pitch:0.85,zoom:1},locked:!!opts.locked,last:null};
+  const E={room:opts.room,items:opts.items,sel:null,zoom:1,pan:[0,0],showPath:true,undo:[],redo:[],view:'2d',v3:{yaw:-0.6,pitch:0.85,zoom:1},locked:!!opts.locked,last:null};
   host.innerHTML=`<div class="ed"><div class="ed-tools">
     <button class="tb" data-a="rot" title="회전 (R)">⟳ 회전</button>${E.locked?'':`<button class="tb" data-a="dup" title="복제 (Ctrl+D)">⧉ 복제</button><button class="tb" data-a="del" title="삭제 (Delete)">🗑 삭제</button>`}
     <span class="sep"></span><button class="tb" data-a="undo" title="실행 취소 (Ctrl+Z)">↶ 취소</button><button class="tb" data-a="redo" title="다시 실행 (Ctrl+Y)">↷</button>
     <span class="sep"></span><button class="tb" data-a="zin" title="확대">＋</button><button class="tb" data-a="zout" title="축소">－</button><button class="tb" data-a="fit" title="화면에 맞춤">⤢</button>
-    <span class="sep"></span><label class="tb chk" title="문에서 각 가구까지 가는 길을 보여 줘요"><input type="checkbox" data-a="path"> 👣 동선 보기</label>
+    <span class="sep"></span><label class="tb chk" title="문에서 각 가구까지 가는 길을 보여 줘요"><input type="checkbox" data-a="path" ${E.showPath?'checked':''}> 👣 동선 보기</label>
     <span class="ed-selinfo"></span>
     <div class="vt"><button class="tb on" data-v="2d">2D 평면</button><button class="tb" data-v="3d">3D 보기</button></div></div>
     <div class="ed-stage" data-drop="1" data-editor="1"><svg class="ed-svg" tabindex="0"></svg><canvas class="ed-3d" hidden></canvas><div class="ed-help">드래그: 가구 이동 · 휠: 확대/축소 · 빈 곳 드래그: 화면 이동 · 우클릭: 메뉴 · 더블클릭: 회전</div></div></div>`;
@@ -2429,7 +2447,13 @@ function createEditor(host,opts){
         ${(r.w>=60&&r.h>=40)||f.rug?`<text x="${r.x+r.w/2}" y="${r.y+r.h/2+fs*0.55+9}" font-size="10.5" text-anchor="middle" fill="#3b3433" font-weight="700">${shortName(it.type)}</text>`:''}
         ${warn?`<text x="${r.x+r.w-8}" y="${r.y+12}" font-size="12" text-anchor="middle">⚠️</text>`:''}</g>`;
     });
-    if(E.showPath){const dz2=doorGeom(E.room);an.paths.forEach((p,i)=>{s+=`<polyline points="${p.pts.map(q=>q.join(',')).join(' ')}" fill="none" stroke="#5c9ded" stroke-width="3" stroke-dasharray="2 6" stroke-linecap="round" stroke-linejoin="round" opacity=".85"/>`;const e=p.pts[p.pts.length-1];s+=`<circle cx="${e[0]}" cy="${e[1]}" r="4" fill="#5c9ded"/>`;});}
+    if(E.showPath){const COL=['#5c9ded','#f5a623','#e0568a','#43b581','#9b6be0','#e8704a'];
+      an.paths.forEach((pa,i)=>{const c=COL[i%COL.length],pts=pa.pts.map(q=>q.join(',')).join(' '),e=pa.pts[pa.pts.length-1];
+        s+=`<polyline points="${pts}" fill="none" stroke="#fff" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" opacity=".92"/><polyline class="pathflow" points="${pts}" fill="none" stroke="${c}" stroke-width="5" stroke-dasharray="10 8" stroke-linecap="round" stroke-linejoin="round"/>`;
+        const it=E.items.find(x=>x.id===pa.id);
+        if(it){const r=rectOf(it),cx=r.x+r.w/2,cy=r.y+r.h/2;
+          s+=`<line x1="${e[0]}" y1="${e[1]}" x2="${cx}" y2="${cy}" stroke="${c}" stroke-width="3" stroke-dasharray="3 4"/><circle cx="${cx}" cy="${cy}" r="14" fill="#fff" stroke="${c}" stroke-width="4"/><text x="${cx}" y="${cy+5}" text-anchor="middle" font-size="15" font-weight="900" fill="${c}">${i+1}</text>`;}
+        s+=`<circle cx="${e[0]}" cy="${e[1]}" r="6" fill="${c}" stroke="#fff" stroke-width="2"/>`;});}
     svg.innerHTML=s;
     const sel=selItem();$('.ed-selinfo',host).textContent=sel?`${shortName(sel.type)} ${FURN[sel.type].w}×${FURN[sel.type].h}`:'';
     if(E.view==='3d')draw3D();
@@ -3121,7 +3145,7 @@ function accountModal(purpose){
       if(needNick&&!nick){m('닉네임을 정해 주세요.');return;}
       m('⏳ 확인하는 중…');$('#ac-go').disabled=true;
       try{const r=await api({action:'login',code:room.code,cls,sid,pin,nick});
-        if(!r.ok&&r.need==='nick'){needNick=true;m('');$('#ac-nick').innerHTML=`<div class="nb key">👋 처음 왔군요! 순위표에 보일 <b>닉네임</b>을 정해 주세요. (실명 말고 별명으로!)</div><label>😎 닉네임 <small>(10글자 이하)</small></label><input id="ac-nickin" maxlength="10" placeholder="예) 공간마법사">`;$('#ac-nickin').focus();return;}
+        if(!r.ok&&r.need==='nick'){needNick=true;m('');$('#ac-nick').innerHTML=`<div class="nb key">👋 처음 왔군요! 순위표에 보일 <b>이름</b>을 정해 주세요. (실명이든 별명이든 편한 대로 써요!)</div><label>😎 이름 <small>(10글자 이하 · 실명도 별명도 OK)</small></label><input id="ac-nickin" maxlength="10" placeholder="예) 김도담 또는 공간마법사">`;$('#ac-nickin').focus();return;}
         if(!r.ok){m('❌ '+r.err);return;}
         LS.set('dodam-v2-last',JSON.stringify({room:room.code,cls,sid}));
         const guest=reg?pack():null,gkey=reg?profKey():null;
