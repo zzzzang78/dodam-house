@@ -2474,7 +2474,7 @@ document.addEventListener('pointerdown',e=>{if(ctxMenu&&!ctxMenu.contains(e.targ
 
 
 function createEditor(host,opts){
-  const E={room:opts.room,items:opts.items,sel:null,zoom:1,pan:[0,0],showPath:true,undo:[],redo:[],view:'2d',v3:{yaw:-0.6,pitch:0.85,zoom:1},locked:!!opts.locked,last:null};
+  const E={room:opts.room,items:opts.items,sel:null,zoom:1,pan:[0,0],showPath:false,undo:[],redo:[],view:'2d',v3:{yaw:-0.6,pitch:0.85,zoom:1},locked:!!opts.locked,last:null};
   host.innerHTML=`<div class="ed"><div class="ed-tools">
     <button class="tb" data-a="rot" title="회전 (R)">⟳ 회전</button>${E.locked?'':`<button class="tb" data-a="dup" title="복제 (Ctrl+D)">⧉ 복제</button><button class="tb" data-a="del" title="삭제 (Delete)">🗑 삭제</button>`}
     <span class="sep"></span><button class="tb" data-a="undo" title="실행 취소 (Ctrl+Z)">↶ 취소</button><button class="tb" data-a="redo" title="다시 실행 (Ctrl+Y)">↷</button>
