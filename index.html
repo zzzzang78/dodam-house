@@ -2809,22 +2809,24 @@ function createEditor(host,opts){
   const tipOf=it=>{const f=FURN[it.type],pc=PC[it.type],v=it.v||{};let h=`<b>${f.icon||''} ${f.name}</b> · 💰 ${priceOf(it)}만 원`;if(pc)h+=` — <span class="pro">＋ ${pc[0]}</span> <span class="con">－ ${pc[1]}</span>`;
     Object.entries(v).forEach(([ax,k])=>{const o=VAXES[ax]&&VAXES[ax].o[k];if(o)h+=`<br>${o[0]}: <span class="pro">＋ ${o[1]}</span> <span class="con">－ ${o[2]}</span>`;});return h;};
   /* 꾸미기 줄: 색 · 무늬(러그) · 크기 */
-  let _sbKey='';
+  let _sbKey='',_more=false,_lastTip='',_lastId='';
   function styleBar(){const bar=$('.ed-style',host),it=selItem();
     if(!it||E.locked){bar.hidden=true;_sbKey='';return;}
-    const f=FURN[it.type],key=[it.id,it.type,it.col||'',it.pat||'',it.sz||1,JSON.stringify(it.v||{}),E.room.kids?1:0].join('|');if(key===_sbKey)return;_sbKey=key;bar.hidden=false;
+    if(it.id!==_lastId){_lastId=it.id;_lastTip='';}const f=FURN[it.type],key=[it.id,it.type,it.col||'',it.pat||'',it.sz||1,JSON.stringify(it.v||{}),E.room.kids?1:0,_more?1:0,_lastTip].join('|');if(key===_sbKey)return;_sbKey=key;bar.hidden=false;
     const steps=f.rug?SZ_RUG:SZ_STEPS,sz=szOf(it),idx=Math.max(0,steps.indexOf(sz));
     bar.innerHTML=`<span class="sb-t">🎨 꾸미기</span><span class="sb-sw">${SWATCH.map(c=>`<button class="sw ${it.col===c?'on':''}" data-col="${c}" style="background:${c}" title="${c}"></button>`).join('')}<button class="sw rs ${it.col?'':'on'}" data-col="" title="원래 색">↺</button></span>
     ${f.rug?`<span class="sb-pt">${Object.entries(RUGPAT).map(([k,n])=>`<button class="tb pt ${(it.pat||'plain')===k?'on':''}" data-pat="${k}">${n}</button>`).join('')}</span>`:''}
     <span class="sb-sz"><button class="tb" data-sz="-1" ${idx<=0?'disabled':''}>－</button><b>크기 ${sz===1?'보통':sz<1?'작게 ×'+sz:'크게 ×'+sz}</b><button class="tb" data-sz="1" ${idx>=steps.length-1?'disabled':''}>＋</button></span>
-    <div class="sb-row sb-vars">${Object.entries(VAXES).filter(([ax])=>varOK(f,ax)).map(([ax,A])=>`<span class="vgrp"><b>${A.n}</b><button class="tb ${it.v&&it.v[ax]?'':'on'}" data-vax="${ax}" data-vk="">기본</button>${Object.entries(A.o).map(([k,o])=>`<button class="tb ${it.v&&it.v[ax]===k?'on':''}" data-vax="${ax}" data-vk="${k}">${o[0]}</button>`).join('')}</span>`).join('')}</div>
-    ${swapOpts(it).length?`<div class="sb-row"><b>🔁 다른 가구로 바꿔 보기</b>${swapOpts(it).map(k=>`<button class="tb" data-swap="${k}">${FURN[k].icon||''} ${FURN[k].name}</button>`).join('')}</div>`:''}
-    <div class="sb-tip">${tipOf(it)}</div>`;
+    <button class="tb ${_more?'on':''}" data-more="1">🤔 고민 옵션 ${_more?'▴':'▾'}</button>
+    ${_more?`<div class="sb-row sb-vars">${Object.entries(VAXES).filter(([ax])=>varOK(f,ax)).map(([ax,A])=>`<span class="vgrp"><b>${A.n}</b><button class="tb ${it.v&&it.v[ax]?'':'on'}" data-vax="${ax}" data-vk="">기본</button>${Object.entries(A.o).map(([k,o])=>`<button class="tb ${it.v&&it.v[ax]===k?'on':''}" data-vax="${ax}" data-vk="${k}">${o[0].replace(/ 모서리$/,'')}</button>`).join('')}</span>`).join('')}</div>
+    ${swapOpts(it).length?`<div class="sb-row"><b>🔁 바꿔 보기</b>${swapOpts(it).map(k=>`<button class="tb" data-swap="${k}">${FURN[k].icon||''} ${shortName(k)}</button>`).join('')}</div>`:''}
+    <div class="sb-tip">${_lastTip||'버튼을 눌러 보세요. 장점과 단점이 나와요.'} · 💰 ${priceOf(it)}만 원</div>`:''}`;
     bar.onclick=e=>{const b=e.target.closest('button');if(!b)return;const it2=selItem();if(!it2)return;pushUndo();
+      if(b.dataset.more){_more=!_more;_sbKey='';styleBar();return;}
       if(b.dataset.col!==undefined){if(b.dataset.col)it2.col=b.dataset.col;else delete it2.col;}
       else if(b.dataset.pat!==undefined){if(b.dataset.pat==='plain')delete it2.pat;else it2.pat=b.dataset.pat;}
-      else if(b.dataset.vax){const v={...(it2.v||{})};if(b.dataset.vk)v[b.dataset.vax]=b.dataset.vk;else delete v[b.dataset.vax];if(Object.keys(v).length)it2.v=v;else delete it2.v;}
-      else if(b.dataset.swap){it2.type=b.dataset.swap;clampIt(it2);}
+      else if(b.dataset.vax){const v={...(it2.v||{})};if(b.dataset.vk)v[b.dataset.vax]=b.dataset.vk;else delete v[b.dataset.vax];{const o=b.dataset.vk&&VAXES[b.dataset.vax].o[b.dataset.vk];_lastTip=o?`<b>${o[0]}</b> <span class="pro">＋ ${o[1]}</span> <span class="con">－ ${o[2]}</span>`:'';}if(Object.keys(v).length)it2.v=v;else delete it2.v;}
+      else if(b.dataset.swap){it2.type=b.dataset.swap;clampIt(it2);const pc=PC[it2.type];_lastTip=pc?`<b>${FURN[it2.type].name}</b> <span class="pro">＋ ${pc[0]}</span> <span class="con">－ ${pc[1]}</span>`:'';}
       else if(b.dataset.sz){const st=FURN[it2.type].rug?SZ_RUG:SZ_STEPS,i=Math.max(0,st.indexOf(szOf(it2)))+(+b.dataset.sz),n=st[clamp(i,0,st.length-1)];if(n===1)delete it2.sz;else it2.sz=n;clampIt(it2);}
       commit();};}
   // 툴바
