@@ -742,6 +742,17 @@ const FB_API={
     rooms.sort((x,y)=>y.created-x.created);
     return{ok:true,rooms};
   },
+  deleteRoom:async(b,a)=>{
+    await fbEnsureTeacher(a,b.pw);
+    const code=String(b.code||'').toUpperCase();
+    if(!code||String(b.confirm||'').toUpperCase()!==code)throw new Error('방 코드가 일치하지 않아요.');
+    if(!(await fbRoom(a,code)))throw new Error('방이 없어요.');
+    const stu=await a.list('rooms/'+code+'/students');
+    for(let i=0;i<stu.length;i+=10)await Promise.all(stu.slice(i,i+10).map(s=>a.del('rooms/'+code+'/students/'+s.id)));
+    try{await a.del('rooms/'+code+'/board/main');}catch(e){}
+    await a.del('rooms/'+code);
+    return{ok:true,removed:stu.length};
+  },
   setOpen:async(b,a)=>{await fbEnsureTeacher(a,b.pw);if(!(await fbRoom(a,b.code)))throw new Error('방이 없어요.');await a.update('rooms/'+String(b.code).toUpperCase(),{open:!!b.open});return{ok:true};},
   join:async(b,a)=>{
     const r=await fbRoom(a,b.code);
@@ -915,9 +926,15 @@ async function rooms(){
     catch(e){toast('❌ '+e.message,'bad');}};
   const list=async()=>{try{const r=await adminApi({action:'listRooms'});T.rooms=r.rooms;setConn(true);
       $('#r-list').innerHTML=r.rooms.length?r.rooms.slice().reverse().map(x=>`<div class="room ${x.open?'':'closed'}"><div class="code-big">${x.code}</div><b>${esc(x.name)}</b><div class="hint">${x.classes.map(c=>c+'반').join(', ')} · 학생 ${x.count}명 · ${x.open?'<span class="ok">열림</span>':'<span class="bad">닫힘</span>'}</div>
-        <div class="row" style="margin-top:8px"><button class="btn small" data-see="${x.code}">📊 현황 보기</button><button class="btn small ghost" data-big="${x.code}" data-n="${esc(x.name)}">🔍 코드 크게</button><button class="btn small ${x.open?'red':'green'}" data-open="${x.code}" data-v="${x.open?0:1}">${x.open?'🔒 닫기':'🔓 열기'}</button></div></div>`).join(''):'<p class="hint">아직 방이 없어요. 위에서 만들어 보세요.</p>';
+        <div class="row" style="margin-top:8px"><button class="btn small" data-see="${x.code}">📊 현황 보기</button><button class="btn small ghost" data-big="${x.code}" data-n="${esc(x.name)}">🔍 코드 크게</button><button class="btn small ${x.open?'red':'green'}" data-open="${x.code}" data-v="${x.open?0:1}">${x.open?'🔒 닫기':'🔓 열기'}</button><button class="btn small ghost" data-del="${x.code}" data-n="${esc(x.name)}" data-c="${x.count}" title="방 삭제">🗑 삭제</button></div></div>`).join(''):'<p class="hint">아직 방이 없어요. 위에서 만들어 보세요.</p>';
       $$('[data-see]').forEach(b=>b.onclick=()=>{T.room=b.dataset.see;LS.set('dodam-t-room',T.room);tab('status');});
       $$('[data-big]').forEach(b=>b.onclick=()=>modal(`<div style="text-align:center"><p style="font-size:22px">${b.dataset.n}</p><div style="font-size:120px;font-weight:900;letter-spacing:16px;color:var(--accent)">${b.dataset.big}</div><p class="hint">학생 파일을 열고 이 방 코드를 입력하세요</p></div>`,true));
+      $$('[data-del]').forEach(b=>b.onclick=()=>{const code=b.dataset.del;
+        const m=modal(`<h2 style="margin-top:0;color:#d9534f">🗑 방 삭제</h2><p><b>${b.dataset.n}</b> (방 코드 <b>${code}</b>) 방을 지워요.</p><p style="color:#d9534f;font-weight:800">학생 ${b.dataset.c}명의 저장 기록, 방 정보, 반 대항전 데이터가 모두 사라지고 <u>되돌릴 수 없어요.</u></p><p class="hint">정말 지우려면 방 코드 <b>${code}</b>를 아래에 똑같이 입력해 주세요.</p><input id="dl-code" placeholder="방 코드 입력" style="width:100%;margin:6px 0;text-transform:uppercase" autocomplete="off"><div class="m-actions"><button class="btn ghost" id="dl-no">취소</button><button class="btn red" id="dl-ok" disabled>영구 삭제</button></div>`);
+        const inp=m.querySelector('#dl-code'),ok=m.querySelector('#dl-ok');inp.oninput=()=>{ok.disabled=inp.value.trim().toUpperCase()!==code;};
+        m.querySelector('#dl-no').onclick=closeModal;
+        ok.onclick=async()=>{if(inp.value.trim().toUpperCase()!==code)return;ok.disabled=true;ok.textContent='지우는 중…';try{await adminApi({action:'deleteRoom',code,confirm:code});if(T.room===code){T.room='';LS.del('dodam-t-room');}T.rooms=[];closeModal();toast('방을 삭제했어요.','good');list();}catch(e){ok.disabled=false;ok.textContent='영구 삭제';toast('❌ '+e.message,'bad');}};
+        setTimeout(()=>inp.focus(),50);});
       $$('[data-open]').forEach(b=>b.onclick=async()=>{try{await adminApi({action:'setOpen',code:b.dataset.open,open:b.dataset.v==='1'});toast('바꿨어요.','good');list();}catch(e){toast('❌ '+e.message,'bad');}});
     }catch(e){$('#r-list').innerHTML=`<p class="bad">❌ ${esc(e.message)}</p>`;setConn(false,'연결 실패');}};
   list();
@@ -928,7 +945,7 @@ async function load(full){const r=await adminApi({action:'teacher',code:T.room,f
 async function status(){
   const el=$('#main');el.innerHTML='<p class="hint">⏳ 불러오는 중…</p>';
   if(!(await needRooms(el,status)))return;
-  el.innerHTML=`<div class="card">${roomPicker(`<label class="hint"><input type="checkbox" id="auto" checked> 15초마다 자동 새로고침</label><button class="btn small ghost" id="ref">↻ 새로고침</button><span id="upd" class="hint"></span>`)}</div><div id="st-body"></div>`;
+  el.innerHTML=`<div class="card">${roomPicker(`<label class="hint"><input type="checkbox" id="auto" checked> 2분마다 자동 새로고침</label><button class="btn small ghost" id="ref">🔄 지금 갱신</button><span id="upd" class="hint"></span>`)}</div><div id="st-body"></div>`;
   bindRoomPicker(status);
   const draw=()=>{
     const d=T.data;if(!d)return;const now=Date.now();
@@ -952,9 +969,9 @@ async function status(){
     $$('[data-pin]').forEach(b=>b.onclick=async()=>{if(!confirm2)return;try{await adminApi({action:'resetPin',code:T.room,sid:b.dataset.pin});toast(`${b.dataset.n}의 비밀번호를 초기화했어요. 다음 로그인 때 새로 정해요.`,'good');}catch(e){toast('❌ '+e.message,'bad');}});
     $$('[data-del]').forEach(b=>b.onclick=()=>{modal(`<h3>🗑 ${esc(b.dataset.n)} (${esc(b.dataset.del)}) 학생 기록을 삭제할까요?</h3><p class="hint">별·코인·결과물이 모두 지워지고 되돌릴 수 없어요.</p><div class="m-actions"><button class="btn ghost" onclick="closeModal()">취소</button><button class="btn red" id="del-ok">삭제</button></div>`);$('#del-ok').onclick=async()=>{try{await adminApi({action:'removeStudent',code:T.room,sid:b.dataset.del});closeModal();toast('삭제했어요.');refresh();}catch(e){toast('❌ '+e.message,'bad');}};});
   };
-  const refresh=async()=>{try{await load();setConn(true);$('#upd').textContent='업데이트 '+new Date().toLocaleTimeString();draw();}catch(e){$('#st-body').innerHTML=`<div class="card bad">❌ ${esc(e.message)}</div>`;setConn(false,'연결 실패');}};
+  const refresh=async()=>{try{await load();setConn(true);$('#upd').textContent='마지막 갱신 '+new Date().toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'});draw();}catch(e){$('#st-body').innerHTML=`<div class="card bad">❌ ${esc(e.message)}</div>`;setConn(false,'연결 실패');}};
   $('#ref').onclick=refresh;
-  const auto=()=>{clearInterval(T.timer);if($('#auto').checked)T.timer=setInterval(()=>{if(T.tab==='status')refresh();},15000);};$('#auto').onchange=auto;auto();
+  const auto=()=>{clearInterval(T.timer);if($('#auto').checked)T.timer=setInterval(()=>{if(T.tab==='status'&&!document.hidden)refresh();},120000);};$('#auto').onchange=auto;auto();
   refresh();
 }
 const confirm2=true;
@@ -968,7 +985,7 @@ function houseSVG(floors,w=90){let s=`<svg width="${w}" height="${(40+floors*24)
 async function board(){
   const el=$('#main');el.innerHTML='<p class="hint">⏳ 불러오는 중…</p>';
   if(!(await needRooms(el,board)))return;
-  el.innerHTML=`<div class="card">${roomPicker(`<button class="btn small" id="fs">⛶ 전체 화면</button><span class="hint">20초마다 자동으로 바뀌어요</span>`)}</div><div id="board-wrap"><div id="bw"></div></div>`;
+  el.innerHTML=`<div class="card">${roomPicker(`<button class="btn small" id="fs">⛶ 전체 화면</button><button class="btn small ghost" id="bref">🔄 지금 갱신</button><span class="hint" id="bupd">2분마다 자동으로 바뀌어요</span>`)}</div><div id="board-wrap"><div id="bw"></div></div>`;
   bindRoomPicker(board);
   $('#fs').onclick=()=>{const w=$('#board-wrap');if(w.requestFullscreen)w.requestFullscreen().catch(()=>toast('전체 화면을 쓸 수 없어요.'));};
   const draw=async()=>{
@@ -979,7 +996,8 @@ async function board(){
        <div class="card"><h3>🌟 개인 TOP 10</h3>${r.top.map((t,i)=>`<div class="trow"><span class="rk">${i+1}</span>${dodamSVG(36,t.avatar)}<b>${esc(t.nick)}</b><small>${esc(t.cls)}반</small><span class="x">${t.xp}</span></div>`).join('')||'<p class="hint">아직 기록이 없어요.</p>'}</div></div>`;setConn(true);
     }catch(e){$('#bw').innerHTML=`<div class="card bad">❌ ${esc(e.message)}</div>`;setConn(false,'연결 실패');}
   };
-  draw();T.timer=setInterval(()=>{if(T.tab==='board')draw();},20000);
+  const draw2=async()=>{await draw();$('#bupd').textContent='마지막 갱신 '+new Date().toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'})+' · 2분마다 자동';};
+  $('#bref').onclick=draw2;draw2();T.timer=setInterval(()=>{if(T.tab==='board'&&!document.hidden)draw2();},120000);
 }
 
 /* ⑤ 결과물 */
