@@ -693,7 +693,7 @@ html,body{background:#fbf6e6}
 .ov-h{display:flex;justify-content:space-between;align-items:baseline;padding:0 6px}.ov-h small{color:#8a6a40}
 .ov-cv{width:100%;height:210px;display:block;border-radius:10px}
 .ed-style{display:flex;flex-wrap:wrap;align-items:center;gap:4px 10px;padding:4px 10px;max-height:132px;overflow:auto;background:#fff8ec;border-bottom:1px solid #f0e0c4}.ed-style[hidden]{display:none}.ed-style .sb-t{font-weight:800;color:#8a5a2b}.sb-sw{display:flex;flex-wrap:wrap;gap:4px}.sw{width:18px;height:18px;border-radius:50%;border:2px solid #fff;box-shadow:0 0 0 1px #d8c9b3;cursor:pointer;padding:0;font-size:12px;line-height:1}.sw.on{box-shadow:0 0 0 2.5px #ff7043}.sw.rs{background:#fff;color:#8a7a68}.sb-pt{display:flex;gap:4px;flex-wrap:wrap}.sb-sz{display:flex;align-items:center;gap:6px}.sb-sz button:disabled{opacity:.35}
-.sb-row{display:flex;flex-wrap:wrap;gap:5px;align-items:center;width:100%}.sb-row b{font-size:13px;color:#8a5a2b}.vgrp{display:flex;gap:4px;align-items:center;margin-right:10px}.sb-tip{width:100%;font-size:12.5px;line-height:1.4}.ed-style .tb{padding:3px 8px;font-size:13px}.sb-tip .pro{color:#2e7d32;font-weight:700}.sb-tip .con{color:#c62828;font-weight:700}.lv-max{display:block;font-size:10px;font-weight:600;opacity:.85;line-height:1.1;margin-top:1px}.ed-budget{font-weight:800;color:#c0561a;margin-left:6px}
+.sb-row{display:flex;flex-wrap:wrap;gap:5px;align-items:center;width:100%}.sb-row b{font-size:13px;color:#8a5a2b}.vgrp{display:flex;gap:4px;align-items:center;margin-right:10px}.sb-tip{width:100%;font-size:12.5px;line-height:1.4}.ed-style .tb{padding:3px 8px;font-size:13px}.sb-tip .pro{color:#2e7d32;font-weight:700}.sb-tip .con{color:#c62828;font-weight:700}.lv-max{display:block;font-size:10px;font-weight:600;opacity:.85;line-height:1.1;margin-top:1px}.ov-w{text-align:left;border:2px solid var(--line);background:#fff;border-radius:10px;padding:7px 10px;font-size:14px;cursor:pointer}.ov-w.bad{background:#fdecec;border-color:#f3b9b9}.ov-w.ok{background:#eaf7ee;border-color:#bfe3c9}.phase-tabs span{cursor:pointer;transition:transform .1s}.phase-tabs span:not(.on):hover{transform:translateY(-1px);filter:brightness(.96);outline:2px solid #ffd9a8}.ed-budget{font-weight:800;color:#c0561a;margin-left:6px}
 .ov-plan{width:100%;height:340px;display:block;border-radius:16px;border:3px solid #e2c9a0;margin-bottom:8px}.ov-sum{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:2px 4px 8px}.ov-sum b{font-size:16px;margin-right:6px}.ov-sum span{background:#fff4de;border:2px solid #f0d9a8;border-radius:999px;padding:2px 10px;font-size:13px;font-weight:700;color:#7a5a30}.ov-t{font-weight:800;margin:6px 4px;color:#7a5a30}
 
 .ac-svg{width:100%;border-radius:14px;border:4px solid #e2c9a0;background:#fff;display:block}
@@ -1695,7 +1695,7 @@ const FB_API={
     const ex=await a.get(path);if(!ex)throw new Error('학번을 찾을 수 없어요. 다시 로그인해 주세요.');
     if(ex.ph!==await fbHash(r.code+':'+sid+':'+b.pin))throw new Error('비밀번호가 맞지 않아요. 다시 로그인해 주세요.');
     const st=b.state||{},json=JSON.stringify(st);
-    if(json.length>45000)throw new Error('저장할 내용이 너무 커요. 가구 수를 줄여 주세요.');
+    if(json.length>58000)throw new Error('저장할 내용이 너무 커요. 가구 수를 줄여 주세요.');
     const stars=FB_STAGES.map(id=>Math.max(0,Math.min(3,Number((st.stars||{})[id])||0)));
     const nick=String(st.nick||ex.nick).slice(0,10),xp=fbXp(st),coins=Math.max(0,Math.min(99999,Number(st.coins)||0)),now=Date.now(),bonus=Number(ex.bonus)||0;
     await a.update(path,{nick,last:now,state:json});
@@ -1916,6 +1916,7 @@ function go(id){
   </div><div class="stage-body"></div></div>`;
   $('#btn-back').onclick=()=>go('map');
   $('#btn-concept').onclick=()=>showConcept(st);
+  window.__phases=null;phaseWatch($('.stage-body'),id);
   RENDER[id]($('.stage-body'),st);
   if(!(id==='s6'&&S.s6&&S.s6.seen)){showConcept(st);}
   if(id==='s6'&&S.s6){S.s6.seen=true;save();}
@@ -1935,7 +1936,15 @@ function showConcept(st,startPage=0){
   };
   if(pages.length)draw();
 }
+/* 한 스테이지 안에서 원하는 단계로 바로 가기 */
+function phaseWatch(body,id){window.__phDone=new Set();window.__phTotal=0;window.__phStage=id;window.__phLast=-1;window.__phJump=false;if(window.__phObs)window.__phObs.disconnect();
+  const upd=()=>{const pt=body.querySelector('.phase-tabs');if(!pt)return;const kids=[...pt.children];window.__phTotal=kids.length;const i=kids.findIndex(k=>k.classList.contains('on'));if(i<0||i===window.__phLast)return;
+    if(!window.__phJump&&window.__phLast>=0&&window.__phLast===i-1)window.__phDone.add(i-1);window.__phJump=false;window.__phLast=i;};
+  window.__phObs=new MutationObserver(upd);window.__phObs.observe(body,{childList:true,subtree:true});}
+document.addEventListener('click',e=>{const sp=e.target.closest&&e.target.closest('.phase-tabs span');if(!sp||!window.__phases||sp.classList.contains('on'))return;
+  const i=[...sp.parentNode.children].indexOf(sp),fn=window.__phases[i];if(!fn)return;try{if(typeof cleanup==='function'){cleanup();cleanup=null;}}catch(er){}window.__phJump=true;fn();});
 function finishStage(id,stars,extra=''){
+  if(window.__phTotal>1&&window.__phStage===id&&new Set([...window.__phDone,window.__phLast]).size<window.__phTotal&&!['s0','s6','bonus'].includes(id)){stars=Math.min(stars,1);extra+='<br>⚠️ 건너뛴 단계가 있어서 별은 1개까지만 받아요. 모든 단계를 해 보면 별 3개에 도전할 수 있어요!';}
   stars=clamp(Math.round(stars),1,3);
   const need=(id==='s6'||id==='bonus'||id==='s0')?1:3;let nb=null,reward='';
   if(S.teacher&&serverURL()){reward='<div class="f-tip">👩‍🏫 선생님 모드에서는 별과 코인이 기록되지 않아요.</div>';}
@@ -2062,7 +2071,7 @@ RENDER.s2=(body)=>{
   cleanup=()=>{if(anim)cancelAnimationFrame(anim);};
   const starsOf=sc=>sc<=opt+0.5?3:sc<=opt+(badScore-opt)*0.4?2:sc<badScore-0.5?1:0;
   const layoutPhase=()=>{
-    body.innerHTML=`<div class="three">
+    body.innerHTML=`<div class="phase-tabs" style="margin-bottom:8px"><span class="on">① 집 동선</span><span>② 부엌 작업대 순서</span><span>③ 작업대 배치 모양</span></div><div class="three" style="height:calc(100% - 40px)">
     <div class="panel"><div class="sec-title">👨‍👩‍👧‍👦 우리 가족의 하루</div><div id="s2-rt"></div>
       <div class="metric"><div>총 이동 거리 <b id="s2-dist"></b></div><div>남의 방·욕실 통과 <b id="s2-cross"></b></div>
       <div class="goalbar"><i id="s2-gbar"></i></div><small id="s2-gtxt"></small></div></div>
@@ -2186,6 +2195,7 @@ RENDER.s2=(body)=>{
     }});
     say('부엌의 크기와 모양에 따라 작업대를 다르게 배치해요. 그림을 보고 이름을 골라 봐요!');
   };
+  window.__phases=[layoutPhase,kitchenPhase,shapePhase];
   layoutPhase();
 };
 
@@ -2372,6 +2382,7 @@ RENDER.s3=(body)=>{
     $('#s3-solve').onclick=()=>HOTSPOTS.forEach(reveal);
     list();say('이번엔 숨은 공간 찾기! 집에서 잘 쓰지 않는 자투리 공간 6곳을 찾아 클릭해 보세요.');
   };
+  window.__phases=[partA,partB];
   partA();
 };
 
@@ -2471,6 +2482,7 @@ RENDER.s5=(body)=>{
     $('#s5-done').onclick=()=>finishStage('s5',err<=2?3:err<=5?2:1,`정리·수납 게임 실수 ${err}번 · ${$('#s5-res').innerHTML.split('<br>')[1]||''}`);
     say('체크한 개수로 나의 정리·수납 습관을 알아봐요. 점수에는 들어가지 않으니 솔직하게!');
   };
+  window.__phases=[p1,p2,pA,p3,pU,p4,p5];
   p1();
 };
 
@@ -2506,6 +2518,7 @@ RENDER.s0=(body)=>{
     $('#s0-done').onclick=()=>finishStage('s0',3,'나만의 공간에 대한 생각은 6단계 「내 방에게 묻다」에서 다시 볼 수 있어요.');
     say('멋진 다짐이에요! 이제 STAGE 1부터 효율적인 공간 구성을 배워 봐요.','good');
   };
+  window.__phases=[p1,p2,p3];
   p1();
 };
 
@@ -3070,6 +3083,7 @@ RENDER.s4=(body)=>{
     $('#m-solve').onclick=()=>ed.setItems(MISSION4_SOLUTION);
     say('오른쪽 경고를 클릭하면 문제가 있는 가구가 선택돼요. 하나씩 고쳐 봐요!');
   };
+  window.__phases=[A,B,Shop,C];
   A();
 };
 
@@ -3143,6 +3157,9 @@ RENDER.s6=(body)=>{
     return rects;};
   const overview=()=>{const h=$('#ed-host');const area=d.rooms.reduce((a,r)=>a+r.room.W*r.room.H,0)/10000,cnt=d.rooms.reduce((a,r)=>a+r.items.length,0),cost=d.rooms.reduce((a,r)=>a+r.items.reduce((b,i)=>b+(FURN[i.type]?priceOf(i):0),0),0);
     h.innerHTML=`<div style="overflow:auto;flex:1;min-height:0"><div class="ov-sum"><b>🏠 우리 집 평면도</b><span>총 ${area.toFixed(1)}㎡</span><span>방 ${d.rooms.length}개</span><span>가구 ${cnt}개</span><span>💰 약 ${cost}만 원</span><button class="tb" id="ov-reset" title="방 위치를 처음으로">↺ 처음 배치</button></div><div class="ov-t" style="margin:2px 8px">💡 방을 끌어서 위치를 옮기고, 주황색 문 표시를 끌어서 문 위치를 바꿔요. 클릭하면 그 방으로 가요.</div><canvas id="ov-plan" class="ov-plan"></canvas><div class="ov-t">🧊 방별 3D 모습</div><div class="ov-grid">${d.rooms.map((r,i)=>`<div class="ov-card" data-o="${i}"><div class="ov-h"><b>${r.name}</b><small>${r.room.W/100}×${r.room.H/100}m · 가구 ${r.items.length}개</small></div><canvas class="ov-cv"></canvas></div>`).join('')}</div><p class="hint" style="margin:6px 2px">평면도나 카드에서 방을 누르면 그 방을 꾸밀 수 있어요.</p></div>`;
+    {const box=$('#s6r');if(box){const rows=d.rooms.map((r,i)=>{const n=analyze(r.room,r.items.filter(x=>FURN[x.type])).warnings.length;return `<button class="ov-w ${n?'bad':'ok'}" data-ow="${i}">${n?'⚠️':'✅'} ${r.name} <b>${n?n+'개':'문제없어요'}</b></button>`;}).join('');
+      box.innerHTML=`<h3 style="margin:0 0 8px">⚠️ 방별 배치 점검</h3><div style="display:grid;gap:6px">${rows}</div><p class="hint" style="margin-top:8px">누르면 그 방으로 가서 자세히 볼 수 있어요.</p>`;
+      $$('[data-ow]',box).forEach(b=>b.onclick=()=>{const i=+b.dataset.ow;ovOn=false;d.cur=i;d.cat=roomCat(d.rooms[i].name);save();RENDER.s6(body);});}}
     const go2=i=>{ovOn=false;d.cur=i;d.cat=roomCat(d.rooms[i].name);save();RENDER.s6(body);};
     $$('.ov-card',h).forEach((c,i)=>{c.onclick=()=>go2(i);render3D($('canvas',c),d.rooms[i].room,d.rooms[i].items.filter(x=>FURN[x.type]),{yaw:-0.6,pitch:0.85,zoom:1});});
     const pc=$('#ov-plan');let rects=drawHousePlan(pc,-1)||[],hov=-1;

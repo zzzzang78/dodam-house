@@ -922,7 +922,7 @@ const FB_API={
     const ex=await a.get(path);if(!ex)throw new Error('학번을 찾을 수 없어요. 다시 로그인해 주세요.');
     if(ex.ph!==await fbHash(r.code+':'+sid+':'+b.pin))throw new Error('비밀번호가 맞지 않아요. 다시 로그인해 주세요.');
     const st=b.state||{},json=JSON.stringify(st);
-    if(json.length>45000)throw new Error('저장할 내용이 너무 커요. 가구 수를 줄여 주세요.');
+    if(json.length>58000)throw new Error('저장할 내용이 너무 커요. 가구 수를 줄여 주세요.');
     const stars=FB_STAGES.map(id=>Math.max(0,Math.min(3,Number((st.stars||{})[id])||0)));
     const nick=String(st.nick||ex.nick).slice(0,10),xp=fbXp(st),coins=Math.max(0,Math.min(99999,Number(st.coins)||0)),now=Date.now(),bonus=Number(ex.bonus)||0;
     await a.update(path,{nick,last:now,state:json});
@@ -1144,7 +1144,7 @@ function showWork(s){
   if(!s||!s.s6)return;const d=s.s6;
   const m=modal(`<h2>🏠 「${esc(d.roomName||'이름 없는 방')}」 <span class="hint">${esc(s.cls)}반 ${esc(s.sid)} ${esc(s.nick)}</span></h2>
    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px"><div><div class="hint">바꾼 후</div><div id="w-after"></div>${hasBefore(d)?'<div class="hint" style="margin-top:6px">바꾸기 전</div><div id="w-before"></div>':''}</div>
-   <div style="line-height:1.6"><div class="q">이름의 뜻</div>${esc(d.roomMeaning||'-')}<div class="q">꾸미고 싶은 공간 · 크기</div>${esc(d.space||'')} · ${d.room.W}×${d.room.H}cm · 가구 ${d.rooms&&d.rooms.length>1?d.rooms.reduce((a,r)=>a+r.items.length,0)+'개 (방 '+d.rooms.length+'개)':(d.items||[]).length+'개'} · 배치 경고 ${analyze(d.room,(d.items||[]).filter(i=>FURN[i.type])).warnings.length}개
+   <div style="line-height:1.6"><div class="q">이름의 뜻</div>${esc(d.roomMeaning||'-')}<div class="q">꾸미고 싶은 공간 · 크기</div>${esc(d.space||'')} · ${d.room.W}×${d.room.H}cm · 가구 ${d.rooms&&d.rooms.length>1?d.rooms.reduce((a,r)=>a+r.items.length,0)+'개 (방 '+d.rooms.length+'개)':(d.items||[]).length+'개'} · 배치 경고 ${(d.rooms&&d.rooms.length>1?d.rooms:[d]).reduce((a,r)=>a+analyze(r.room,(r.items||[]).filter(i=>FURN[i.type])).warnings.length,0)}개
    <div class="q">가장 중요한 조건</div>${esc(d.cond||'-')}${d.why?`<div class="q">🤔 고민한 가구와 이유</div>${esc(d.why)}`:''}<div class="q">좋은 점</div>${esc(d.good||'-')}<div class="q">보완할 점</div>${esc(d.bad||'-')}<div class="q">스스로 평가</div>동선 고려: ${esc(d.ev1||'-')} · 형태·조건 표현: ${esc(d.ev2||'-')}</div></div>`,true);
   $('#w-after',m).appendChild(planThumb(d,520,380));if(hasBefore(d))$('#w-before',m).appendChild(planThumbBefore(d,520,300));
   $$('canvas',m).forEach(c=>{c.style.width='100%';c.style.border='1px solid #e3dff0';c.style.borderRadius='10px';});
