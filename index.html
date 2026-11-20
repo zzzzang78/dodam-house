@@ -711,6 +711,20 @@ html,body{background:#fbf6e6}
 .ac-chips{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}.ac-tg{border:3px solid #e2c9a0;background:#fffaf0;border-radius:99px;padding:5px 12px;font-family:inherit;font-weight:700;cursor:pointer}.ac-tg.on{border-color:#43b581;background:#e8f8ef}
 .ac-phone{background:#e9edf2;border-radius:18px;padding:12px;margin:8px 0}.ac-bub{background:#ffe96a;border-radius:16px 16px 4px 16px;padding:10px 14px;max-width:80%;margin-left:auto;line-height:1.6}
 @media (max-width:760px){.ac-grid{grid-template-columns:1fr}.ac-list{grid-template-columns:1fr}}
+
+/* 모바일(좁은 화면) */
+@media (max-width:700px){
+ html,body{overflow-x:hidden}
+ #hud{gap:6px;padding:0 8px}#hud .hud-nick,#hud .sync{display:none}#hud .xp{min-width:70px}
+ #hud .hdr-btns{overflow-x:auto;flex:1;min-width:0;margin-left:0;scrollbar-width:none}#hud .hdr-btns .btn{flex:0 0 auto}
+ .town{overflow-y:auto;overflow-x:hidden;padding-top:112px;box-sizing:border-box}.town .house{margin-bottom:170px}
+ .mailbox{left:8px!important;bottom:8px!important;transform:scale(.8);transform-origin:left bottom}
+ .sign{width:84px;right:8px!important;bottom:8px!important}.sign2{right:100px!important;bottom:8px!important}
+ .studio,.three{grid-template-columns:1fr!important;height:auto!important;min-height:0}
+ .studio>.center,.three>.center{min-height:420px}
+ .stage-body{overflow-y:auto}
+ .stage-head{flex-wrap:wrap;gap:6px;padding:6px 10px}
+}
 </style>
 </head>
 <body>
