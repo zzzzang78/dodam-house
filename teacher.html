@@ -400,6 +400,7 @@ const shortName=t=>FURN[t].name.replace(/\(.*?\)/g,'').trim();
 
 /* ===================== 방 편집기 기하 ===================== */
 const FRONT=[[0,1],[-1,0],[0,-1],[1,0]];
+function T$(sel,v){const e=document.querySelector(sel);if(e)e.textContent=v;}
 const SZ_STEPS=[0.6,0.8,1,1.25,1.5],SZ_RUG=[0.6,0.8,1,1.25,1.5,2];
 const SWATCH=['#e57373','#f48fb1','#ffb74d','#ffd54f','#aed581','#66bb6a','#4db6ac','#64b5f6','#7986cb','#ba68c8','#a1887f','#d7c4a3','#f5f0e6','#90a4ae','#546e7a','#37474f'];
 const RUGPAT={plain:'무늬 없음',stripe:'줄무늬',check:'체크',dot:'물방울',flower:'꽃무늬',border:'테두리',rainbow:'무지개'};

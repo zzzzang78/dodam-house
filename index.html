@@ -1059,6 +1059,7 @@ const shortName=t=>FURN[t].name.replace(/\(.*?\)/g,'').trim();
 
 /* ===================== 방 편집기 기하 ===================== */
 const FRONT=[[0,1],[-1,0],[0,-1],[1,0]];
+function T$(sel,v){const e=document.querySelector(sel);if(e)e.textContent=v;}
 const SZ_STEPS=[0.6,0.8,1,1.25,1.5],SZ_RUG=[0.6,0.8,1,1.25,1.5,2];
 const SWATCH=['#e57373','#f48fb1','#ffb74d','#ffd54f','#aed581','#66bb6a','#4db6ac','#64b5f6','#7986cb','#ba68c8','#a1887f','#d7c4a3','#f5f0e6','#90a4ae','#546e7a','#37474f'];
 const RUGPAT={plain:'무늬 없음',stripe:'줄무늬',check:'체크',dot:'물방울',flower:'꽃무늬',border:'테두리',rainbow:'무지개'};
@@ -1863,7 +1864,7 @@ function sortGame(host,{items,bins,title,onDone,binsClass=''}){
     if(it.answer===binEl.dataset.bin){
       const c=chip.cloneNode(true);c.classList.remove('sel');c.classList.add('done');binEl.querySelector('.bin-items').appendChild(c);chip.remove();placed++;
       say(it.ok?('정답! '+it.ok):'정답이에요! 👍','good');earn(2,c);
-      if(placed===items.length)setTimeout(()=>onDone(errors),400);
+      if(placed===items.length)stT(()=>onDone(errors),400);
     }else{errors++;chip.classList.remove('shake');void chip.offsetWidth;chip.classList.add('shake');say('앗, 다시 생각해 봐요. '+(it.hint||''),'bad');}
   };
   $$('.sort-pool .chip',host).forEach(chip=>makeDrag(chip,{
@@ -1916,7 +1917,7 @@ function go(id){
   </div><div class="stage-body"></div></div>`;
   $('#btn-back').onclick=()=>go('map');
   $('#btn-concept').onclick=()=>showConcept(st);
-  window.__phases=null;phaseWatch($('.stage-body'),id);
+  clearStageTimers();window.__phases=null;phaseWatch($('.stage-body'),id);
   RENDER[id]($('.stage-body'),st);
   if(!(id==='s6'&&S.s6&&S.s6.seen)){showConcept(st);}
   if(id==='s6'&&S.s6){S.s6.seen=true;save();}
@@ -1936,13 +1937,15 @@ function showConcept(st,startPage=0){
   };
   if(pages.length)draw();
 }
+/* 단계 안에서 쓰는 지연 실행: 단계를 옮기면 취소돼요 */
+const STG_T=new Set();function stT(fn,ms){const id=setTimeout(()=>{STG_T.delete(id);fn();},ms);STG_T.add(id);return id;}function clearStageTimers(){STG_T.forEach(clearTimeout);STG_T.clear();}
 /* 한 스테이지 안에서 원하는 단계로 바로 가기 */
 function phaseWatch(body,id){window.__phDone=new Set();window.__phTotal=0;window.__phStage=id;window.__phLast=-1;window.__phJump=false;if(window.__phObs)window.__phObs.disconnect();
   const upd=()=>{const pt=body.querySelector('.phase-tabs');if(!pt)return;const kids=[...pt.children];window.__phTotal=kids.length;const i=kids.findIndex(k=>k.classList.contains('on'));if(i<0||i===window.__phLast)return;
-    if(!window.__phJump&&window.__phLast>=0&&window.__phLast===i-1)window.__phDone.add(i-1);window.__phJump=false;window.__phLast=i;};
+    if(!window.__phJump&&window.__phLast>=0&&i>window.__phLast&&i-window.__phLast<=2)for(let k=window.__phLast;k<i;k++)window.__phDone.add(k);window.__phJump=false;window.__phLast=i;};
   window.__phObs=new MutationObserver(upd);window.__phObs.observe(body,{childList:true,subtree:true});}
 document.addEventListener('click',e=>{const sp=e.target.closest&&e.target.closest('.phase-tabs span');if(!sp||!window.__phases||sp.classList.contains('on'))return;
-  const i=[...sp.parentNode.children].indexOf(sp),fn=window.__phases[i];if(!fn)return;try{if(typeof cleanup==='function'){cleanup();cleanup=null;}}catch(er){}window.__phJump=true;fn();});
+  const i=[...sp.parentNode.children].indexOf(sp),fn=window.__phases[i];if(!fn)return;try{if(typeof cleanup==='function'){cleanup();cleanup=null;}}catch(er){}window.__phJump=true;clearStageTimers();fn();});
 function finishStage(id,stars,extra=''){
   if(window.__phTotal>1&&window.__phStage===id&&new Set([...window.__phDone,window.__phLast]).size<window.__phTotal&&!['s0','s6','bonus'].includes(id)){stars=Math.min(stars,1);extra+='<br>⚠️ 건너뛴 단계가 있어서 별은 1개까지만 받아요. 모든 단계를 해 보면 별 3개에 도전할 수 있어요!';}
   stars=clamp(Math.round(stars),1,3);
@@ -1963,7 +1966,7 @@ function finishStage(id,stars,extra=''){
     <h2>${stLabel(STAGES[idx])} 클리어!</h2>
     ${reward}${isGuest()&&serverURL()?'<div class="f-tip">💡 수업이 끝나기 전에 <b>🏆 랭킹 등록</b>을 눌러야 반 점수에 들어가요!</div>':''}${extra?`<div class="f-extra">${extra}</div>`:''}
     <div class="f-sum">💡 <b>핵심 정리</b><br>${SUMMARY[id]}</div>
-    ${nb?`<div class="f-badge"><span>${nb.icon}</span> 새 배지 획득! <b>${nb.name}</b></div>`:(stars<need?`<div class="f-tip">별 ${need}개를 받으면 배지 <b>${BADGES[id].icon} ${BADGES[id].name}</b>를 얻어요!</div>`:'')}
+    ${nb?`<div class="f-badge"><span>${nb.icon}</span> 새 배지 획득! <b>${nb.name}</b></div>`:(stars<need?`<div class="f-tip">별 ${need}개를 받으면 배지 ${BADGES[id].icon} <b>${josa(BADGES[id].name,'을/를')}</b> 얻어요!</div>`:'')}
     <div class="m-actions"><button class="btn ghost" id="f-retry">↺ 다시 하기</button><button class="btn ghost" id="f-map">🗺 지도로</button>${next?`<button class="btn" id="f-next">다음: ${next.title} ▶</button>`:''}</div></div>`);
   $('#f-retry').onclick=()=>go(id);$('#f-map').onclick=()=>go('map');if(next)$('#f-next').onclick=()=>go(next.id);
   confetti();
@@ -2098,8 +2101,8 @@ RENDER.s2=(body)=>{
     svg+='</svg>';plan.insertAdjacentHTML('beforeend',svg);
     $$('.slot[data-slot]',plan).forEach(el=>el.addEventListener('click',()=>clickSlot(el.dataset.slot)));
     $('#s2-rt').innerHTML=m.routes.map(r=>`<div class="routine" style="border-left:5px solid ${r.r.color}"><span class="em">${r.r.emoji}</span><div><b>${r.r.who} · ${r.r.name}</b>${r.r.desc}</div><span class="dist">${r.dist.toFixed(1)}m${r.cross?` ⚠${r.cross}`:''}</span></div>`).join('');
-    $('#s2-dist').textContent=m.total.toFixed(1)+'m';
-    $('#s2-cross').textContent=m.cross+'번';
+    T$('#s2-dist',m.total.toFixed(1)+'m');
+    T$('#s2-cross',m.cross+'번');
     const pct=clamp((badScore-m.score)/(badScore-opt),0,1);$('#s2-gbar').style.width=(pct*100)+'%';
     const st=starsOf(m.score);
     $('#s2-gtxt').innerHTML=`동선 줄이기 목표 ${Math.round(pct*100)}% · ${st?'★'.repeat(st)+'☆'.repeat(3-st):'아직 별이 없어요'}`;
@@ -2170,7 +2173,7 @@ RENDER.s2=(body)=>{
       let wrong=0;slots.forEach((s,i)=>{if(s.t.id===K[i].id)s.lock=true;else{wrong++;slots[i]=null;}});
       draw();
       if(wrong){kErr+=1;say(`${wrong}개가 제자리가 아니에요. 재료를 꺼내서 → 다듬고 → 씻고 → 썰고 → 익히고 → 담는 순서를 떠올려 봐요!`,'bad');}
-      else{say('완벽해요! 냉장고→준비대→개수대→조리대→가열대→배선대 순서예요. 🎉','good');setTimeout(shapePhase,900);}
+      else{say('완벽해요! 냉장고→준비대→개수대→조리대→가열대→배선대 순서예요. 🎉','good');stT(shapePhase,900);}
     };
     draw();
     say('요리하는 순서를 떠올리며 작업대를 1번째부터 차례대로 놓아 보세요.');
@@ -2361,13 +2364,13 @@ RENDER.s3=(body)=>{
       <div style="display:flex;gap:6px;flex-wrap:wrap;margin:8px 0"><button class="btn ghost small" id="s3-hint">💡 힌트 (${hints})</button><button class="btn purple small t-only" id="s3-solve">👩‍🏫 모두 보기</button></div>
       <div id="s3-list" style="display:flex;flex-direction:column;gap:6px"></div></div></div></div>`;
     const list=()=>{
-      $('#s3-cnt').textContent=`${found.size} / 6`;
+      T$('#s3-cnt',`${found.size} / 6`);
       $('#s3-list').innerHTML=HOTSPOTS.map(h=>found.has(h.id)?`<div class="found on"><b>✅ ${h.name}</b>${h.d}</div>`:`<div class="found"><b>❔ ???</b>아직 찾지 못했어요.</div>`).join('');
     };
     const reveal=h=>{
       if(found.has(h.id))return;found.add(h.id);earn(3);$('#ha-'+h.id).classList.add('on');$('#sparks').innerHTML='';list();
       say(`<b>${h.name}</b> 발견! ${h.d}`,'good');
-      if(found.size===HOTSPOTS.length)setTimeout(()=>finishStage('s3',3-(qErr>1?1:0)-(hints>1?1:0),`다목적 활용 퀴즈 실수 ${qErr}번 · 힌트 ${hints}번 사용`),1100);
+      if(found.size===HOTSPOTS.length)stT(()=>finishStage('s3',3-(qErr>1?1:0)-(hints>1?1:0),`다목적 활용 퀴즈 실수 ${qErr}번 · 힌트 ${hints}번 사용`),1100);
     };
     const svg=$('#scene');
     svg.addEventListener('click',e=>{
@@ -2377,7 +2380,7 @@ RENDER.s3=(body)=>{
       else{const box=$('#scene-box').getBoundingClientRect();const r=document.createElement('div');r.className='ripple';r.style.left=(e.clientX-box.left)+'px';r.style.top=(e.clientY-box.top)+'px';$('#scene-box').appendChild(r);setTimeout(()=>r.remove(),600);
         if(HOTSPOTS.some(h=>found.has(h.id)&&Math.hypot(q.x-h.x,q.y-h.y)<=h.r))say('그곳은 이미 찾았어요!');else say('음… 여기는 아니에요. 비어 있거나 잘 쓰지 않는 곳을 찾아봐요.','bad');}
     });
-    $('#s3-hint').onclick=()=>{const h=HOTSPOTS.find(h=>!found.has(h.id));if(!h)return;hints++;$('#s3-hint').textContent=`💡 힌트 (${hints})`;
+    $('#s3-hint').onclick=()=>{const h=HOTSPOTS.find(h=>!found.has(h.id));if(!h)return;hints++;T$('#s3-hint',`💡 힌트 (${hints})`);
       $('#sparks').innerHTML=`<circle class="sparkle" cx="${h.x}" cy="${h.y}" r="${h.r}" fill="#ffd54f55" stroke="#f5b82e" stroke-width="4" stroke-dasharray="8 6"/>`;say('반짝이는 곳을 클릭해 보세요! ✨');};
     $('#s3-solve').onclick=()=>HOTSPOTS.forEach(reveal);
     list();say('이번엔 숨은 공간 찾기! 집에서 잘 쓰지 않는 자투리 공간 6곳을 찾아 클릭해 보세요.');
@@ -2417,11 +2420,11 @@ RENDER.s5=(body)=>{
       <div class="race-btns"><button data-a="keep" style="background:#5c9ded">1 🏠 남기기<small>자주 쓰는 물건</small></button><button data-a="give" style="background:#f5b82e">2 🎁 나눠 주기<small>나는 안 쓰지만 쓸 수 있는 물건</small></button><button data-a="toss" style="background:#8d6e63">3 ♻️ 버리기<small>쓸 수 없거나 필요 없는 물건</small></button></div>
       <div class="race-fb" id="r-fb"></div></div>${solveBtn}</div>`;
     const show=()=>{const it=items[k];const c=$('#r-card');c.className='race-card in';c.innerHTML=`<span class="ri">${it.i}</span>${it.n}<small>이 물건은 어떻게 할까요?</small>`;
-      $('#r-prog').textContent=`${k+1} / ${items.length}`;$('#r-score').textContent=`점수 ${score}`;$('#r-combo').textContent=combo>=2?`🔥 ${combo}연속!`:'';};
+      T$('#r-prog',`${k+1} / ${items.length}`);T$('#r-score',`점수 ${score}`);T$('#r-combo',combo>=2?`🔥 ${combo}연속!`:'');};
     const answer=a=>{if(lock)return;lock=true;const it=items[k];const ok=a===it.a;const c=$('#r-card');
       if(ok){combo++;best=Math.max(best,combo);score+=10+combo*2;c.classList.add('okc');earn(combo>=3?3:2,c);$('#r-fb').innerHTML=`✅ 정답! ${it.why}`;}
       else{combo=0;miss++;c.classList.add('ngc');const nm={keep:'🏠 남기기',give:'🎁 나눠 주기',toss:'♻️ 버리기'}[it.a];$('#r-fb').innerHTML=`❌ 정답은 <b>${nm}</b>! ${it.why}`;}
-      setTimeout(()=>{k++;lock=false;if(k<items.length)show();else{const sec=Math.round((Date.now()-t0)/1000);err+=miss;
+      stT(()=>{k++;lock=false;if(k<items.length)show();else{const sec=Math.round((Date.now()-t0)/1000);err+=miss;
         $('.race').innerHTML=`<div class="sec-title" style="justify-content:center">🏁 비우기 레이스 결과</div><div style="font-size:40px">${miss===0?'🏆':miss<=2?'🥈':'🥉'}</div><p style="font-size:18px">점수 <b>${score}</b>점 · 최고 <b>${best}</b>연속 · 틀린 개수 <b>${miss}</b>개 · ${sec}초</p><div class="nb key">💡 불필요한 것은 주변 사람에게 <b>나눠 주는</b> 등 처분하고, 남긴 물건만 정리해요!</div><button class="btn big" id="r-next">다음: 서랍 정리 ▶</button>`;
         $('#r-next').onclick=p2;say(miss===0?'완벽한 비우기! 🎉':'잘했어요! 이제 남긴 물건을 정리해 볼까요?','good');}},ok?700:1500);};
     $$('.race-btns button').forEach(b=>b.onclick=()=>answer(b.dataset.a));
@@ -2571,7 +2574,7 @@ function mgAlign(body,tabsHtml,solveBtn,done){
   let si=0,miss=0;
   const shoeScene=()=>{
     const sc=AL_SCENES[si];
-    const K=[['운동화','#5c9ded',0],['장화','#f5c542',1],['슬리퍼','#f08bb4',2],['구두','#8a6a50',3],['샌들','#43b581',2],['부츠','#c06a4a',1],['실내화','#9b6be0',2],['런닝화','#e8704a',0]];
+    const K=[['운동화','#5c9ded',0],['장화','#f5c542',1],['슬리퍼','#f08bb4',2],['구두','#8a6a50',3],['샌들','#43b581',2],['부츠','#c06a4a',1],['실내화','#9b6be0',2],['러닝화','#e8704a',0]];
     const shoe=(i)=>{const [n,c,t]=K[i];const sh=t===1?96:t===2?70:86;
       return `<svg viewBox="0 0 44 100" width="44" height="${sh+8}"><rect x="3" y="${100-sh-4}" width="38" height="${sh}" rx="18" fill="#5b4636"/><rect x="6" y="${100-sh-1}" width="32" height="${sh-6}" rx="15" fill="${c}"/>${t===1?`<rect x="8" y="${100-sh+30}" width="28" height="30" rx="8" fill="#fff" opacity=".28"/>`:''}${t===0?'<path d="M14 46h16M14 55h16M14 64h16" stroke="#fff" stroke-width="3" stroke-linecap="round"/>':''}${t===3?'<rect x="10" y="48" width="24" height="9" rx="4" fill="#fff" opacity=".35"/>':''}${t===2?'<path d="M8 46q14 10 28 0" stroke="#fff" stroke-width="4" fill="none" stroke-linecap="round"/>':''}<ellipse cx="22" cy="${100-sh+14}" rx="13" ry="14" fill="#fff" opacity=".32"/><circle cx="17" cy="${100-sh+13}" r="2.2" fill="#3b2a22"/><circle cx="27" cy="${100-sh+13}" r="2.2" fill="#3b2a22"/><ellipse cx="13" cy="${100-sh+19}" rx="3" ry="2" fill="#ff8aa5" opacity=".7"/><ellipse cx="31" cy="${100-sh+19}" rx="3" ry="2" fill="#ff8aa5" opacity=".7"/><path d="M19 ${100-sh+18}q3 3 6 0" stroke="#3b2a22" stroke-width="1.6" fill="none" stroke-linecap="round"/></svg>`;};
     const N=K.length;const rot=[40,-70,120,-25,200,75,-130,160];const top=[8,45,12,50,6,42,14,48];
@@ -2585,7 +2588,7 @@ function mgAlign(body,tabsHtml,solveBtn,done){
       const last=si===AL_SCENES.length-1;$('#al-nx').innerHTML=`<button class="btn big" id="al-next">${last?'다음: 수납 높이 ▶':'다음 장면 ▶'}</button>`;$('#al-next').onclick=()=>{if(last)done(miss);else{si++;scene();}};};
     const put=(el,slot)=>{if(!el||!slot||el.classList.contains('in')){return;}if(slot.firstChild){miss++;$('#al-fb').innerHTML='그 칸에는 이미 신발이 있어요. 빈 칸에 넣어 주세요!';return;}
       el.classList.add('in');el.removeAttribute('style');el.querySelector('.sh-in').style.transform='rotate(0deg)';slot.appendChild(el);slot.classList.add('full');placed++;sel=null;$$('.sh2-shoe.sel').forEach(x=>x.classList.remove('sel'));
-      $('#sh-cnt').textContent='정리한 신발 '+placed+' / '+N;$('#al-fb').innerHTML='👟 '+K[+el.dataset.i][0]+' 정리 완료! 앞코가 바깥을 봐요.';if(placed===N)setTimeout(finish,500);};
+      T$('#sh-cnt','정리한 신발 '+placed+' / '+N);$('#al-fb').innerHTML='👟 '+K[+el.dataset.i][0]+' 정리 완료! 앞코가 바깥을 봐요.';if(placed===N)stT(finish,500);};
     $$('.sh2-shoe',board).forEach(el=>makeDrag(el,{onDrop:t=>{if(t&&t.dataset.s!==undefined)put(el,t);},onClick:()=>{if(el.classList.contains('in'))return;$$('.sh2-shoe.sel').forEach(x=>x.classList.remove('sel'));el.classList.add('sel');sel=el;$('#al-fb').innerHTML='👉 <b>'+K[+el.dataset.i][0]+'</b> 선택! 신발장의 빈 칸을 눌러 넣어 주세요.';}}));
     slots.forEach(s=>s.addEventListener('click',()=>{if(sel)put(sel,s);}));
     $('#s5-solve').onclick=()=>{$$('.sh2-shoe:not(.in)',board).forEach(el=>{const s=slots.find(x=>!x.firstChild);if(s)put(el,s);});};
@@ -2624,7 +2627,7 @@ function mgAlign(body,tabsHtml,solveBtn,done){
     const finish=()=>{board.classList.add('done');$('#al-fb').innerHTML='✨ 줄이 딱 맞았어요! <b>같은 방향·같은 줄</b>로 놓으면 한눈에 찾기 쉬워요.';say('가지런히! 보기에도 좋고 찾기도 쉬워졌어요.','good');earn(2,board);
       const last=si===AL_SCENES.length-1;$('#al-nx').innerHTML=`<button class="btn big" id="al-next">${last?'다음: 수납 높이 ▶':'다음 장면 ▶'}</button>`;
       $('#al-next').onclick=()=>{if(last)done(miss);else{si++;scene();}};};
-    const fix=el=>{const p=pos[+el.dataset.i];if(el.classList.contains('fixed'))return;el.classList.add('fixed');el.style.left=p.x+'%';el.style.marginTop='0px';el.style.transform='translate(-50%,-50%) rotate(0deg)';if(--left===0)setTimeout(finish,450);};
+    const fix=el=>{const p=pos[+el.dataset.i];if(el.classList.contains('fixed'))return;el.classList.add('fixed');el.style.left=p.x+'%';el.style.marginTop='0px';el.style.transform='translate(-50%,-50%) rotate(0deg)';if(--left===0)stT(finish,450);};
     $$('.al-it',board).forEach(el=>el.onclick=()=>{
       if(el.classList.contains('fixed')){if(left>0){miss++;el.classList.remove('wob');void el.offsetWidth;el.classList.add('wob');$('#al-fb').innerHTML='이건 이미 가지런해요! 삐뚤어진 것만 눌러 봐요.';}return;}
       fix(el);});
@@ -2853,7 +2856,7 @@ function createEditor(host,opts){
       if(a==='keys'){const kb=document.getElementById('btn-keys');kb&&kb.click();}if(a==='fit'){E.zoom=1;E.pan=[0,0];E.v3.zoom=1;render();}};
   });
   $$('.ed-tools [data-v]',host).forEach(b=>b.onclick=()=>setView(b.dataset.v));
-  function setView(v){E.view=v;$$('.ed-tools [data-v]',host).forEach(x=>x.classList.toggle('on',x.dataset.v===v));svg.style.display=v==='2d'?'block':'none';cv.hidden=v!=='3d';
+  function setView(v){E.view=v;$$('.ed-tools [data-v]',host).forEach(x=>x.classList.toggle('on',x.dataset.v===v));svg.style.display=v==='2d'?'block':'none';cv.hidden=v!=='3d';cv.style.display=v==='3d'?'block':'none';
     help.textContent=v==='2d'?'드래그: 가구 이동 · 휠: 확대/축소 · 빈 곳 드래그: 화면 이동 · 우클릭: 메뉴 · 더블클릭: 회전':'드래그: 돌려 보기 · 휠: 확대/축소 · 가구를 옮기려면 2D 평면으로 돌아가요';
     if(v==='3d')draw3D();}
   // 키보드
@@ -3120,9 +3123,9 @@ RENDER.s6=(body)=>{
   body.innerHTML=`<div class="studio"><div class="panel steps">${isGuest()&&serverURL()?'<div class="guest-note">💡 예전 시간에 꾸민 방을 이어서 하려면 먼저 위쪽 <b>🏆 랭킹 등록</b>(학번 입력)을 해 주세요.</div>':''}<div class="step-tabs">${[1,2,3,4,5].map(n=>`<button class="stab" data-step="${n}">${n}단계</button>`).join('')}</div><div class="step-body" id="sb"></div>
     <div class="step-nav"><button class="btn ghost small" id="st-prev">◀ 이전</button><button class="btn small" id="st-next">다음 ▶</button></div></div>
     <div class="center" style="display:flex;flex-direction:column;min-height:0"><div id="rtabs"></div><div id="ed-host" style="display:flex;flex-direction:column;min-height:0;flex:1"></div></div><div class="panel" id="s6r"></div></div>`;
-  ed=createEditor($('#ed-host'),{room:d.room,items:d.items,onCommit:it=>{d.items=it;save();const eh=$('#ed-host');if(eh){eh.classList.remove('popd');void eh.offsetWidth;eh.classList.add('popd');}},onChange:an=>{const box=$('#s6r');if(!box)return;box.innerHTML=warnPanelHTML(an,d.room,d.items)+`<div class="tips" style="margin-top:10px"><b>🌟 나의 주거 공간 구성 꿀팁</b><br>· 비워요: 쓸모없는 물건 비우기<br>· 조명을 활용해요: 분위기 만들기<br>· 공간을 구분해요: 커튼·가구로 구분<br>· 위치를 바꿔요: 나만의 공간 만들기<br>· 소품을 활용해요: 좋아하는 물건으로</div>`;if(ed)bindWarnClicks(box,an,ed);}});
+  ed=createEditor($('#ed-host'),{room:d.room,items:d.items,onCommit:it=>{d.items=it;save();try{rtabs();}catch(e){}const eh=$('#ed-host');if(eh){eh.classList.remove('popd');void eh.offsetWidth;eh.classList.add('popd');}},onChange:an=>{const box=$('#s6r');if(!box)return;box.innerHTML=warnPanelHTML(an,d.room,d.items)+`<div class="tips" style="margin-top:10px"><b>🌟 나의 주거 공간 구성 꿀팁</b><br>· 비워요: 쓸모없는 물건 비우기<br>· 조명을 활용해요: 분위기 만들기<br>· 공간을 구분해요: 커튼·가구로 구분<br>· 위치를 바꿔요: 나만의 공간 만들기<br>· 소품을 활용해요: 좋아하는 물건으로</div>`;if(ed)bindWarnClicks(box,an,ed);}});
   d.items=ed.items;
-  const setStep=n=>{d.step=n;save();$$('.stab').forEach(b=>{b.classList.toggle('on',+b.dataset.step===n);});$('#st-prev').disabled=n===1;$('#st-next').textContent=n===5?'🎴 결과 카드':'다음 ▶';STEP[n]();};
+  const setStep=n=>{d.step=n;save();$$('.stab').forEach(b=>{b.classList.toggle('on',+b.dataset.step===n);});$('#st-prev').disabled=n===1;T$('#st-next',n===5?'🎴 결과 카드':'다음 ▶');STEP[n]();};
   $$('.stab').forEach(b=>b.onclick=()=>setStep(+b.dataset.step));
   $('#st-prev').onclick=()=>setStep(Math.max(1,d.step-1));
   $('#st-next').onclick=()=>{if(d.step<5)setStep(d.step+1);else makeCard();};
@@ -3271,7 +3274,7 @@ RENDER.s6=(body)=>{
     const ans=d.rooms.map(r=>analyze(r.room,r.items.filter(i=>FURN[i.type])));const an={warnings:[].concat(...ans.map(x=>x.warnings))};
     const cv=resultCard(d,an);let url='';try{url=cv.toDataURL('image/png');}catch(e){}
     const filled=[d.cond,d.good,d.bad,d.roomName].every(x=>x&&x.trim());
-    const stars=1+(an.warnings.length===0?1:0)+(filled?1:0);
+    const stars=1+(an.warnings.length===0?1:0)+(filled?1:0);if(!filled)toast('빈칸이 있어요! 조건·좋은 점·보완할 점·방 이름을 모두 쓰면 별을 더 받아요.','bad');
     modal(`<h2 style="margin:0 0 10px">🎴 나의 결과 카드</h2><img class="result-img" id="rc-img" src="${url}" alt="결과 카드">
       <p class="hint">${an.warnings.length?`⚠️ 배치 경고가 ${an.warnings.length}개 있어요. 고치면 별을 더 받을 수 있어요.<br>`:''}${filled?'':'✏️ 중요한 조건·좋은 점·보완할 점·방 이름을 모두 쓰면 별을 더 받아요.<br>'}${EMBED?'💾 저장하려면 위 카드 이미지를 <b>마우스 오른쪽 버튼으로 클릭 → [이미지를 다른 이름으로 저장]</b>을 누르세요. (인쇄는 저장한 이미지를 열어서 해요.)':'다운로드가 안 되면 카드 이미지를 마우스 오른쪽 버튼으로 클릭 → <b>이미지를 다른 이름으로 저장</b>을 누르세요.'}</p>
       <div class="m-actions">${EMBED?'':`<a class="btn blue" id="rc-dl" download="${esc((d.name||'내방')+'_결과카드')}.png" href="${url}">⬇ PNG로 저장</a><button class="btn ghost" id="rc-print">🖨 인쇄하기</button>`}<button class="btn ghost" id="rc-edit">✏️ 더 고치기</button><button class="btn green" id="rc-done">완료하고 별 받기 ★</button></div>`,{wide:true});
@@ -3933,7 +3936,7 @@ function exTopic(t){
   let p=0;
   const page=()=>{const pg=t.pages[p],last=p===t.pages.length-1;
     const m=modal(`<div class="note"><div class="c-head">${dodamSVG(48,S.avatar)}<div><div class="c-kicker">${EXG[t.grp].ico} ${EXG[t.grp].name} · ${t.icon} ${t.title}</div><h2>${pg.t}</h2></div></div><div class="note-body">${pg.h}</div>
-      <div class="note-nav"><button class="btn ghost" id="n-prev" ${p===0?'disabled':''}>◀ 이전</button><div class="dots">${t.pages.map((_,i)=>`<i class="${i===p?'on':''}" data-p="${i}"></i>`).join('')}<span>${p+1} / ${t.pages.length}</span></div><button class="btn ${last?'green':''}" id="n-next">${last?'퀴즈 풀기 ▶':'다음 ▶'}</button></div></div>`,{wide:true});
+      <div class="note-nav"><button class="btn ghost" id="n-prev" ${p===0?'disabled':''}>◀ 이전</button><div class="dots">${t.pages.map((_,i)=>`<i class="${i===p?'on':''}" data-p="${i}"></i>`).join('')}<span>${p+1} / ${t.pages.length}</span></div><button class="btn ${last?'green':''}" id="n-next">${last?'직접 해 보기 ▶':'다음 ▶'}</button></div></div>`,{wide:true});
     $('#n-prev').onclick=()=>{if(p>0){p--;page();}};$('#n-next').onclick=()=>{if(last){if(t.act)EXACT[t.act](t,w=>exFinish(t,w));else exQuiz(t);}else{p++;page();}};
     $$('.dots i',m).forEach(d=>d.onclick=()=>{p=+d.dataset.p;page();});};
   page();
@@ -4134,7 +4137,7 @@ function renderHeader(){
   const h=$('#hdr-player');if(!h)return;
   h.innerHTML=SESSION?`${dodamSVG(34,S.avatar)}<div class="pl-name"><b>${esc(isOnline()||isDemo()?S.nick:'손님')}</b><small>${isDemo()?'체험 중':isOnline()?`${esc(SESSION.cls)}반 ${esc(SESSION.sid)}`:'등록 전'}</small></div>
     <span class="chip xp" title="경험치: 별 1개 100, 배지 1개 50">⭐ ${xpOf(S)} XP</span><span class="chip coin" id="coin-chip" title="코인: 상점에서 사용">💰 ${S.coins||0}</span>`:'';
-  const _xp=xpOf(S);if($('#hud-lv')){$('#hud-lv').innerHTML='Lv.'+(1+Math.floor(_xp/300))+'<small class="lv-max">만렙 Lv.'+MAX_LV+'</small>';$('#hud-nick').textContent=isOnline()?S.nick:'손님';$('#hud-xpbar').style.width=(_xp%300)/3+'%';$('#hud-xp').textContent='EXP '+(_xp%300)+' / 300 · 💰 '+(S.coins||0);}
+  const _xp=xpOf(S);if($('#hud-lv')){$('#hud-lv').innerHTML='Lv.'+(1+Math.floor(_xp/300))+'<small class="lv-max">만렙 Lv.'+MAX_LV+'</small>';T$('#hud-nick',isOnline()?S.nick:'손님');$('#hud-xpbar').style.width=(_xp%300)/3+'%';T$('#hud-xp','EXP '+(_xp%300)+' / 300 · 💰 '+(S.coins||0));}
   const bt=$('#btn-teacher');bt.classList.toggle('teacher-on',!!S.teacher);bt.innerHTML=S.teacher?'👩‍🏫<small>ON</small>':'👩‍🏫<small>교사</small>';
   document.body.classList.toggle('teacher',!!S.teacher);
   $('#btn-board').style.display=(isOnline()||isDemo())?'':'none';$('#btn-peers').style.display=(isOnline()||isDemo())?'':'none';
@@ -4183,10 +4186,10 @@ function pinModal(k){
     <div class="m-actions"><button class="linkbtn" id="pm-forget">목록에서 지우기</button><button class="btn ghost" id="pm-no">취소</button><button class="btn" id="pm-ok">들어가기 ▶</button></div></div>`);
   const pin=$('#pm-pin');pin.focus();pin.oninput=()=>{pin.value=pin.value.replace(/\D/g,'');};
   $('#pm-no').onclick=closeModal;$('#pm-forget').onclick=()=>{forget(k.room,k.sid);renderLogin();};
-  const ok=async()=>{if(!/^\d{4}$/.test(pin.value)){$('#pm-m').textContent='비밀번호 4자리를 써 주세요.';return;}$('#pm-m').textContent='⏳ 들어가는 중…';
-    try{const r=await api({action:'login',code:k.room,cls:k.cls,sid:k.sid,pin:pin.value});if(!r.ok){$('#pm-m').textContent='❌ '+(r.err||'다시 해 주세요');return;}
+  const ok=async()=>{if(!/^\d{4}$/.test(pin.value)){T$('#pm-m','비밀번호 4자리를 써 주세요.');return;}T$('#pm-m','⏳ 들어가는 중…');
+    try{const r=await api({action:'login',code:k.room,cls:k.cls,sid:k.sid,pin:pin.value});if(!r.ok){T$('#pm-m','❌ '+(r.err||'다시 해 주세요'));return;}
       closeModal();startOnline({room:k.room,roomName:r.room.name,classes:r.room.classes,cls:k.cls,sid:k.sid,pin:pin.value},r.student,null);}
-    catch(e){$('#pm-m').textContent='❌ '+e.message;}};
+    catch(e){T$('#pm-m','❌ '+e.message);}};
   $('#pm-ok').onclick=ok;pin.onkeydown=e=>{if(e.key==='Enter')ok();};
 }
 /* 학번으로 이어 하기 / 랭킹 등록 (같은 창, 목적만 다름) */
@@ -4351,11 +4354,11 @@ function renderBoard(){
     if(!$('#bd-body')){clearInterval(boardTimer);return;}
     try{const r=await api({action:'board',code:SESSION.room});if(!r.ok)throw new Error(r.err);
       const cl=r.classes.slice().sort((a,b)=>b.avgXp-a.avgXp);const max=Math.max(1,...cl.map(c=>c.avgXp));
-      $('#bd-info').textContent=`참여 ${r.total}명 · 지금 접속 중 ${r.online}명 · 반 점수 = 반 평균 경험치`;
+      T$('#bd-info',`참여 ${r.total}명 · 지금 접속 중 ${r.online}명 · 반 점수 = 반 평균 경험치`);
       $('#bd-body').innerHTML=`<div class="race-wrap"><div class="houses">${cl.map((c,i)=>{const fl=Math.min(8,1+Math.floor(c.avgXp/250));const me=c.cls===SESSION.cls;return`<div class="hcol click ${me?'me':''}" data-cls="${esc(c.cls)}" title="눌러서 ${esc(c.cls)}반 도담이 보기"><div class="medal">${['🥇','🥈','🥉'][i]||(i+1)+'위'}</div>${houseSVG(fl,me)}<b>${esc(c.cls)}반${me?' (우리 반)':''}</b><span>평균 ${c.avgXp} XP</span><small>${c.count}명 · ${fl}층</small><div class="hbar2"><i style="width:${c.avgXp/max*100}%"></i></div></div>`;}).join('')}</div>
         <div class="panel top10"><div class="sec-title">🌟 개인 TOP 10</div>${r.top.length?r.top.map((t,i)=>`<div class="trow ${t.nick===S.nick&&t.cls===SESSION.cls?'me':''}"><span class="rk">${i+1}</span>${dodamSVG(30,t.avatar)}<b>${esc(t.nick)}</b><small>${esc(t.cls)}반</small><span class="x">${t.xp} XP</span></div>`).join(''):'<p class="hint">아직 기록이 없어요.</p>'}</div></div>
         <p class="hint" style="text-align:center">👆 반 집을 누르면 그 반 친구들의 도담이를 볼 수 있어요.</p><p class="hint" style="text-align:center">🏠 반 평균 경험치 250마다 우리 반 집이 한 층씩 올라가요!</p>`;
-      $('#bd-upd').textContent='마지막 갱신 '+new Date().toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'})+' · 3분마다 자동';
+      T$('#bd-upd','마지막 갱신 '+new Date().toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'})+' · 3분마다 자동');
       $$('#bd-body .hcol').forEach(h=>h.onclick=()=>{PEER_PRESET={cls:h.dataset.cls,tab:'dodam'};go('peers');});
     }catch(e){$('#bd-body').innerHTML=`<div class="nb">❌ ${esc(e.message)}</div>`;}
   };
@@ -4394,7 +4397,7 @@ function renderPeers(){
     $('#pe-cls').innerHTML=`<button class="btn small ${cls==='all'?'':'ghost'}" data-c="all">전체</button>`+data.classes.map(c=>`<button class="btn small ${cls===String(c)?'':'ghost'}" data-c="${esc(c)}">${esc(c)}반</button>`).join('');
     $$('#pe-cls button').forEach(b=>b.onclick=()=>{cls=b.dataset.c;draw();});
     const list=data.students.filter(s=>cls==='all'||s.cls===cls);
-    $('#pe-info').textContent=`${list.length}명`;
+    T$('#pe-info',`${list.length}명`);
     if(tab==='status'){
       $('#pe-body').innerHTML=list.length?`<div class="panel"><table style="width:100%;border-collapse:collapse;font-size:16px"><tr style="text-align:left"><th>친구</th><th>반</th>${STAGES.map(s=>`<th title="${esc(s.title)}">${s.id==='bonus'?'B':s.id==='s0'?'열기':'S'+s.no}</th>`).join('')}</tr>${list.map(s=>`<tr style="border-top:1px solid #eee;${s.cls===String(SESSION.cls)&&s.nick===S.nick?'background:#fff6d6':''}"><td style="display:flex;align-items:center;gap:6px">${dodamSVG(28,s.avatar)}<b>${esc(s.nick)}</b></td><td>${esc(s.cls)}</td>${STAGES.map((st,i)=>`<td>${s.stars[i]?'★'.repeat(s.stars[i]):'<span style="color:#ccc">·</span>'}</td>`).join('')}</tr>`).join('')}</table></div>`:'<div class="nb">아직 친구가 없어요.</div>';
     }else if(tab==='dodam'){
@@ -4418,7 +4421,7 @@ function toggleTeacher(){
   if(!serverURL()){S.teacher=true;renderHeader();toast('선생님 모드: 정답 보기 버튼이 나타나요.');if(current!=='map')go(current);return;}
   modal(`<h2 style="margin-top:0">👩‍🏫 선생님 모드</h2><p class="hint">정답 보기 버튼이 나타나요. 학생 기록(별·코인)은 쌓이지 않아요.</p><input id="tp" type="password" placeholder="교사 비밀번호" style="width:100%;padding:9px;border:2px solid var(--line);border-radius:9px"><div class="lg-msg" id="tp-m"></div><div class="m-actions"><button class="btn ghost" id="tp-no">취소</button><button class="btn purple" id="tp-ok">켜기</button></div>`);
   $('#tp-no').onclick=closeModal;
-  const ok=async()=>{$('#tp-m').textContent='⏳ 확인 중…';try{const r=await api({action:'adminCheck',pw:$('#tp').value});if(!r.ok){$('#tp-m').textContent='❌ '+r.err;return;}closeModal();S.teacher=true;renderHeader();toast('선생님 모드를 켰어요.');if(current!=='map')go(current);}catch(e){$('#tp-m').textContent='❌ '+e.message;}};
+  const ok=async()=>{T$('#tp-m','⏳ 확인 중…');try{const r=await api({action:'adminCheck',pw:$('#tp').value});if(!r.ok){T$('#tp-m','❌ '+r.err);return;}closeModal();S.teacher=true;renderHeader();toast('선생님 모드를 켰어요.');if(current!=='map')go(current);}catch(e){T$('#tp-m','❌ '+e.message);}};
   $('#tp-ok').onclick=ok;$('#tp').onkeydown=e=>{if(e.key==='Enter')ok();};
 }
 /* ---------- 시작 ---------- */
@@ -4459,8 +4462,8 @@ function openMail(){
     <textarea id="mail-t" maxlength="200" rows="4" placeholder="예) 고양이 귀 모자가 있으면 좋겠어요! 가격은 레어 정도가 좋을 것 같아요."></textarea><div class="hint" style="text-align:right"><span id="mail-n">0</span>/200자</div>
     <div class="m-actions"><button class="btn ghost" id="mail-no">닫기</button><button class="btn" id="mail-ok" ${todayN()>=2?'disabled':''}>💌 보내기</button></div>
     ${mine.length?`<div class="sec-title" style="margin-top:12px">📮 내가 보낸 편지</div><div class="mail-list">${mine.map(x=>`<div class="mail-it"><small>${esc((MAIL_CATS.find(c=>c[0]===x.cat)||['',''])[1])} · ${new Date(x.ts).toLocaleDateString()}</small><div>${esc(x.txt)}</div></div>`).join('')}</div>`:''}</div>`);
-    $$('[data-cat]').forEach(b=>b.onclick=()=>{const v=$('#mail-t').value;cat=b.dataset.cat;view();$('#mail-t').value=v;$('#mail-n').textContent=v.length;});
-    $('#mail-t').oninput=()=>{$('#mail-n').textContent=$('#mail-t').value.length;};
+    $$('[data-cat]').forEach(b=>b.onclick=()=>{const v=$('#mail-t').value;cat=b.dataset.cat;view();$('#mail-t').value=v;T$('#mail-n',v.length);});
+    $('#mail-t').oninput=()=>{T$('#mail-n',$('#mail-t').value.length);};
     $('#mail-no').onclick=closeModal;
     $('#mail-ok').onclick=()=>{const txt=$('#mail-t').value.trim();if(txt.length<5){toast('조금 더 자세히 적어 주세요 (5글자 이상)');return;}if(todayN()>=2)return;
       S.mail=(S.mail||[]).concat({id:'m'+Date.now().toString(36),ts:Date.now(),cat,txt:txt.slice(0,200)}).slice(-10);save();toast('💌 편지를 보냈어요! 선생님이 읽어 볼 거예요.','good');view();};};
